@@ -12,51 +12,60 @@ import os
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* 1. 釘死最頂端大標題 */
-    [data-testid="stHeader"] {
-        display: none; /* 隱藏原生的空白 Header */
-    }
-    
-    .main .block-container {
-        padding-top: 0rem !important;
-        max-height: 100vh;
-        overflow: hidden;
+    /* 1. 隱藏原生 Header 以免干擾 */
+    header, [data-testid="stHeader"] {
+        display: none !important;
     }
 
-    /* 2. 建立一個固定的頂部大標題區 */
+    /* 2. 標題區：強制置中，避開側邊欄 */
     .top-title-bar {
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
+        width: 100vw;
+        height: 70px;
         background-color: white;
-        padding: 15px 20px;
+        display: flex;
+        justify-content: center; /* 置中核心 */
+        align-items: center;
+        z-index: 9999;
+        border-bottom: 2px solid #f0f2f6;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .top-title-bar h2 {
+        margin: 0;
+        color: #262730;
+        font-size: 1.8rem;
+        padding-left: 200px; /* 這裡補償側邊欄寬度，確保視覺中心 */
+    }
+
+    /* 3. 頁面容器設定：禁止全網頁捲動 */
+    .main .block-container {
+        padding-top: 80px !important;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* 4. 左側 (中間) 需求填寫區：唯一允許捲動 */
+    [data-testid="column"]:nth-of-type(1) {
+        height: calc(100vh - 100px) !important;
+        overflow-y: auto !important;
+        padding-right: 30px !important;
+    }
+
+    /* 5. 右側報價單：直接用 Fixed 釘死在螢幕座標 */
+    [data-testid="column"]:nth-of-type(2) {
+        position: fixed !important;
+        right: 20px;
+        top: 90px;
+        width: 32vw !important; /* 鎖定寬度 */
+        height: calc(100vh - 110px) !important;
+        overflow: hidden !important;
+        background: white;
         z-index: 999;
-        border-bottom: 1px solid #f0f2f6;
     }
 
-    /* 3. 右側報價單：釘死在右邊 */
-    @media screen and (min-width: 901px) {
-        [data-testid="column"]:nth-of-type(2) {
-            position: fixed !important;
-            right: 2%;
-            top: 100px; /* 避開大標題的高度 */
-            width: 32% !important;
-            z-index: 90;
-            background: white;
-        }
-        
-        /* 4. 中間需求設定：唯一允許捲動的區域 */
-        [data-testid="column"]:nth-of-type(1) {
-            margin-top: 80px; /* 避開頂部 */
-            height: calc(100vh - 100px) !important;
-            overflow-y: auto !important;
-            width: 62% !important;
-            padding-right: 30px !important;
-        }
-    }
-
-    /* 捲動軸美化 */
+    /* 美化捲動軸 */
     [data-testid="column"]:nth-of-type(1)::-webkit-scrollbar {
         width: 6px;
     }
@@ -72,10 +81,10 @@ st.markdown("""
         margin-bottom: 10px;
     }
     </style>
+    <div class="top-title-bar">
+        <h2>成大群體健康數據中心 (PHDc) 合作報價系統</h2>
+    </div>
     """, unsafe_allow_html=True)
-
-# 在 CSS 後方立即插入固定的大標題 HTML
-st.markdown('<div class="top-title-bar"><h2>成大群體健康數據中心 (PHDc) 合作報價系統</h2></div>', unsafe_allow_html=True)
 
 # ==========================================
 # 0. 資料庫初始化
