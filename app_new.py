@@ -288,19 +288,34 @@ with col_left:
     n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
     # --- 修改處：調整額度移到左側下方 ---
+    # --- 調整額度精緻化排版 ---
     st.markdown("---")
-    st.write("#### 3. 本案預計調整額度")
+    st.write("#### 3. 本案預估調整額度")
     
-    t_col1, t_col2, t_col3 = st.columns(3)
-    t_col1.metric("模型微調", f"{n_tune} 次")
-    t_col2.metric("重分析", f"{n_reanalysis} 次")
-    t_col3.metric("文稿大修", f"{n_revise} 次")
+    # 使用 HTML/CSS 打造卡片感
+    st.markdown(f"""
+        <div style="display: flex; justify-content: space-between; background-color: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 5px solid #007bff; margin-bottom: 10px;">
+            <div style="text-align: center; flex: 1;">
+                <div style="color: #666; font-size: 0.9rem;">模型微調</div>
+                <div style="color: #333; font-size: 1.5rem; font-weight: bold;">{n_tune} <span style="font-size: 0.9rem;">次</span></div>
+            </div>
+            <div style="text-align: center; flex: 1; border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6;">
+                <div style="color: #666; font-size: 0.9rem;">重分析</div>
+                <div style="color: #333; font-size: 1.5rem; font-weight: bold;">{n_reanalysis} <span style="font-size: 0.9rem;">次</span></div>
+            </div>
+            <div style="text-align: center; flex: 1;">
+                <div style="color: #666; font-size: 0.9rem;">文稿大修</div>
+                <div style="color: #333; font-size: 1.5rem; font-weight: bold;">{n_revise} <span style="font-size: 0.9rem;">次</span></div>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
 
+    # 顯示計價規則簡介 (維持 Expander)
     with st.expander("📝 查看額度計算法則 (醫師須知)"):
         st.caption(f"1. **模型微調**：基本 {st.session_state.b_tune} 次，每達 {st.session_state.s_tune:,} 元增加 1 次。")
         st.caption(f"2. **重分析**：總價每達 {st.session_state.s_reanalysis:,} 元提供 1 次。")
         st.caption(f"3. **文稿大修**：基本 {st.session_state.b_revise} 次，每達 {st.session_state.s_revise:,} 元增加 1 次（需含代寫服務）。")
-    st.caption("※ 報價單包含上述額度。超出額度之工作，將以單次計費原則另行報價。")
+    st.caption("※ 報價單包含上述額度。超出額度之工作，將以單次計費原則另行報價。")caption("※ 報價單包含上述額度。超出額度之工作，將以單次計費原則另行報價。")
 
 # ==========================================
 # 5. 主介面：右側報價區
