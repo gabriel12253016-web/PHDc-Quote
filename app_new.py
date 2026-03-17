@@ -10,153 +10,65 @@ import os
 # 網頁配置與 CSS 固定右側欄位
 # ==========================================
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
-
-# --- [A] 變數初始化 (最關鍵！放在最前面防止第一次執行報錯) ---
-k_design, k_write, k_link = 0.0, 0.0, 0.0
-c_db_buy = 0
-m_work, f_status, f_coop, f_author_total, f_specify = 1.0, 1.0, 1.0, 1.0, 1.0
-total_cost = 0
-base_cost = 0.0
-labor_total = 0.0
-sum_k = 0.0
-f_total_adj = 1.0
-
-# --- [B] CSS 樣式定義 (處理左貼頂與頂凍結) ---
 st.markdown("""
     <style>
-    /* 隱藏原生頂部黑條 */
-    header, [data-testid="stHeader"] {{ display: none !important; }}
+    /* 1. 隱藏原生頂部黑條 */
+    header, [data-testid="stHeader"] { 
+        display: none !important; 
+    }
 
-    /* 1. 左側側邊欄貼齊頂端 (針對容器移除所有 padding) */
-    .st-emotion-cache-6qob1r {{ padding: 0rem !important; }}
-    [data-testid="stSidebarUserContent"] {{ padding: 0rem !important; }}
+    /* 2. 強制側邊欄內容頂到最上方 (解決左邊貼齊問題) */
+    [data-testid="stSidebarUserContent"] {
+        padding-top: 0rem !important;
+        margin-top: -3.5rem !important; /* 向上推擠 offset */
+    }
     
-    /* 針對側邊欄 Logo 圖片做微調擠壓，確保完全無縫 */
-    [data-testid="stSidebarUserContent"] .stImage {{ margin-top: -3.5rem !important; }}
+    /* 針對不同版本的 Streamlit 額外鎖定 */
+    .st-emotion-cache-6qob1r {
+        padding-top: 0rem !important;
+    }
 
-    /* 2. 頂端凍結區域：高度增加到 130px */
-    .top-frozen-bar {{
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 130px;
-        background-color: white;
-        z-index: 9999;
+    /* 3. 建立頂端固定標題區 (中間的標題列) */
+    .top-title-bar {
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100vw; 
+        height: 75px; 
+        background-color: white; 
+        display: flex; 
+        align-items: center; 
+        z-index: 9999; 
         border-bottom: 2px solid #f0f2f6;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        /* 避開左側側邊欄 */
+        /* 關鍵位移：避開左側側邊欄 */
         padding-left: 280px; 
-        display: flex;
-        align-items: center;
-        justify-content: space-between; /* 標題靠左，報價卡片靠右 */
-        padding-right: 40px;
-    }}
+    }
 
-    /* 標題字維持原樣大小 */
-    .title-group h2 {{
+    .top-title-bar h2 {
         margin: 0;
-        font-size: 1.6rem; /* 保持妳原本設定的大小 */
+        font-size: 1.6rem;
         color: #262730;
-        line-height: 1.3;
-    }}
+    }
 
-    /* [關鍵] 報價資訊卡片 (彈性佈局) */
-    .quote-summary-card {{
-        display: flex;
-        align-items: center;
-        gap: 30px; /* 各元件間隔 */
-    }}
+    /* 4. 內容區主體位移：防止被標題遮住第一行 */
+    .main .block-container {
+        padding-top: 100px !important; 
+    }
 
-    /* 藍色計算式框 (照圖排版) */
-    .formula-box {{
-        background-color: #e8f0fe;
-        padding: 10px 15px;
-        border-radius: 8px;
+    /* 5. 妳原本的淡色備註樣式 */
+    .caption-text {
+        color: #888888;
         font-size: 0.85rem;
-        color: #1967d2;
-        line-height: 1.5;
-        text-align: left;
-    }}
-    .formula-box b {{ font-weight: bold; font-size: 0.9rem; }}
-
-    /* 總額大字 (照圖排版) */
-    .total-price-box {{
-        text-align: right;
-        min-width: 150px;
-    }}
-    .total-price-box .price {{
-        font-size: 1.8rem;
-        font-weight: bold;
-        color: #262730;
-    }}
-
-    /* 三期付款細節 (照圖排版) */
-    .payment-phases {{
-        font-size: 0.8rem;
-        color: #555;
-        border-left: 1px solid #ddd; /* 垂直分隔線 */
-        padding-left: 20px;
-        line-height: 1.6;
-        text-align: left;
-    }}
-
-    /* 3. 內容區向下位移量：防止被標題遮住 */
-    .main .block-container {{ padding-top: 150px !important; }}
-    
-    /* 淡色備註樣式 */
-    .caption-text {{ color: #888; font-size: 0.85rem; margin-top: -10px; margin-bottom: 10px; }}
+        margin-top: -10px;
+        margin-bottom: 10px;
+    }
     </style>
-    """, unsafe_allow_html=True)
-
-# ==========================================
-# 4. 主介面：需求設定 (從這裡開始)
-# ==========================================
-col_left, col_right = st.columns([3, 2])
-
-with col_left:
-    st.write("#### 1. 專案需求設定")
-    # ... (原本的需求設定內容、D1-D4、資料庫需求、掛名身分、身分檢索...等) ...
-    # ... 當程式跑完這裡時，k_design, f_status 等變數已經拿到了最新值 ...
-
-    # --- [關鍵] 將計算邏輯搬移到 col_left 底部 ---
-    # 確保在渲染頂端凍結列之前，數字已經算好了
-    sum_k = k_design + k_write + k_link
-    labor_total = st.session_state.c_base * st.session_state.ratio_staff * m_work
-    base_cost = st.session_state.c_fixed + c_db_buy
     
-    # 這裡記得改用 f_coop (檢索出來的變數)
-    f_total_adj = f_status * f_author_total * f_coop * f_specify
-    total_cost = round((base_cost + labor_total * sum_k) * f_total_adj)
-
-    # 計算額度
-    n_tune = int(st.session_state.b_tune + (total_cost // st.session_state.s_tune))
-    n_reanalysis = int(total_cost // st.session_state.s_reanalysis)
-    n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
-
-    # --- [關鍵] 核心修改：渲染頂端凍結列 (使用 f-string 置入即時數值) ---
-    st.markdown(f"""
-        <div class="top-frozen-bar">
-            <div class="title-group">
-                <h2>成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
-            </div>
-            <div class="quote-summary-card">
-                <div class="formula-box">
-                    💡 預估總額 = (基礎成本 + 服務費) × 合作專案調整<br>
-                    <b>計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) × {f_total_adj:.2f} = {total_cost:,}</b>
-                </div>
-                <div class="total-price-box">
-                    <div style="font-size:0.85rem; color:#888;">預估專案總額</div>
-                    <div class="price">TWD {total_cost:,} 元</div>
-                </div>
-                <div class="payment-phases">
-                    前期 (30%)：{round(total_cost*0.3):,} 元<br>
-                    期中 (40%)：{round(total_cost*0.4):,} 元<br>
-                    結案 (30%)：{round(total_cost*0.3):,} 元
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+    <div class="top-title-bar">
+        <h2>成大群體健康數據中心 (PHDc) 合作報價系統</h2>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ==========================================
 # 0. 資料庫初始化
@@ -545,8 +457,18 @@ with col_left:
 # ==========================================
 # 5. 主介面：右側報價區
 # ==========================================
-with col_right: 
+with col_right:
+    st.write("### 預估專案總額")
+    st.header(f"TWD {total_cost:,} 元")
     
+    formula_val = f"({base_cost:,.0f} + {labor_total * sum_k:,.0f}) × {f_total_adj:.2f}"
+    st.info(f"💡 預估總額 = (基礎成本 + 服務費) × 合作專案調整\n\n計算式：{formula_val} = {total_cost:,}")
+
+    st.write(f"**前期 (30%)：** {round(total_cost*0.3):,} 元")
+    st.write(f"**期中 (40%) :** {round(total_cost*0.4):,} 元")
+    st.write(f"**結案 (30%) :** {round(total_cost*0.3):,} 元")
+    
+    st.markdown("---")
     st.write("#### 報價項目權重說明")
     st.write(f"工作需求乘數: {m_work}")
     st.write(f"研究設計權重: {k_design}")
