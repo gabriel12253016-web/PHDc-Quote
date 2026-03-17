@@ -95,7 +95,7 @@ if 'design_map' not in st.session_state:
         "D1: 基礎描述與趨勢分析": 1.0, 
         "D2: 標準比較性研究": 2.0, 
         "D3: 進階控制與自我對照設計": 3.5, 
-        "高階因果推論與複雜模型": 6.0
+        "D4: 高階因果推論與複雜模型": 6.0
     }
 if 'write_map' not in st.session_state:
     st.session_state.write_map = {"W0: 不需要代寫": 0.0, "W1: 部分撰寫 (Methods)": 1.0, "W2: 圖表解釋 (Methods+Results)": 2.0, "W3: 完整骨架 (含Intro/Discussion)": 4.0, "W4: 全篇編修與投稿支援": 6.0}
@@ -218,7 +218,7 @@ design_info = {
     "D1: 基礎描述與趨勢分析": "單純敘述性統計、發生率/盛行率計算",
     "D2: 標準比較性研究": "常規 Cohort (如傾向分數配對 PSM)、Case-Control、基礎 Validation。",
     "D3: 進階控制與自我對照設計": "Self-controlled (SCCS, CCO)、TND (陰性對照)、ITS。",
-    "高階因果推論與複雜模型": "TTE (Sequential/Clon等)、工具變數 (IV)、RDD、Trend in trend等..."
+    "D4: 高階因果推論與複雜模型": "TTE (Sequential/Clon等)、工具變數 (IV)、RDD、Trend in trend等..."
 }
 
 selected_designs = []
@@ -235,7 +235,7 @@ for design_name in st.session_state.design_map.keys():
 k_design = max([st.session_state.design_map[d] for d in selected_designs]) if selected_designs else 0.0
 
 if "高階因果推論與複雜模型" in selected_designs:
-    st.markdown('<div class="design-caption" style="color:#d9534f;">⚠️ 提醒：因選擇與實際最終使用可能有落差，最後計算多出價差將於第三期支付。</div>', unsafe_allow_html=True))
+    st.markdown('<div class="design-caption" style="color:#d9534f;">⚠️ 提醒：因選擇與實際最終使用可能有落差，最後計算多出價差將於第三期支付。</div>', unsafe_allow_html=True)
 
     write_choice = st.selectbox("醫學撰寫支援", list(st.session_state.write_map.keys()))
     k_write = st.session_state.write_map[write_choice]
