@@ -212,21 +212,30 @@ with col_left:
     m_work = m_map[work_choice]
     
     st.write("**研究設計與統計方法 (可多選，採最高權重計價)**")
-    selected_designs = []
-    for design_name, weight in st.session_state.design_map.items():
-        if st.checkbox(design_name, key=f"design_{design_name}"):
-            selected_designs.append(design_name)
-    
-    k_design = max([st.session_state.design_map[d] for d in selected_designs]) if selected_designs else 0.0
-    
-    if selected_designs:
-        if "高階因果推論與複雜模型" in selected_designs:
-            content_text = "內容包含：Self-controlled (SCCS, CCO)、TND (陰性對照)、ITS、TTE (Sequential/Clon等)、工具變數 (IV)、RDD、Trend in trend等..."
-        else:
-            content_text = "內容包含：基礎統計描述、單變項分析、多因素迴歸、傾向分數配對、存活分析、共變項調整等..."
-        st.markdown(f'<div class="caption-text">{content_text}</div>', unsafe_allow_html=True)
-        if k_design >= 6.0:
-            st.markdown('<div class="caption-text">⚠️ 因選擇與實際最終使用可能有落差，最後計算多出價差將於第三期支付。</div>', unsafe_allow_html=True)
+
+# 定義每個選項對應的淡色說明文字
+design_info = {
+    "D1: 基礎描述與趨勢分析": "單純敘述性統計、發生率/盛行率計算",
+    "D2: 標準比較性研究": "常規 Cohort (如傾向分數配對 PSM)、Case-Control、基礎 Validation。",
+    "D3: 進階控制與自我對照設計": "Self-controlled (SCCS, CCO)、TND (陰性對照)、ITS。",
+    "高階因果推論與複雜模型": "TTE (Sequential/Clon等)、工具變數 (IV)、RDD、Trend in trend等..."
+}
+
+selected_designs = []
+
+# 遍歷選項：先顯示勾選框，若被勾選則立即在下方顯示淡色說明
+for design_name in st.session_state.design_map.keys():
+    if st.checkbox(design_name, key=f"chk_{design_name}"):
+        selected_designs.append(design_name)
+        # 顯示對應的淡色說明
+        if design_name in design_info:
+            st.markdown(f'<div class="design-caption">{design_info[design_name]}</div>', unsafe_allow_html=True)
+
+# 計算最高權重 (邏輯不變)
+k_design = max([st.session_state.design_map[d] for d in selected_designs]) if selected_designs else 0.0
+
+if "高階因果推論與複雜模型" in selected_designs:
+    st.markdown('<div class="design-caption" style="color:#d9534f;">⚠️ 提醒：因選擇與實際最終使用可能有落差，最後計算多出價差將於第三期支付。</div>', unsafe_allow_html=True))
 
     write_choice = st.selectbox("醫學撰寫支援", list(st.session_state.write_map.keys()))
     k_write = st.session_state.write_map[write_choice]
