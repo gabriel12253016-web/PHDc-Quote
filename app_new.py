@@ -10,29 +10,25 @@ import os
 # 網頁配置與 CSS 固定右側欄位
 # ==========================================
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
-
-# ==========================================
-# 頂端標題垂直位移凍結 (置頂且避開左側側邊欄)
-# ==========================================
 st.markdown("""
-   <style>
-    /* 1. 隱藏原生標頭 (維持不變) */
+    <style>
+    /* 1. 隱藏原生頂部黑條 */
     header, [data-testid="stHeader"] { 
         display: none !important; 
     }
 
-    /* 2. [關鍵修正] 僅針對側邊欄內部容器移除頂部間距 */
-    section[data-testid="stSidebar"] div.st-emotion-cache-6qob1r {
-        padding-top: 0rem !important;
-    }
-    
-    /* 針對較新版本 Streamlit 的側邊欄容器 */
+    /* 2. 強制側邊欄內容頂到最上方 (解決左邊貼齊問題) */
     [data-testid="stSidebarUserContent"] {
         padding-top: 0rem !important;
-        margin-top: -2rem !important; /* 強制向上推擠 */
+        margin-top: -3.5rem !important; /* 向上推擠 offset */
+    }
+    
+    /* 針對不同版本的 Streamlit 額外鎖定 */
+    .st-emotion-cache-6qob1r {
+        padding-top: 0rem !important;
     }
 
-    /* 3. 妳原本的頂端固定標題區 (請確保這段還在，不要刪掉) */
+    /* 3. 建立頂端固定標題區 (中間的標題列) */
     .top-title-bar {
         position: fixed; 
         top: 0; 
@@ -44,8 +40,9 @@ st.markdown("""
         align-items: center; 
         z-index: 9999; 
         border-bottom: 2px solid #f0f2f6;
-        padding-left: 280px; 
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        /* 關鍵位移：避開左側側邊欄 */
+        padding-left: 280px; 
     }
 
     .top-title-bar h2 {
@@ -54,11 +51,24 @@ st.markdown("""
         color: #262730;
     }
 
-    /* 4. 內容區向下位移：防止被標題遮住 */
+    /* 4. 內容區主體位移：防止被標題遮住第一行 */
     .main .block-container {
         padding-top: 100px !important; 
     }
+
+    /* 5. 妳原本的淡色備註樣式 */
+    .caption-text {
+        color: #888888;
+        font-size: 0.85rem;
+        margin-top: -10px;
+        margin-bottom: 10px;
+    }
     </style>
+    
+    <div class="top-title-bar">
+        <h2>成大群體健康數據中心 (PHDc) 合作報價系統</h2>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ==========================================
 # 0. 資料庫初始化
@@ -164,9 +174,9 @@ with st.sidebar:
     
     st.markdown("""
         <div style="font-size:0.85rem; color:#555; line-height:1.4;">
-        📞 +886-6-2353535 ext.6820<br>
-        📧 phdc@phdcenter.org.tw<br>
-        📍 No.1, University Road, 701, School of Pharmacy, Institute of Clinical Pharmacy and Pharmaceutical Sciences, College of Medicine, National Cheng Kung University, Tainan, Taiwan.
+        &#128222; +886-6-2353535 ext.6820<br>
+        &#128231; phdc@phdcenter.org.tw<br>
+        &#128205; No.1, University Road, 701, School of Pharmacy, Institute of Clinical Pharmacy and Pharmaceutical Sciences, College of Medicine, National Cheng Kung University, Tainan, Taiwan.
         </div>
     """, unsafe_allow_html=True)
     st.markdown("---")
