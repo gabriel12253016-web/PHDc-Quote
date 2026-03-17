@@ -221,27 +221,23 @@ with col_left:
     m_map = {"僅諮詢 (不含資料庫串聯)": 0.5, "僅分析": 0.8, "諮詢+分析": 1.0}
     work_choice = st.radio("分析需求", list(m_map.keys()), horizontal=True)
     m_work = m_map[work_choice]
-    
-   st.write("**研究設計與統計方法 (可多選，採最高權重計價)**")
 
-# 1. 定義選項與對應說明的對照表
-design_info = {
-    "D1: 基礎描述與趨勢分析": "單純敘述性統計、發生率/盛行率計算",
-    "D2: 標準比較性研究": "常規 Cohort (如傾分分數配對 PSM)、Case-Control、基礎 Validation。",
-    "D3: 進階控制與自我對照設計": "Self-controlled (SCCS, CCO)、TND (陰性對照)、ITS。",
-    "D4: 高階因果推論與複雜模型": "TTE (Sequential/Clon等)、工具變數 (IV)、RDD、Trend in trend等..."
-}
+    # 就是這一段，請確保它的縮排跟上面的 m_work 對齊
+    st.write("**研究設計與統計方法 (可多選，採最高權重計價)**")
 
-selected_designs = []
+    design_info = {
+        "D1: 基礎描述與趨勢分析": "單純敘述性統計、發生率/盛行率計算",
+        "D2: 標準比較性研究": "常規 Cohort (如傾向分數配對 PSM)、Case-Control、基礎 Validation。",
+        "D3: 進階控制與自我對照設計": "Self-controlled (SCCS, CCO)、TND (陰性對照)、ITS。",
+        "高階因果推論與複雜模型": "TTE (Sequential/Clon等)、工具變數 (IV)、RDD、Trend in trend等..."
+    }
 
-# 2. 遍歷產出：勾選後立即在下方顯示說明
-for design_name in st.session_state.design_map.keys():
-    # 產出勾選框
-    if st.checkbox(design_name, key=f"chk_{design_name}"):
-        selected_designs.append(design_name)
-        # 如果有對應說明，則立即顯示
-        if design_name in design_info:
-            st.markdown(f'<div class="design-caption">{design_info[design_name]}</div>', unsafe_allow_html=True)
+    selected_designs = []
+    for design_name in st.session_state.design_map.keys():
+        if st.checkbox(design_name, key=f"chk_{design_name}"):
+            selected_designs.append(design_name)
+            if design_name in design_info:
+                st.markdown(f'<div class="design-caption">{design_info[design_name]}</div>', unsafe_allow_html=True)
 
 # 3. 計算最高權重 (邏輯不變)
 k_design = max([st.session_state.design_map[d] for d in selected_designs]) if selected_designs else 0.0
