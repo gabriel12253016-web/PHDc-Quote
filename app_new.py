@@ -241,9 +241,9 @@ with col_left:
     
     # 定義說明文字對照表 (照妳提供的內容)
     design_info = {
-        "D1: 基礎描述與趨勢分析": "單純敘述性統計、發生率/盛行率計算",
-        "D2: 標準比較性研究": "常規 Cohort (如傾向分數配對 PSM)、Case-Control、基礎 Validation。",
-        "D3: 進階控制與自我對照設計": "Self-controlled (SCCS, CCO)、TND (陰性對照)、ITS。",
+        "D1: 基礎描述與趨勢分析": "單純敘述性統計、發生率/盛行率計算...等",
+        "D2: 標準比較性研究": "常規 Cohort (如傾向分數配對 PSM)、Case-Control、基礎 Validation...等",
+        "D3: 進階控制與自我對照設計": "Self-controlled (SCCS, CCO)、TND (陰性對照)、ITS...等",
         "D4: 高階因果推論與複雜模型": "TTE (Sequential/Clon等)、工具變數 (IV)、RDD、Trend in trend、動態治療分析等..."
     }
 
