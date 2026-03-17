@@ -20,9 +20,7 @@ st.markdown("""
         padding-top: 2rem;
     }
 
-    /* 2. 左側 (Sidebar) 預設就是固定的，不需額外動 */
-
-    /* 3. 中間欄位 (需求設定)：開啟獨立捲動軸 */
+    /* 2. 中間欄位 (需求設定)：開啟獨立捲動軸 */
     [data-testid="column"]:nth-child(1) {
         max-height: 85vh;
         overflow-y: auto !important;
@@ -30,13 +28,13 @@ st.markdown("""
         border-right: 1px solid #f0f2f6;
     }
 
-    /* 4. 右側欄位 (報價單)：釘死不動 */
+    /* 3. 右側欄位 (報價單)：釘死不動 */
     [data-testid="column"]:nth-child(2) {
         max-height: 85vh;
         overflow: hidden !important;
     }
 
-    /* 5. 美化捲動軸 (讓它看起來像 Excel 凍結窗格) */
+    /* 4. 美化捲動軸 */
     [data-testid="column"]:nth-child(1)::-webkit-scrollbar {
         width: 6px;
     }
@@ -164,7 +162,6 @@ if is_admin:
         st.write("1. **基礎成本** = 固定維持費 + Σ(資料庫維護費 + 購買費 × 0.2)")
         st.write("2. **服務費** = 基準單價 × 薪資比 × 分析需求乘數 × (研究設計 + 撰寫支援 + 資料串聯權重)")
         st.write("3. **合作專案調整** = 身分折扣 × 掛名溢價 × 合作校正 × 指定人員溢價")
-        # 這裡也同步更新為妳要的中文命名
         st.success("總額 = (基礎成本 + 服務費) × 合作專案調整")
         st.latex(r"Total = [Base\_Cost + (C_{base} \cdot R_{staff} \cdot M) \cdot \sum K] \cdot F_{adj}")
 
@@ -279,27 +276,26 @@ with col_left:
     status_choice = st.selectbox("申請人身分", list(st.session_state.status_map.keys()))
     f_status = st.session_state.status_map[status_choice]
 
-# --- 計算邏輯 ---
-sum_k = k_design + k_write + k_link
-labor_total = st.session_state.c_base * st.session_state.ratio_staff * m_work
-base_cost = st.session_state.c_fixed + c_db_buy
-f_total_adj = f_status * f_author_total * st.session_state.f_coop * f_specify
-total_cost = round((base_cost + labor_total * sum_k) * f_total_adj)
+    # --- 計算數值 (為了讓下面能正確顯示) ---
+    sum_k = k_design + k_write + k_link
+    labor_total = st.session_state.c_base * st.session_state.ratio_staff * m_work
+    base_cost = st.session_state.c_fixed + c_db_buy
+    f_total_adj = f_status * f_author_total * st.session_state.f_coop * f_specify
+    total_cost = round((base_cost + labor_total * sum_k) * f_total_adj)
 
-n_tune = int(st.session_state.b_tune + (total_cost // st.session_state.s_tune))
-n_reanalysis = int(total_cost // st.session_state.s_reanalysis)
-n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
+    n_tune = int(st.session_state.b_tune + (total_cost // st.session_state.s_tune))
+    n_reanalysis = int(total_cost // st.session_state.s_reanalysis)
+    n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
-st.markdown("---")
+    # --- 修改處：調整額度移到左側下方 ---
+    st.markdown("---")
     st.write("#### 3. 本案預計調整額度")
     
-    # 將計算好的數值移過來
-    c_tune, c_re, c_rev = st.columns(3)
-    c_tune.metric("模型微調", f"{n_tune} 次")
-    c_re.metric("重分析", f"{n_reanalysis} 次")
-    c_rev.metric("文稿大修", f"{n_revise} 次")
+    t_col1, t_col2, t_col3 = st.columns(3)
+    t_col1.metric("模型微調", f"{n_tune} 次")
+    t_col2.metric("重分析", f"{n_reanalysis} 次")
+    t_col3.metric("文稿大修", f"{n_revise} 次")
 
-    # 顯示計價規則簡介
     with st.expander("📝 查看額度計算法則 (醫師須知)"):
         st.caption(f"1. **模型微調**：基本 {st.session_state.b_tune} 次，每達 {st.session_state.s_tune:,} 元增加 1 次。")
         st.caption(f"2. **重分析**：總價每達 {st.session_state.s_reanalysis:,} 元提供 1 次。")
@@ -329,14 +325,10 @@ with col_right:
     st.write(f"掛名溢價權重: {round(f_author_total, 2)}")
     st.write(f"**合計服務總權重: {round(sum_k, 2)}**")
     
-    st.caption("※ 報價單包含上述額度之微調與分析。超出額度之工作，將以單次計費原則另行報價。")
-
     if is_admin:
         st.markdown("---")
         st.write("**[中心內部公式]**")
-        st.write(f"基礎成本 (Fixed+DB): {round(base_cost)}")
-        st.write(f"合作專案調整: {round(f_total_adj, 2)}")
-        st.latex(r"T = [(C_{fixed} + C_{db\_buy}) + (C_{base} \cdot R_{staff} \cdot M) \cdot \sum K] \cdot F_{total\_adj}")
+        st.latex(r"T = [(C_{fixed} + C_{db\_buy}) + (C_{base} \cdot R_{staff} \cdot M) \cdot \sum K] \cdot F_{adj}")
 
 # ==========================================
 # 6. 表單提交
@@ -355,8 +347,6 @@ if submit_btn:
     if all([u_name, u_org, u_phone, u_email]):
         oid = "PHDC-" + str(uuid.uuid4())[:8].upper()
         now = datetime.now().strftime("%Y-%m-%d %H:%M")
-        
-        # 決定設計備註與存檔詳細資料
         design_msg = "高階設計溢價款項將於第三期支付。" if k_design >= 6.0 else "一般設計專案。"
         
         all_sel_dbs = sel_extra.copy()
