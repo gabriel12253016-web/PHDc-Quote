@@ -80,11 +80,13 @@ with header_col2:
 with st.sidebar:
     st.markdown("### 📞 聯絡我們")
     st.markdown("電話：+886-6-2353535 ext.6820")
-    # 補回地址資訊
-    st.markdown("地址：No.1, University Road, 701, School of Pharmacy, 
-       Institute of Clinical Pharmacy and Pharmaceutical 
-       Sciences, College of Medicine, National Cheng Kung 
-       University, Tainan, Taiwan")
+    # 使用三引號處理長地址換行
+    st.markdown("""
+        地址：No.1, University Road, 701, School of Pharmacy, 
+        Institute of Clinical Pharmacy and Pharmaceutical 
+        Sciences, College of Medicine, National Cheng Kung 
+        University, Tainan, Taiwan.
+    """)
     st.markdown("---")
     if not st.session_state.admin_mode:
         pwd = st.text_input("🛡️ 後台解鎖密碼", type="password")
