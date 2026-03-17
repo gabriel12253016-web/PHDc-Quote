@@ -289,10 +289,10 @@ with col_left:
 
     # --- 修改處：調整額度移到左側下方 ---
     # --- 調整額度精緻化排版 ---
+    # --- 調整額度精緻化排版 ---
     st.markdown("---")
-    st.write("#### 3. 本案預估調整額度")
+    st.write("#### 3. 本案預計調整額度")
     
-    # 使用 HTML/CSS 打造卡片感
     st.markdown(f"""
         <div style="display: flex; justify-content: space-between; background-color: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 5px solid #007bff; margin-bottom: 10px;">
             <div style="text-align: center; flex: 1;">
@@ -310,12 +310,13 @@ with col_left:
         </div>
     """, unsafe_allow_html=True)
 
-    # 顯示計價規則簡介 (維持 Expander)
     with st.expander("📝 查看額度計算法則 (醫師須知)"):
         st.caption(f"1. **模型微調**：基本 {st.session_state.b_tune} 次，每達 {st.session_state.s_tune:,} 元增加 1 次。")
         st.caption(f"2. **重分析**：總價每達 {st.session_state.s_reanalysis:,} 元提供 1 次。")
         st.caption(f"3. **文稿大修**：基本 {st.session_state.b_revise} 次，每達 {st.session_state.s_revise:,} 元增加 1 次（需含代寫服務）。")
-    st.caption("※ 報價單包含上述額度。超出額度之工作，將以單次計費原則另行報價。")caption("※ 報價單包含上述額度。超出額度之工作，將以單次計費原則另行報價。")
+    
+    # 這裡就是妳報錯的地方，現在修正為單行了
+    st.caption("※ 報價單包含上述額度。超出額度之工作，將以單次計費原則另行報價。")
 
 # ==========================================
 # 5. 主介面：右側報價區
