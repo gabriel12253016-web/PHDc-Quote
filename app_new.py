@@ -50,7 +50,6 @@ if 'f_author_rates' not in st.session_state:
 # ==========================================
 # 2. 標題與側邊欄
 # ==========================================
-# 標題區：Logo 與文字對齊
 header_col1, header_col2 = st.columns([1, 10])
 with header_col1:
     if os.path.exists("logo.png"):
@@ -60,7 +59,6 @@ with header_col2:
 
 with st.sidebar:
     st.markdown("### 📞 聯絡我們")
-    # 調整格式與字體大小，去掉名稱
     st.markdown("""
     <div style="font-size: 0.9rem; line-height: 1.6;">
     電話：+886-6-2353535 ext.6820<br>
@@ -76,14 +74,14 @@ with st.sidebar:
             st.rerun()
     else:
         st.success("✅ 目前為中心後台模式")
-        if st.button("返回使用者介面", type="primary"):
+        if st.sidebar.button("返回使用者介面", type="primary"):
             st.session_state.admin_mode = False
             st.rerun()
 
 is_admin = st.session_state.admin_mode
 
 # ==========================================
-# 3. 後台管理界面 (維持原樣)
+# 3. 後台管理界面 (參數設定)
 # ==========================================
 if is_admin:
     st.title("🛡️ 中心管理後台")
@@ -134,8 +132,6 @@ if is_admin:
         if not df.empty:
             st.dataframe(df, use_container_width=True)
             st.download_button("匯出資料 (CSV)", df.to_csv(index=False).encode('utf_8_sig'), "orders_all.csv")
-        else:
-            st.info("尚無紀錄")
     except Exception as e:
         st.error(f"資料庫讀取失敗: {e}")
     st.markdown("---")
@@ -149,7 +145,6 @@ with col1:
     status_choice = st.selectbox("申請人身分", list(st.session_state.status_rates.keys()))
     f_status = st.session_state.status_rates[status_choice]
     
-    # 身分「其他」自填欄位
     other_status_detail = ""
     if status_choice == "其他":
         other_status_detail = st.text_input("請註明您的單位與身分細節 (必填)", placeholder="例如：某大學公衛系 教授")
@@ -163,7 +158,6 @@ with col1:
     write_choice = st.selectbox("醫學撰寫支援", list(st.session_state.k_write_rates.keys()))
     k_write = st.session_state.k_write_rates[write_choice]
 
-    # 資料庫串聯邏輯
     k_link = 0.0
     if m_work > 0.5:
         st.write("**資料庫串聯需求**")
@@ -181,10 +175,10 @@ with col1:
     staff_name = "無"
     f_specify = 1.0
     if specify_staff == "是":
-        staff_name = st.text_input("請填寫指定人員姓名 (僅限中英文)", placeholder="例如：陳大明 或 Chen Da Ming")
+        staff_name = st.text_input("請填寫指定人員姓名 (僅限中英文)", placeholder="例如：陳大明")
         f_specify = st.session_state.f_specify_rate
 
-# 核心計算公式
+# 核心公式計算
 f_adjust = f_status * f_auth * f_specify * st.session_state.f_coop
 total_cost = (st.session_state.c_fixed + (st.session_state.c_base * st.session_state.ratio_staff * m_work) * (k_design + k_write + k_link)) * f_adjust
 total_cost = round(total_cost)
@@ -196,117 +190,97 @@ n_revise = (1 + math.floor(total_cost / st.session_state.revise_step)) if k_writ
 
 with col2:
     st.metric("預估專案總額 (TWD)", f"{total_cost:,} 元")
-    st.markdown(f"""
-    - 前期作業 (30%): **{round(total_cost*0.3):,}** 元
-    - 期中分析 (40%): **{round(total_cost*0.4):,}** 元
-    - 結案撰寫 (30%): **{round(total_cost*0.3):,}** 元
-    """)
+    st.write(f"前期作業 (30%): {round(total_cost*0.3):,} 元")
+    st.write(f"期中分析 (40%): {round(total_cost*0.4):,} 元")
+    st.write(f"結案撰寫 (30%): {round(total_cost*0.3):,} 元")
     st.markdown("---")
+    st.subheader("📊 報價計算公式與權重")
     st.latex(r"Total = \Big[ C_{fixed} + (C_{base} \cdot R \cdot M) \cdot (K_{des} + K_{wri} + K_{link}) \Big] \cdot F_{adj}")
+    
+    # --- 這裡是你發現漏掉的關鍵顯示區塊 ---
+    st.info(f"設計複雜度 ($K_{{design}}$): **{k_design}**")
+    st.info(f"撰寫支援 ($K_{{write}}$): **{k_write}**")
+    st.info(f"資料庫串聯 ($K_{{link}}$): **{k_link}**")
+    if is_admin:
+        st.warning(f"綜合調整 ($F_{{adjust}}$) = 身分({f_status}) × 掛名({f_auth}) × 指定({f_specify}) × 合作({st.session_state.f_coop}) = **{round(f_adjust, 2)}**")
+    else:
+        st.warning(f"綜合調整 ($F_{{adjust}}$): **{round(f_adjust, 2)}**")
 
 st.markdown("---")
 st.subheader("📌 專案權益與修改額度")
 c_r1, c_r2 = st.columns(2)
 with c_r1:
     st.write(f"- **模型微調 (共 {n_tune} 次)**：包含共變數增減、次分群分析等。")
-    st.write(f"- **重新分析 (共 {n_reanalysis} 次)**：包含研究假說變更、世代重新定義等大改。")
+    st.write(f"- **重新分析 (共 {n_reanalysis} 次)**：包含研究假說變更、世代重新定義等。")
     st.write(f"- **文稿大修 (共 {n_revise} 次)**：因投稿被拒需大幅修改 (僅限含撰寫服務之專案)。")
 with c_r2:
     st.caption("**額度計算規則說明：**")
-    st.caption(f"1. **模型微調**：若總額達 {st.session_state.tune_threshold:,} 元為 2 次，低於則為 1 次；委託總額每增加 {st.session_state.tune_step:,} 元，額外多 1 次微調。")
-    st.caption(f"2. **重新分析**：委託總額每滿 {st.session_state.reanalysis_step:,} 元，即包含 1 次重新分析。")
-    st.caption(f"3. **文稿大修**：需包含撰寫服務。基本大修為 1 次，總額每增加 {st.session_state.revise_step:,} 元，多 1 次。")
+    st.caption(f"1. **模型微調**：若總額達 {st.session_state.tune_threshold:,} 元為 2 次，低於則為 1 次；每增加 {st.session_state.tune_step:,} 元加 1 次。")
+    st.caption(f"2. **重新分析**：每滿 {st.session_state.reanalysis_step:,} 元包含 1 次重新分析。")
+    st.caption(f"3. **文稿大修**：基本 1 次，每增加 {st.session_state.revise_step:,} 元多 1 次。")
 
 # ==========================================
-# 5. 表單與產出 (整合必填與驗證邏輯)
+# 5. 表單與產出 (含驗證)
 # ==========================================
 st.markdown("---")
 with st.form("submit_form"):
     st.subheader("📝 申請人基本資料 (必填)")
-    c_info1, c_info2 = st.columns(2)
-    client_name = c_info1.text_input("姓名 / 職稱 *", placeholder="馬晨瑄 博士生")
-    client_org = c_info2.text_input("所屬機構 / 單位 *", placeholder="成大醫院 藥劑部")
-    client_phone = c_info1.text_input("聯絡電話 *", placeholder="09XX-XXX-XXX")
-    user_email = c_info2.text_input("聯絡 Email *", placeholder="example@gmail.com")
+    ci1, ci2 = st.columns(2)
+    c_name = ci1.text_input("姓名 / 職稱 *")
+    c_org = ci2.text_input("所屬機構 / 單位 *")
+    c_phone = ci1.text_input("聯絡電話 *")
+    c_email = ci2.text_input("聯絡 Email *")
     submit_btn = st.form_submit_button("確認送出並產生報價單", type="primary")
 
 if submit_btn:
-    # 格式檢查：指定人員姓名規則 (中英文字母與空格)
     name_check = re.match(r"^[a-zA-Z\u4e00-\u9fa5\s]+$", staff_name)
-    
-    # 必填驗證
-    if not all([client_name, client_org, client_phone, user_email]):
-        st.error("❌ 錯誤：姓名、機構、電話、Email 皆為必填項目！")
+    if not all([c_name, c_org, c_phone, c_email]):
+        st.error("❌ 錯誤：所有標示 * 的欄位皆為必填！")
     elif status_choice == "其他" and not other_status_detail:
-        st.error("❌ 錯誤：選擇「其他」身分時，請務必填寫詳細單位身分！")
+        st.error("❌ 錯誤：請註明您的身分細節！")
     elif specify_staff == "是" and not name_check:
-        st.error("❌ 錯誤：指定人員姓名僅能包含中文或英文字母！")
-    elif "@" not in user_email:
-        st.error("❌ 錯誤：Email 格式不正確！")
+        st.error("❌ 錯誤：指定人員姓名格式不正確！")
+    elif "@" not in c_email:
+        st.error("❌ 錯誤：Email 格式錯誤！")
     else:
         order_id = "PHDC-" + str(uuid.uuid4())[:8].upper()
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
-        final_status = f"{status_choice} ({other_status_detail})" if other_status_detail else status_choice
+        f_stat_display = f"{status_choice} ({other_status_detail})" if other_status_detail else status_choice
         
-        # 存入資料庫
         try:
             conn = sqlite3.connect('phdc_orders.db')
             c = conn.cursor()
-            details_json = json.dumps({"status": final_status, "design": design_choices, "staff": staff_name, "total": total_cost})
-            c.execute("INSERT INTO orders VALUES (?,?,?,?,?,?,?)", 
-                      (order_id, client_name, client_org, user_email, current_time, total_cost, details_json))
+            details_json = json.dumps({"status": f_stat_display, "design": design_choices, "staff": staff_name, "total": total_cost})
+            c.execute("INSERT INTO orders VALUES (?,?,?,?,?,?,?)", (order_id, c_name, c_org, c_email, current_time, total_cost, details_json))
             conn.commit()
             conn.close()
-        except Exception as e:
-            st.warning(f"資料庫紀錄跳過 (雲端限制): {e}")
+        except: pass
 
-        # 生成專業報價單內容 (含聯絡地址)
         receipt_text = f"""==================================================
-        成大群體健康數據中心 (PHDc)
-             合作需求初步報價單
+        成大群體健康數據中心 (PHDc) 報價單
 ==================================================
 【中心聯絡資訊】
  電話：+886-6-2353535 ext.6820
- 地址：No.1, University Road, 701, School of Pharmacy, 
-       Institute of Clinical Pharmacy and Pharmaceutical 
-       Sciences, College of Medicine, National Cheng Kung 
-       University, Tainan, Taiwan.
+ 地址：No.1, University Road, 701, School of Pharmacy, NCKU.
 ==================================================
+【客戶資料】
+ 專案編號：{order_id} | 時間：{current_time}
+ 申請人：{c_name} ({c_org}) | 身分：{f_stat_display}
+ 聯絡：{c_phone} / {c_email}
 
-【客戶基本資料】
- 專案編號：{order_id}
- 申請時間：{current_time}
- 申請人：{client_name} ({client_org})
- 申請身分：{final_status}
- 聯絡方式：{client_phone} / {user_email}
-
-【專案需求明細】
- - 分析需求：{work_choice}
+【需求明細】
  - 研究設計：{", ".join(design_choices)}
  - 撰寫支援：{write_choice}
  - 掛名安排：{auth_choice}
  - 指定人員：{staff_name}
 
 【專案權益】
- - 模型微調：{n_tune} 次
- - 重新分析：{n_reanalysis} 次
- - 文稿大修：{n_revise} 次
+ - 模型微調：{n_tune} 次 | 重新分析：{n_reanalysis} 次 | 文稿大修：{n_revise} 次
 
 --------------------------------------------------
-【預估專案總額】
- 總計金額： NT$ {total_cost:,} 元
-
- * 前期作業費 (30%)： NT$ {round(total_cost*0.3):,} 元
- * 期中分析費 (40%)： NT$ {round(total_cost*0.4):,} 元
- * 結案撰寫費 (30%)： NT$ {round(total_cost*0.3):,} 元
-
+【預估總額】 NT$ {total_cost:,} 元
+ (前期30%: {round(total_cost*0.3):,} | 期中40%: {round(total_cost*0.4):,} | 結案30%: {round(total_cost*0.3):,})
 ==================================================
-備註：此報價單由系統初步估算，實際金額以中心最終核定為準。
 """
-        st.success(f"✅ 報價紀錄已成功送出！編號：{order_id}")
-        st.download_button(
-            label="💾 點此下載正式報價單 (TXT)",
-            data=receipt_text,
-            file_name=f"PHDc_Quote_{client_name}.txt",
-            mime="text/plain"
-        )
+        st.success(f"✅ 報價紀錄已送出！編號：{order_id}")
+        st.download_button("💾 下載正式報價單 (TXT)", receipt_text, file_name=f"PHDc_Quote_{c_name}.txt")
