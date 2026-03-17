@@ -10,6 +10,14 @@ import os
 # 網頁配置與 CSS 固定右側欄位
 # ==========================================
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
+
+# --- 1. 變數初始化 ---
+base_cost = 0.0
+labor_total = 0.0
+sum_k = 0.0
+f_total_adj = 1.0
+total_cost = 0
+
 # --- 重新定義頂端凍結區 (含報價概覽) ---
 st.markdown(f"""
     <style>
