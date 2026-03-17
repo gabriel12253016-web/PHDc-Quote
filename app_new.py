@@ -12,74 +12,38 @@ import os
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* 1. 隱藏原生 Header 以免干擾 */
-    header, [data-testid="stHeader"] {
-        display: none !important;
-    }
-
-    /* 2. 標題區：強制置中，避開側邊欄 */
+    /* 1. 全域排版：鎖定高度，標題置中 */
+    header, [data-testid="stHeader"] { display: none !important; }
+    .main .block-container { padding-top: 5rem !important; height: 100vh; overflow: hidden; }
+    
     .top-title-bar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 70px;
-        background-color: white;
-        display: flex;
-        justify-content: center; /* 置中核心 */
-        align-items: center;
-        z-index: 9999;
-        border-bottom: 2px solid #f0f2f6;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        position: fixed; top: 0; left: 0; width: 100vw; height: 70px;
+        background: white; display: flex; justify-content: center; align-items: center;
+        z-index: 9999; border-bottom: 2px solid #f0f2f6; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-    .top-title-bar h2 {
-        margin: 0;
-        color: #262730;
-        font-size: 1.8rem;
-        padding-left: 200px; /* 這裡補償側邊欄寬度，確保視覺中心 */
-    }
+    .top-title-bar h2 { margin: 0; padding-left: 150px; font-size: 1.6rem; color: #262730; }
 
-    /* 3. 頁面容器設定：禁止全網頁捲動 */
-    .main .block-container {
-        padding-top: 80px !important;
-        height: 100vh;
-        overflow: hidden;
-    }
-
-    /* 4. 左側 (中間) 需求填寫區：唯一允許捲動 */
+    /* 2. 中間填寫區：唯一滾動區 */
     [data-testid="column"]:nth-of-type(1) {
         height: calc(100vh - 100px) !important;
         overflow-y: auto !important;
-        padding-right: 30px !important;
+        width: 100% !important; /* 擴張到全寬，報價單改為懸浮 */
+        padding: 0 50px !important;
     }
 
-    /* 5. 右側報價單：直接用 Fixed 釘死在螢幕座標 */
-    [data-testid="column"]:nth-of-type(2) {
-        position: fixed !important;
-        right: 20px;
-        top: 90px;
-        width: 32vw !important; /* 鎖定寬度 */
-        height: calc(100vh - 110px) !important;
-        overflow: hidden !important;
-        background: white;
-        z-index: 999;
+    /* 3. 右側報價單：改成懸浮收合抽屜 (Expander 模擬) */
+    .floating-quote {
+        position: fixed; right: 20px; top: 90px;
+        width: 350px; z-index: 10000;
+        background: #ffffff; border: 1px solid #ddd;
+        border-radius: 10px; box-shadow: -5px 5px 15px rgba(0,0,0,0.1);
     }
 
-    /* 美化捲動軸 */
-    [data-testid="column"]:nth-of-type(1)::-webkit-scrollbar {
-        width: 6px;
-    }
-    [data-testid="column"]:nth-of-type(1)::-webkit-scrollbar-thumb {
-        background: #e0e0e0;
-        border-radius: 10px;
-    }
+    /* 捲動軸美化 */
+    [data-testid="column"]:nth-of-type(1)::-webkit-scrollbar { width: 6px; }
+    [data-testid="column"]:nth-of-type(1)::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 10px; }
 
-    .caption-text {
-        color: #888888;
-        font-size: 0.85rem;
-        margin-top: -10px;
-        margin-bottom: 10px;
-    }
+    .caption-text { color: #888888; font-size: 0.85rem; margin-top: -10px; margin-bottom: 10px; }
     </style>
     <div class="top-title-bar">
         <h2>成大群體健康數據中心 (PHDc) 合作報價系統</h2>
@@ -223,12 +187,43 @@ if is_admin:
             conn = sqlite3.connect('phdc_orders.db'); conn.execute("DELETE FROM orders WHERE order_id=?", (tid,)); conn.commit(); conn.close()
             st.rerun()
 
-# ==========================================
-# 4. 主介面：需求設定
-# ==========================================
-col_left, col_right = st.columns([3, 2])
-
 with col_left:
+    # --- 4. 主介面：需求設定 ---
+    # 建立一個可收合的看板，讓醫師隨時點開看錢，不看時收起來
+    with st.expander("💰 查看即時預估總額 (點擊展開明細)", expanded=True):
+        # 總額大標
+        st.subheader(f"TWD {total_cost:,} 元")
+        
+        # 動態計算式 (妳最要求的公式顯化)
+        f_val = f"({base_cost:,.0f} + {labor_total * sum_k:,.0f}) × {f_total_adj:.2f}"
+        st.info(f"💡 預估總額 = (基礎成本 + 服務費) × 合作專案調整\n\n計算式：{f_val} = {total_cost:,}")
+        
+        # 分期款項 (用 3 欄橫向並列，節省垂直空間)
+        p1, p2, p3 = st.columns(3)
+        p1.metric("前期 (30%)", f"{round(total_cost*0.3):,} 元")
+        p2.metric("期中 (40%)", f"{round(total_cost*0.4):,} 元")
+        p3.metric("結案 (30%)", f"{round(total_cost*0.3):,} 元")
+        
+        st.markdown("---")
+        
+        # 權重說明 (原本在右側很長，搬過來後改用 5 欄橫排最漂亮)
+        st.write("#### 報價項目權重說明")
+        w1, w2, w3, w4, w5 = st.columns(5)
+        w1.caption(f"工作需求\n**{m_work}**")
+        w2.caption(f"研究設計\n**{k_design}**")
+        w3.caption(f"撰寫支援\n**{k_write}**")
+        w4.caption(f"資料串聯\n**{round(k_link, 2)}**")
+        w5.caption(f"掛名溢價\n**{round(f_author_total, 2)}**")
+        st.write(f"**合計服務總權重: {round(sum_k, 2)}**")
+
+        # 中心內部公式 (管理員才看得到)
+        if is_admin:
+            st.markdown("---")
+            st.write("**[中心內部公式]**")
+            st.latex(r"T = [(C_{fixed} + C_{db\_buy}) + (C_{base} \cdot R_{staff} \cdot M) \cdot \sum K] \cdot F_{adj}")
+
+    st.write("---") # 分隔線，下方接 1. 專案需求設定
+    
     st.write("#### 1. 專案需求設定")
     
     m_map = {"僅諮詢 (不含資料庫串聯)": 0.5, "僅分析": 0.8, "諮詢+分析": 1.0}
@@ -339,44 +334,16 @@ with col_left:
     st.caption("※ 報價單包含上述額度。超出額度之工作，將以單次計費原則另行報價。")
 
 # ==========================================
-# 5. 主介面：右側報價區
-# ==========================================
-with col_right:
-    st.write("### 預估專案總額")
-    st.header(f"TWD {total_cost:,} 元")
-    
-    formula_val = f"({base_cost:,.0f} + {labor_total * sum_k:,.0f}) × {f_total_adj:.2f}"
-    st.info(f"💡 預估總額 = (基礎成本 + 服務費) × 合作專案調整\n\n計算式：{formula_val} = {total_cost:,}")
-
-    st.write(f"**前期 (30%)：** {round(total_cost*0.3):,} 元")
-    st.write(f"**期中 (40%) :** {round(total_cost*0.4):,} 元")
-    st.write(f"**結案 (30%) :** {round(total_cost*0.3):,} 元")
-    
-    st.markdown("---")
-    st.write("#### 報價項目權重說明")
-    st.write(f"工作需求乘數: {m_work}")
-    st.write(f"研究設計權重: {k_design}")
-    st.write(f"撰寫支援權重: {k_write}")
-    st.write(f"資料串聯權重: {round(k_link, 2)}")
-    st.write(f"掛名溢價權重: {round(f_author_total, 2)}")
-    st.write(f"**合計服務總權重: {round(sum_k, 2)}**")
-    
-    if is_admin:
-        st.markdown("---")
-        st.write("**[中心內部公式]**")
-        st.latex(r"T = [(C_{fixed} + C_{db\_buy}) + (C_{base} \cdot R_{staff} \cdot M) \cdot \sum K] \cdot F_{adj}")
-
-# ==========================================
 # 6. 表單提交
 # ==========================================
-st.markdown("---")
 with st.form("quote_form"):
     st.write("#### 📝 申請人基本資料 (必填)")
-    f1, f2 = st.columns(2)
+    # 改為四欄並列
+    f1, f2, f3, f4 = st.columns(4)
     u_name = f1.text_input("姓名 / 職稱 *")
     u_org = f2.text_input("所屬機構 / 單位 *")
-    u_phone = f1.text_input("聯絡電話 *")
-    u_email = f2.text_input("聯絡 Email *")
+    u_phone = f3.text_input("聯絡電話 *")
+    u_email = f4.text_input("聯絡 Email *")
     submit_btn = st.form_submit_button("確認需求並產出報價", type="primary")
 
 if submit_btn:
