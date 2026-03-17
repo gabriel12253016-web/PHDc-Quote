@@ -202,6 +202,17 @@ if is_admin:
 # ==========================================
 # 4. 主介面：需求設定
 # ==========================================
+ # --- 計算數值 (為了讓下面能正確顯示) ---
+    sum_k = k_design + k_write + k_link
+    labor_total = st.session_state.c_base * st.session_state.ratio_staff * m_work
+    base_cost = st.session_state.c_fixed + c_db_buy
+    f_total_adj = f_status * f_author_total * st.session_state.f_coop * f_specify
+    total_cost = round((base_cost + labor_total * sum_k) * f_total_adj)
+
+    n_tune = int(st.session_state.b_tune + (total_cost // st.session_state.s_tune))
+    n_reanalysis = int(total_cost // st.session_state.s_reanalysis)
+    n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
+
 col_left, col_right = st.columns([3, 2])
 
 with col_left:
@@ -292,17 +303,6 @@ if "高階因果推論與複雜模型" in selected_designs:
 
     status_choice = st.selectbox("申請人身分", list(st.session_state.status_map.keys()))
     f_status = st.session_state.status_map[status_choice]
-
-    # --- 計算數值 (為了讓下面能正確顯示) ---
-    sum_k = k_design + k_write + k_link
-    labor_total = st.session_state.c_base * st.session_state.ratio_staff * m_work
-    base_cost = st.session_state.c_fixed + c_db_buy
-    f_total_adj = f_status * f_author_total * st.session_state.f_coop * f_specify
-    total_cost = round((base_cost + labor_total * sum_k) * f_total_adj)
-
-    n_tune = int(st.session_state.b_tune + (total_cost // st.session_state.s_tune))
-    n_reanalysis = int(total_cost // st.session_state.s_reanalysis)
-    n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
     # --- 3. 調整額度 (簡約條列版) ---
     st.markdown("---")
