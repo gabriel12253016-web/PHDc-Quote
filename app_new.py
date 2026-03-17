@@ -96,7 +96,7 @@ if 'design_map' not in st.session_state:
         "D1: 基礎描述與趨勢分析": 1.0, 
         "D2: 標準比較性研究": 2.0, 
         "D3: 進階控制與自我對照設計": 3.5, 
-        "高階因果推論與複雜模型": 6.0
+        "D4: 高階因果推論與複雜模型": 6.0
     }
 if 'write_map' not in st.session_state:
     st.session_state.write_map = {"W0: 不需要代寫": 0.0, "W1: 部分撰寫 (Methods)": 1.0, "W2: 圖表解釋 (Methods+Results)": 2.0, "W3: 完整骨架 (含Intro/Discussion)": 4.0, "W4: 全篇編修與投稿支援": 6.0}
