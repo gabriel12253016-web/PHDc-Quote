@@ -115,11 +115,20 @@ if 'db_extra_df' not in st.session_state:
 
 is_admin = st.session_state.admin_mode
 
+# --- 新增初始化 (防止 NameError) ---
+k_design = 0.0
+k_write = 0.0
+k_link = 0.0
+c_db_buy = 0
+m_work = 1.0
+f_status = 1.0
+f_author_total = 1.0
+f_specify = 1.0
+total_cost = 0
+
 # ==========================================
 # 2. 標題與側邊欄
 # ==========================================
-st.title("成大群體健康數據中心 (PHDc) 合作報價系統")
-
 with st.sidebar:
     if os.path.exists("logo.svg"):
         with open("logo.svg", "r", encoding="utf-8") as f:
@@ -205,6 +214,19 @@ if is_admin:
 # ==========================================
 # 4. 主介面：需求設定
 # ==========================================
+# --- 這裡統一計算，確保右側 col_right 抓得到 total_cost ---
+sum_k = k_design + k_write + k_link
+labor_total = st.session_state.c_base * st.session_state.ratio_staff * m_work
+base_cost = st.session_state.c_fixed + c_db_buy
+f_total_adj = f_status * f_author_total * st.session_state.f_coop * f_specify
+total_cost = round((base_cost + labor_total * sum_k) * f_total_adj)
+
+# 計算額度 (n_tune, n_reanalysis 等也放在這)
+n_tune = int(st.session_state.b_tune + (total_cost // st.session_state.s_tune))
+n_reanalysis = int(total_cost // st.session_state.s_reanalysis)
+n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
+
+# 最後才執行這行
 col_left, col_right = st.columns([3, 2])
 
 with col_left:
@@ -214,26 +236,35 @@ with col_left:
     work_choice = st.radio("分析需求", list(m_map.keys()), horizontal=True)
     m_work = m_map[work_choice]
     
+    # --- 第二步：研究設計區塊 (替換開始) ---
     st.write("**研究設計與統計方法 (可多選，採最高權重計價)**")
+    
+    # 定義說明文字對照表 (照妳提供的內容)
+    design_info = {
+        "D1: 基礎描述與趨勢分析": "單純敘述性統計、發生率/盛行率計算",
+        "D2: 標準比較性研究": "常規 Cohort (如傾向分數配對 PSM)、Case-Control、基礎 Validation。",
+        "D3: 進階控制與自我對照設計": "Self-controlled (SCCS, CCO)、TND (陰性對照)、ITS。",
+        "D4: 高階因果推論與複雜模型": "TTE (Sequential/Clon等)、工具變數 (IV)、RDD、Trend in trend、動態治療分析等..."
+    }
+
     selected_designs = []
-    for design_name, weight in st.session_state.design_map.items():
+    # 遍歷產出：勾選後立即在下方顯示說明與警示
+    for design_name in st.session_state.design_map.keys():
         if st.checkbox(design_name, key=f"design_{design_name}"):
             selected_designs.append(design_name)
+            # 立即顯示說明文字
+            if design_name in design_info:
+                st.markdown(f'<div class="caption-text" style="margin-left:25px;">└ {design_info[design_name]}</div>', unsafe_allow_html=True)
+            # 如果是高階模型，立即追加警示
+            if design_name == "D4: 高階因果推論與複雜模型":
+                st.markdown('<div class="caption-text" style="color:#d9534f; margin-left:25px;"># 提醒：因選擇與實際最終使用可能有落差，最後計算多出價差將於第三期支付。</div>', unsafe_allow_html=True)
     
+    # 算出當前最高權重
     k_design = max([st.session_state.design_map[d] for d in selected_designs]) if selected_designs else 0.0
-    
-    if selected_designs:
-        if "高階因果推論與複雜模型" in selected_designs:
-            content_text = "內容包含：Self-controlled (SCCS, CCO)、TND (陰性對照)、ITS、TTE (Sequential/Clon等)、工具變數 (IV)、RDD、Trend in trend等..."
-        else:
-            content_text = "內容包含：基礎統計描述、單變項分析、多因素迴歸、傾向分數配對、存活分析、共變項調整等..."
-        st.markdown(f'<div class="caption-text">{content_text}</div>', unsafe_allow_html=True)
-        if k_design >= 6.0:
-            st.markdown('<div class="caption-text">⚠️ 因選擇與實際最終使用可能有落差，最後計算多出價差將於第三期支付。</div>', unsafe_allow_html=True)
 
     write_choice = st.selectbox("醫學撰寫支援", list(st.session_state.write_map.keys()))
     k_write = st.session_state.write_map[write_choice]
-
+    
     # 初始化計算變數
     c_db_buy = 0
     db_list_summary = []
