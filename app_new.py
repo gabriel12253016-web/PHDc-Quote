@@ -16,7 +16,13 @@ def init_db():
     conn = sqlite3.connect('phdc_orders.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS orders 
-                 (order_id TEXT PRIMARY KEY, name TEXT, org TEXT, email TEXT, submit_time TEXT, total_cost INTEGER, details TEXT)''')
+                 (order_id TEXT PRIMARY KEY, 
+                  name TEXT, 
+                  org TEXT, 
+                  email TEXT, 
+                  submit_time TEXT, 
+                  total_cost INTEGER, 
+                  details TEXT)''')
     conn.commit()
     conn.close()
 
@@ -27,14 +33,12 @@ init_db()
 # ==========================================
 if 'admin_mode' not in st.session_state: st.session_state.admin_mode = False
 
-# 基礎參數
 if 'c_fixed' not in st.session_state: st.session_state.c_fixed = 5000
 if 'c_db_buy' not in st.session_state: st.session_state.c_db_buy = 0
 if 'c_base' not in st.session_state: st.session_state.c_base = 20000
 if 'ratio_staff' not in st.session_state: st.session_state.ratio_staff = 1.0
 if 'f_coop' not in st.session_state: st.session_state.f_coop = 1.0
 
-# 權重對照表 (已移除 D5)
 if 'status_map' not in st.session_state:
     st.session_state.status_map = {"成大校友": 0.9, "現任職於成大醫院或成大": 0.8, "曾任職成大醫院或成大": 0.85, "臨藥所系友": 0.75, "其他": 1.0}
 if 'design_map' not in st.session_state:
@@ -110,7 +114,10 @@ if is_admin:
         st.dataframe(df, use_container_width=True)
         tid = st.text_input("欲刪除 ID")
         if st.button("單筆刪除"):
-            conn = sqlite3.connect('phdc_orders.db'); conn.execute("DELETE FROM orders WHERE order_id=?", (tid,)); conn.commit(); conn.close()
+            conn = sqlite3.connect('phdc_orders.db')
+            conn.execute("DELETE FROM orders WHERE order_id=?", (tid,))
+            conn.commit()
+            conn.close()
             st.rerun()
 
 # ==========================================
@@ -143,7 +150,8 @@ with col_left:
 
     st.write("**預計掛名安排 (可多選並填寫人數)**")
     selected_authors = st.multiselect("選擇掛名身分", list(st.session_state.auth_map.keys()))
-    f_author_total = 1.0; auth_summary = ""
+    f_author_total = 1.0
+    auth_summary = ""
     for role in selected_authors:
         count = st.number_input(f"數量 - {role}", min_value=1, value=1, step=1)
         f_author_total += (st.session_state.auth_map[role] - 1) * count
@@ -210,6 +218,12 @@ if submit_btn:
         oid = "PHDC-" + str(uuid.uuid4())[:8].upper()
         now = datetime.now().strftime("%Y-%m-%d %H:%M")
         save_details = f"掛名：{auth_summary} | 資料庫：{', '.join(selected_dbs)} | 提醒：{design_msg}"
-        conn = sqlite3.connect('phdc_orders.db'); conn.execute("INSERT INTO orders VALUES (?,?,?,?,?,?,?)", (oid, u_name, u_org, u_email, now, total_cost, save_details)); conn.commit(); conn.close()
+        
+        conn = sqlite3.connect('phdc_orders.db')
+        conn.execute("INSERT INTO orders VALUES (?,?,?,?,?,?,?)", 
+                     (oid, u_name, u_org, u_email, now, total_cost, save_details))
+        conn.commit()
+        conn.close()
+        
         st.success(f"✅ 已送出報價！編號：{oid}")
         st.download_button("💾 下載摘要", f"編號：{oid}\n總額：{total_cost}\n權重：{sum_k}\n細節：{save_details}", file_name=f"Quote_{oid}.txt")
