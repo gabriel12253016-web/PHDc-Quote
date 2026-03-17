@@ -12,28 +12,59 @@ import os
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* 1. 針對 Win11 瀏覽器優化：鎖定右側欄位 */
+    /* 1. 釘死最頂端大標題 */
+    [data-testid="stHeader"] {
+        display: none; /* 隱藏原生的空白 Header */
+    }
+    
+    .main .block-container {
+        padding-top: 0rem !important;
+        max-height: 100vh;
+        overflow: hidden;
+    }
+
+    /* 2. 建立一個固定的頂部大標題區 */
+    .top-title-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        padding: 15px 20px;
+        z-index: 999;
+        border-bottom: 1px solid #f0f2f6;
+    }
+
+    /* 3. 右側報價單：釘死在右邊 */
     @media screen and (min-width: 901px) {
         [data-testid="column"]:nth-of-type(2) {
             position: fixed !important;
-            right: 5%;
-            top: 80px;
-            width: 30% !important;
-            z-index: 100;
+            right: 2%;
+            top: 100px; /* 避開大標題的高度 */
+            width: 32% !important;
+            z-index: 90;
+            background: white;
         }
-        /* 補償左側空間，避免重疊 */
+        
+        /* 4. 中間需求設定：唯一允許捲動的區域 */
         [data-testid="column"]:nth-of-type(1) {
-            width: 60% !important;
+            margin-top: 80px; /* 避開頂部 */
+            height: calc(100vh - 100px) !important;
+            overflow-y: auto !important;
+            width: 62% !important;
+            padding-right: 30px !important;
         }
     }
 
-    /* 2. 讓左側可以正常捲動，主視窗不鎖死 */
-    .main .block-container {
-        max-height: none !important;
-        overflow: visible !important;
+    /* 捲動軸美化 */
+    [data-testid="column"]:nth-of-type(1)::-webkit-scrollbar {
+        width: 6px;
+    }
+    [data-testid="column"]:nth-of-type(1)::-webkit-scrollbar-thumb {
+        background: #e0e0e0;
+        border-radius: 10px;
     }
 
-    /* 3. 簡約條列與淡色備註 */
     .caption-text {
         color: #888888;
         font-size: 0.85rem;
@@ -42,6 +73,9 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+
+# 在 CSS 後方立即插入固定的大標題 HTML
+st.markdown('<div class="top-title-bar"><h2>成大群體健康數據中心 (PHDc) 合作報價系統</h2></div>', unsafe_allow_html=True)
 
 # ==========================================
 # 0. 資料庫初始化
@@ -98,8 +132,6 @@ is_admin = st.session_state.admin_mode
 # ==========================================
 # 2. 標題與側邊欄
 # ==========================================
-st.title("成大群體健康數據中心 (PHDc) 合作報價系統")
-
 with st.sidebar:
     if os.path.exists("logo.svg"):
         with open("logo.svg", "r", encoding="utf-8") as f:
