@@ -274,10 +274,11 @@ with col_right:
 st.markdown("---")
 with st.form("quote_form"):
     st.write("#### 📝 申請人基本資料 (必填)")
-    u_name = st.text_input("姓名 / 職稱 *")
-    u_org = st.text_input("所屬機構 / 單位 *")
-    u_phone = st.text_input("聯絡電話 *")
-    u_email = st.text_input("聯絡 Email *")
+    f1, f2 = st.columns(2) # 這裡補回兩欄式設計比較美觀
+    u_name = f1.text_input("姓名 / 職稱 *")
+    u_org = f2.text_input("所屬機構 / 單位 *")
+    u_phone = f1.text_input("聯絡電話 *")
+    u_email = f2.text_input("聯絡 Email *")
     submit_btn = st.form_submit_button("確認需求並產出報價", type="primary")
 
 if submit_btn:
@@ -285,11 +286,14 @@ if submit_btn:
         oid = "PHDC-" + str(uuid.uuid4())[:8].upper()
         now = datetime.now().strftime("%Y-%m-%d %H:%M")
         
-        # 整合所選資料庫名稱存入 details
+        # 1. 整合所有資料庫清單以便存檔與顯示
         all_sel_dbs = sel_nhird + sel_ehr + sel_extra
-        if other_db.strip(): all_sel_dbs.append(f"其他:{other_db}")
+        if other_db.strip(): 
+            all_sel_dbs.append(f"其他:{other_db}")
         db_details_str = ", ".join(all_sel_dbs)
-        save_details = f"掛名：{auth_summary} | 資料庫：{db_details_str} | 提醒：{design_msg}"
+        
+        # 2. 存入資料庫的詳細資訊
+        save_details = f"掛名：{auth_summary} | 資料庫：{db_details_str} | 指定人員：{staff_name} | 提醒：{design_msg}"
         
         conn = sqlite3.connect('phdc_orders.db')
         conn.execute("INSERT INTO orders VALUES (?,?,?,?,?,?,?)", 
@@ -298,4 +302,43 @@ if submit_btn:
         conn.close()
         
         st.success(f"✅ 已送出報價！編號：{oid}")
-        st.download_button("💾 下載摘要", f"編號：{oid}\n總額：{total_cost}\n權重：{sum_k}\n細節：{save_details}", file_name=f"Quote_{oid}.txt")
+        
+        # 3. 建立細節滿滿的報表內容
+        quote_txt = f"""成大群體健康數據中心 (PHDc) 合作報價摘要
+--------------------------------------------------
+報價編號：{oid}
+申請時間：{now}
+申請人：{u_name} ({u_org})
+聯絡電話：{u_phone}
+聯絡 Email：{u_email}
+
+[ 專案預估總額 ]：TWD {total_cost:,} 元
+--------------------------------------------------
+[ 服務細節與權重參數 ]
+- 分析需求：{work_choice} (乘數: {m_work})
+- 研究設計：{", ".join(design_sel) if design_sel else "未選擇"} (權重: {k_design})
+- 撰寫支援：{write_choice} (權重: {k_write})
+- 掛名安排：{auth_summary} (溢價權重: {round(f_author, 2)})
+- 資料串聯：權重計 {round(k_link, 2)}
+- 合計服務總權重 (ΣK)：{round(sum_k, 2)}
+
+[ 資料庫勾選清單 ]
+* NHIRD 區：{", ".join(sel_nhird) if sel_nhird else "無"}
+* EHR 區：{", ".join(sel_ehr) if sel_ehr else "無"}
+* 多串聯區：{", ".join(sel_extra) if sel_extra else "無"}
+* 自填其他：{other_db if other_db.strip() else "無"}
+
+[ 其他備註 ]
+* 指定人員：{"是 (姓名: " + staff_name + ")" if specify_choice == "是" else "否"}
+* 特別說明：{design_msg if design_msg else "無"}
+--------------------------------------------------
+※ 本摘要僅供參考，正式報價與合作細節以中心核定合約為準。
+"""
+        st.download_button(
+            label="💾 下載完整報價摘要 (TXT)",
+            data=quote_txt,
+            file_name=f"PHDC_Quote_{oid}.txt",
+            mime="text/plain"
+        )
+    else:
+        st.error("❌ 請完整填寫所有必填欄位！")
