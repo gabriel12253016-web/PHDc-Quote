@@ -81,7 +81,10 @@ with st.sidebar:
     st.markdown("### 📞 聯絡我們")
     st.markdown("電話：+886-6-2353535 ext.6820")
     # 補回地址資訊
-    st.markdown("地址：台南市東區大學路 1 號")
+    st.markdown("地址：No.1, University Road, 701, School of Pharmacy, 
+       Institute of Clinical Pharmacy and Pharmaceutical 
+       Sciences, College of Medicine, National Cheng Kung 
+       University, Tainan, Taiwan")
     st.markdown("---")
     if not st.session_state.admin_mode:
         pwd = st.text_input("🛡️ 後台解鎖密碼", type="password")
@@ -286,15 +289,13 @@ if submit_btn:
         oid = "PHDC-" + str(uuid.uuid4())[:8].upper()
         now = datetime.now().strftime("%Y-%m-%d %H:%M")
         
-        # 1. 整合所有資料庫清單以便存檔與顯示
+        # 整合資料庫清單存入資料庫細節
         all_sel_dbs = sel_nhird + sel_ehr + sel_extra
-        if other_db.strip(): 
-            all_sel_dbs.append(f"其他:{other_db}")
+        if other_db.strip(): all_sel_dbs.append(f"其他:{other_db}")
         db_details_str = ", ".join(all_sel_dbs)
+        save_details = f"掛名：{auth_summary} | 資料庫：{db_details_str} | 提醒：{design_msg if design_msg else '無'}"
         
-        # 2. 存入資料庫的詳細資訊
-        save_details = f"掛名：{auth_summary} | 資料庫：{db_details_str} | 指定人員：{staff_name} | 提醒：{design_msg}"
-        
+        # 存入資料庫
         conn = sqlite3.connect('phdc_orders.db')
         conn.execute("INSERT INTO orders VALUES (?,?,?,?,?,?,?)", 
                      (oid, u_name, u_org, u_email, now, total_cost, save_details))
@@ -302,43 +303,49 @@ if submit_btn:
         conn.close()
         
         st.success(f"✅ 已送出報價！編號：{oid}")
-        
-        # 3. 建立細節滿滿的報表內容
-        quote_txt = f"""成大群體健康數據中心 (PHDc) 合作報價摘要
---------------------------------------------------
-報價編號：{oid}
-申請時間：{now}
-申請人：{u_name} ({u_org})
-聯絡電話：{u_phone}
-聯絡 Email：{u_email}
 
-[ 專案預估總額 ]：TWD {total_cost:,} 元
---------------------------------------------------
-[ 服務細節與權重參數 ]
-- 分析需求：{work_choice} (乘數: {m_work})
-- 研究設計：{", ".join(design_sel) if design_sel else "未選擇"} (權重: {k_design})
-- 撰寫支援：{write_choice} (權重: {k_write})
-- 掛名安排：{auth_summary} (溢價權重: {round(f_author, 2)})
-- 資料串聯：權重計 {round(k_link, 2)}
-- 合計服務總權重 (ΣK)：{round(sum_k, 2)}
+        # 格式化報價單文字內容 (完全依照妳提供的排版)
+        quote_txt = f"""==================================================
+        成大群體健康數據中心 (PHDc)
+             合作需求初步報價單
+==================================================
+【中心聯絡資訊】
+ 電話：+886-6-2353535 ext.6820
+ 地址：No.1, University Road, 701, School of Pharmacy, 
+       Institute of Clinical Pharmacy and Pharmaceutical 
+       Sciences, College of Medicine, National Cheng Kung 
+       University, Tainan, Taiwan.
+==================================================
 
-[ 資料庫勾選清單 ]
-* NHIRD 區：{", ".join(sel_nhird) if sel_nhird else "無"}
-* EHR 區：{", ".join(sel_ehr) if sel_ehr else "無"}
-* 多串聯區：{", ".join(sel_extra) if sel_extra else "無"}
-* 自填其他：{other_db if other_db.strip() else "無"}
+【申請人資訊】
+ 專案編號：{oid}
+ 申請時間：{now}
+ 申請人名：{u_name}
+ 所屬機構：{u_org}
+ 聯絡電話：{u_phone}
+ 聯絡信箱：{u_email}
 
-[ 其他備註 ]
-* 指定人員：{"是 (姓名: " + staff_name + ")" if specify_choice == "是" else "否"}
-* 特別說明：{design_msg if design_msg else "無"}
+【專案需求明細】
+  - 身分資格：{status_choice}
+  - 分析需求：{work_choice}
+  - 研究設計：{", ".join(design_sel) if design_sel else "未勾選"}
+  - 代寫服務：{write_choice}
+  - 掛名安排：{auth_summary if auth_summary else "無"}
+  - 指定人員：{staff_name if specify_choice == "是" else "無"}
+  - 資料需求：{db_details_str if db_details_str else "無額外要求"}
+
 --------------------------------------------------
-※ 本摘要僅供參考，正式報價與合作細節以中心核定合約為準。
+【預估專案總額】
+ 總計金額： NT$ {total_cost:,} 元
+
+ * 前期作業費 (30%)： NT$ {round(total_cost*0.3):,} 元
+ * 期中分析費 (40%)： NT$ {round(total_cost*0.4):,} 元
+ * 結案撰寫費 (30%)： NT$ {round(total_cost*0.3):,} 元
+
+==================================================
+備註：{design_msg if design_msg else "此報價單為系統依據您填寫之參數所生成之初步估算。"}
+實際合約金額與專案執行細節，需經中心專員最終審核與確認為準。
 """
-        st.download_button(
-            label="💾 下載完整報價摘要 (TXT)",
-            data=quote_txt,
-            file_name=f"PHDC_Quote_{oid}.txt",
-            mime="text/plain"
-        )
+        st.download_button("💾 下載初步報價單 (TXT)", quote_txt, file_name=f"PHDC_Quote_{oid}.txt")
     else:
-        st.error("❌ 請完整填寫所有必填欄位！")
+        st.error("❌ 錯誤：請填寫所有必填欄位 (*)")
