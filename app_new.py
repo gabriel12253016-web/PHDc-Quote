@@ -55,6 +55,14 @@ st.markdown("""
         font-size: 0.85rem;
         margin-top: -10px;
         margin-bottom: 10px;
+
+    .design-caption {
+        color: #888888;
+        font-size: 0.85rem;
+        margin-left: 28px; /* 關鍵位移：讓文字對齊勾選框右側 */
+        margin-top: -10px;
+        margin-bottom: 10px;
+        line-height: 1.4;
     }
     </style>
     
@@ -231,15 +239,21 @@ with col_left:
             "D3: 進階控制與自我對照設計": "Self-controlled (SCCS, CCO)、TND (陰性對照)、ITS。",
             "D4: 高階因果推論與複雜模型": "TTE (Sequential/Clon等)、工具變數 (IV)、RDD、Trend in trend等..."
         }
-        
-        # 遍歷已勾選的項目，並顯示其對應備註
-        for d_name in selected_designs:
-            if d_name in design_notes:
-                st.markdown(f'<div class="caption-text">💡 {d_name}：{design_notes[d_name]}</div>', unsafe_allow_html=True)
+       # 2. 遍歷產出：勾選後立即在下方顯示說明
+for design_name in st.session_state.design_map.keys():
+    # 產出勾選框
+    if st.checkbox(design_name, key=f"chk_{design_name}"):
+        selected_designs.append(design_name)
+        # 如果有對應說明，則立即顯示
+        if design_name in design_info:
+            st.markdown(f'<div class="design-caption">{design_info[design_name]}</div>', unsafe_allow_html=True)
 
-        # 針對高階模型的特殊警示 (維持原樣)
-        if "高階因果推論與複雜模型" in selected_designs:
-            st.markdown('<div class="caption-text" style="color:#d9534f;">⚠️ 提醒：因選擇與實際最終使用可能有落差，最後計算多出價差將於第三期支付。</div>', unsafe_allow_html=True)
+# 3. 計算最高權重 (邏輯不變)
+k_design = max([st.session_state.design_map[d] for d in selected_designs]) if selected_designs else 0.0
+
+# 4. 特殊警示 (只在選到高階模型時顯示在最下方)
+if "高階因果推論與複雜模型" in selected_designs:
+    st.markdown('<div class="design-caption" style="color:#d9534f; margin-top:0px;">⚠️ 提醒：因選擇與實際最終使用可能有落差，最後計算多出價差將於第三期支付。</div>', unsafe_allow_html=True)
 
     write_choice = st.selectbox("醫學撰寫支援", list(st.session_state.write_map.keys()))
     k_write = st.session_state.write_map[write_choice]
