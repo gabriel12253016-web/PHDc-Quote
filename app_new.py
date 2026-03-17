@@ -11,38 +11,45 @@ import os
 # ==========================================
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 
+# ==========================================
+# 頂端標題垂直位移凍結 (置頂且避開左側側邊欄)
+# ==========================================
 st.markdown("""
     <style>
-    /* 1. 全域鎖定：禁止整頁捲動 */
+    /* 1. 隱藏原生標頭 (避免位移時出現雙重標題) */
+    header, [data-testid="stHeader"] { 
+        display: none !important; 
+    }
+
+    /* 2. 建立頂端固定標題區 (垂直位移至頂端) */
+    .top-title-bar {
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100vw; 
+        height: 75px; /* 凍結高度隨標題調整 */
+        background-color: white; 
+        display: flex; 
+        align-items: center; /* 垂直居中內容 */
+        z-index: 9999; 
+        border-bottom: 2px solid #f0f2f6;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        /* 關鍵位移：數字越大越往右移，直到不被左側側邊欄擋住為止 */
+        padding-left: 280px; 
+    }
+
+    .top-title-bar h2 {
+        margin: 0;
+        font-size: 1.6rem;
+        color: #262730;
+    }
+
+    /* 3. 內容區向下位移：防止最上方的需求被固定標題遮住 */
     .main .block-container {
-        max-height: 100vh;
-        overflow: hidden;
-        padding-top: 2rem;
+        padding-top: 100px !important; 
     }
 
-    /* 2. 中間欄位 (需求設定)：開啟獨立捲動軸 */
-    [data-testid="column"]:nth-child(1) {
-        max-height: 85vh;
-        overflow-y: auto !important;
-        padding-right: 20px;
-        border-right: 1px solid #f0f2f6;
-    }
-
-    /* 3. 右側欄位 (報價單)：釘死不動 */
-    [data-testid="column"]:nth-child(2) {
-        max-height: 85vh;
-        overflow: hidden !important;
-    }
-
-    /* 4. 美化捲動軸 */
-    [data-testid="column"]:nth-child(1)::-webkit-scrollbar {
-        width: 6px;
-    }
-    [data-testid="column"]:nth-child(1)::-webkit-scrollbar-thumb {
-        background: #d1d5db;
-        border-radius: 10px;
-    }
-
+    /* 4. 其餘淡色備註樣式保持 */
     .caption-text {
         color: #888888;
         font-size: 0.85rem;
@@ -50,8 +57,11 @@ st.markdown("""
         margin-bottom: 10px;
     }
     </style>
+    
+    <div class="top-title-bar">
+        <h2>成大群體健康數據中心 (PHDc) 合作報價系統</h2>
+    </div>
     """, unsafe_allow_html=True)
-
 # ==========================================
 # 0. 資料庫初始化
 # ==========================================
@@ -107,8 +117,6 @@ is_admin = st.session_state.admin_mode
 # ==========================================
 # 2. 標題與側邊欄
 # ==========================================
-st.title("成大群體健康數據中心 (PHDc) 合作報價系統")
-
 with st.sidebar:
     if os.path.exists("logo.svg"):
         with open("logo.svg", "r", encoding="utf-8") as f:
