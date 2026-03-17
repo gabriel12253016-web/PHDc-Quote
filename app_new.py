@@ -12,41 +12,28 @@ import os
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* 1. 鎖定全網頁背景，禁止主頁面捲動 */
-    [data-testid="stAppViewContainer"] {
-        overflow: hidden;
+    /* 1. 針對 Win11 瀏覽器優化：鎖定右側欄位 */
+    @media screen and (min-width: 901px) {
+        [data-testid="column"]:nth-of-type(2) {
+            position: fixed !important;
+            right: 5%;
+            top: 80px;
+            width: 30% !important;
+            z-index: 100;
+        }
+        /* 補償左側空間，避免重疊 */
+        [data-testid="column"]:nth-of-type(1) {
+            width: 60% !important;
+        }
     }
 
-    /* 2. 鎖定中間主要內容區塊的高度 */
+    /* 2. 讓左側可以正常捲動，主視窗不鎖死 */
     .main .block-container {
-        max-height: 100vh;
-        overflow: hidden;
-        padding-top: 2rem;
+        max-height: none !important;
+        overflow: visible !important;
     }
 
-    /* 3. 【左側欄位】：強制給予獨立捲動軸 */
-    [data-testid="column"]:nth-of-type(1) {
-        height: 88vh !important;
-        overflow-y: auto !important;
-        padding-right: 20px !important;
-        border-right: 1px solid #eeeeee;
-    }
-
-    /* 4. 【右側欄位】：強制鎖定，絕對不准動 */
-    [data-testid="column"]:nth-of-type(2) {
-        height: 88vh !important;
-        overflow: hidden !important;
-    }
-
-    /* 美化捲動軸樣式 */
-    [data-testid="column"]:nth-of-type(1)::-webkit-scrollbar {
-        width: 6px;
-    }
-    [data-testid="column"]:nth-of-type(1)::-webkit-scrollbar-thumb {
-        background: #cccccc;
-        border-radius: 10px;
-    }
-
+    /* 3. 簡約條列與淡色備註 */
     .caption-text {
         color: #888888;
         font-size: 0.85rem;
