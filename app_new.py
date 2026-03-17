@@ -187,7 +187,6 @@ if is_admin:
             conn = sqlite3.connect('phdc_orders.db'); conn.execute("DELETE FROM orders WHERE order_id=?", (tid,)); conn.commit(); conn.close()
             st.rerun()
 
-with col_left:
     # --- 4. 主介面：需求設定 ---
     # 建立一個可收合的看板，讓醫師隨時點開看錢，不看時收起來
     with st.expander("💰 查看即時預估總額 (點擊展開明細)", expanded=True):
