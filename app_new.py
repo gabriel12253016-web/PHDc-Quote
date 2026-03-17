@@ -69,13 +69,42 @@ st.markdown("""
 def init_db():
     conn = sqlite3.connect('phdc_orders.db')
     c = conn.cursor()
+    # 修正：在原本的 orders 增加 client_id 欄位 (連動用)
     c.execute('''CREATE TABLE IF NOT EXISTS orders 
                  (order_id TEXT PRIMARY KEY, name TEXT, org TEXT, email TEXT, 
-                  submit_time TEXT, total_cost INTEGER, details TEXT)''')
+                  submit_time TEXT, total_cost INTEGER, details TEXT, client_id TEXT)''')
+    
+    # 新增：建立醫師客戶主檔 (妳要求的 ID, 名字, 訂單紀錄, 評分, 備註, 專屬折扣)
+    c.execute('''CREATE TABLE IF NOT EXISTS clients 
+                 (client_id TEXT PRIMARY KEY, name TEXT, history_orders TEXT, 
+                  total_spent INTEGER, rating REAL, note TEXT, coop_discount REAL)''')
     conn.commit()
     conn.close()
 
 init_db()
+
+# ==========================================
+# 自動化客戶 ID 生成邏輯 (年月 + 英文 + 數字)
+# ==========================================
+def generate_client_id():
+    now_prefix = datetime.now().strftime("%Y%m") # 例如：202603
+    conn = sqlite3.connect('phdc_orders.db')
+    # 計算該月份已經存在的 ID 數量
+    count = conn.execute("SELECT COUNT(*) FROM clients WHERE client_id LIKE ?", (f"{now_prefix}-%",)).fetchone()[0]
+    conn.close()
+    
+    # 邏輯：每 99 個進位一次英文 (A01-A99, B01...)
+    char_idx = count // 99
+    num_part = (count % 99) + 1
+    
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    # 處理進位到 AA, AB 的邏輯
+    if char_idx < 26:
+        prefix_char = alphabet[char_idx]
+    else:
+        prefix_char = alphabet[(char_idx // 26) - 1] + alphabet[char_idx % 26]
+        
+    return f"{now_prefix}-{prefix_char}{num_part:02d}"
 
 # ==========================================
 # 1. 系統狀態與所有係數初始化
@@ -160,7 +189,7 @@ with st.sidebar:
 # ==========================================
 if is_admin:
     st.title("🛡️ 中心內部管理面板")
-    t1, t2, t3, t4 = st.tabs(["⚙️ 核心係數設定", "🧪 各項權重對照表", "📁 資料庫費用管理", "📋 報價紀錄管理"])
+    t1, t2, t3, t4, t5 = st.tabs(["⚙️ 核心係數", "🧪 權重對照", "📁 資料庫費用", "📋 報價紀錄", "👥 醫師主檔管理"])
     
     with t1:
         st.subheader("基礎與範圍蔓延參數")
@@ -196,7 +225,7 @@ if is_admin:
             st.session_state.write_map = st.data_editor(st.session_state.write_map, key="edit_write")
 
     with t3:
-        st.subheader("📁 資料庫維護與購買費用管理")
+        st.subheader("資料庫維護與購買費用管理")
         st.session_state.db_nhird_df = st.data_editor(st.session_state.db_nhird_df, num_rows="dynamic", key="edit_nh_df", use_container_width=True)
         st.session_state.db_ehr_df = st.data_editor(st.session_state.db_ehr_df, num_rows="dynamic", key="edit_ehr_df", use_container_width=True)
         st.session_state.db_extra_df = st.data_editor(st.session_state.db_extra_df, num_rows="dynamic", key="edit_ex_df", use_container_width=True)
@@ -210,23 +239,62 @@ if is_admin:
         if st.button("單筆刪除"):
             conn = sqlite3.connect('phdc_orders.db'); conn.execute("DELETE FROM orders WHERE order_id=?", (tid,)); conn.commit(); conn.close()
             st.rerun()
+    with t5:
+        st.subheader("👥 PHDc 合作醫師核心主檔")
+        
+        # --- A. 新增醫師區 ---
+        with st.expander("➕ 手動新增合作醫師"):
+            c1, c2, c3 = st.columns(3)
+            new_name = c1.text_input("醫師姓名 (必填)")
+            new_disc = c2.number_input("專屬合作折扣 (F_coop)", value=0.9, step=0.05, help="此數值將影響總額計算中的 F_coop")
+            new_rating = c3.slider("醫師評分", 1.0, 5.0, 5.0, 0.5)
+            new_note = st.text_area("醫師備註 (如：科別、過去特殊需求)")
+            
+            if st.button("確認存入主檔"):
+                if new_name.strip():
+                    new_id = generate_client_id() # 呼叫剛才寫好的自動編號邏輯
+                    conn = sqlite3.connect('phdc_orders.db')
+                    conn.execute("INSERT INTO clients (client_id, name, total_spent, rating, note, coop_discount) VALUES (?,?,?,?,?,?)", 
+                                 (new_id, new_name, 0, new_rating, new_note, new_disc))
+                    conn.commit(); conn.close()
+                    st.success(f"✅ 已成功建立 ID: {new_id} ({new_name} 醫師)")
+                    st.rerun()
+                else:
+                    st.error("請輸入醫師姓名")
+    
+        # --- B. 編輯與檢視區 ---
+        st.write("#### 醫師清單檢索與編輯")
+        conn = sqlite3.connect('phdc_orders.db')
+        clients_df = pd.read_sql_query("SELECT * FROM clients", conn)
+        conn.close()
+        
+        # 使用 Data Editor 讓人員可以直接在表格內修改備註或評分
+        edited_clients = st.data_editor(
+            clients_df, 
+            column_config={
+                "client_id": "客戶 ID",
+                "name": "姓名",
+                "history_orders": "歷史訂單編號",
+                "total_spent": "總消費額",
+                "rating": st.column_config.NumberColumn("評分", format="%.1f ⭐"),
+                "coop_discount": "合作折扣 (F_coop)",
+                "note": "備註欄位"
+            },
+            num_rows="dynamic", 
+            use_container_width=True,
+            key="client_editor_table"
+        )
+        
+        if st.button("儲存資料庫變更"):
+            conn = sqlite3.connect('phdc_orders.db')
+            edited_clients.to_sql('clients', conn, if_exists='replace', index=False)
+            conn.close()
+            st.success("醫師主檔已成功更新")
 
 # ==========================================
 # 4. 主介面：需求設定
 # ==========================================
 # --- 這裡統一計算，確保右側 col_right 抓得到 total_cost ---
-sum_k = k_design + k_write + k_link
-labor_total = st.session_state.c_base * st.session_state.ratio_staff * m_work
-base_cost = st.session_state.c_fixed + c_db_buy
-f_total_adj = f_status * f_author_total * st.session_state.f_coop * f_specify
-total_cost = round((base_cost + labor_total * sum_k) * f_total_adj)
-
-# 計算額度 (n_tune, n_reanalysis 等也放在這)
-n_tune = int(st.session_state.b_tune + (total_cost // st.session_state.s_tune))
-n_reanalysis = int(total_cost // st.session_state.s_reanalysis)
-n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
-
-# 最後才執行這行
 col_left, col_right = st.columns([3, 2])
 
 with col_left:
@@ -318,11 +386,43 @@ with col_left:
     status_choice = st.selectbox("申請人身分", list(st.session_state.status_map.keys()))
     f_status = st.session_state.status_map[status_choice]
 
-    # --- 計算數值 (為了讓下面能正確顯示) ---
+    # --- [新增：歷史合作檢索區塊] ---
+    st.markdown("---")
+    has_cooped = st.checkbox("是否與中心合作過？", help="勾選後可搜尋紀錄並自動帶入回流優惠")
+    
+    # 初始化搜尋相關變數
+    target_client_id = "NEW_CLIENT" 
+    f_coop = 1.0 # 預設為 1.0 (無額外折扣)
+
+    if has_cooped:
+        search_name = st.text_input("搜尋醫師姓名", placeholder="請輸入完整姓名進行檢索")
+        if search_name:
+            conn = sqlite3.connect('phdc_orders.db')
+            # 從 clients 資料表抓取紀錄
+            res = conn.execute("SELECT client_id, name, coop_discount FROM clients WHERE name LIKE ?", 
+                               (f"%{search_name}%",)).fetchall()
+            conn.close()
+            
+            if res:
+                # 建立下拉選單供選擇 (避免同名同姓誤抓)
+                client_options = {f"{r[1]} (ID: {r[0]})": r for r in res}
+                selected_key = st.selectbox("請確認您的紀錄", list(client_options.keys()))
+                sel_data = client_options[selected_key]
+                
+                target_client_id = sel_data[0] # 存下 ID，之後存報價單時用
+                f_coop = sel_data[2]           # 帶入該醫師主檔設定的 F_coop
+                st.success(f"✅ 已識別合作紀錄！將自動套用專屬優惠係數：{f_coop}")
+            else:
+                st.info("查無此姓名紀錄。如確定曾合作過，請聯繫管理員新增至主檔。")
+      
+    # --- [關鍵：計算區放在這裡！] ---
+    # 確保這是在 with col_left 的最後面，所有變數 (f_coop, k_design 等) 都拿到了
     sum_k = k_design + k_write + k_link
     labor_total = st.session_state.c_base * st.session_state.ratio_staff * m_work
     base_cost = st.session_state.c_fixed + c_db_buy
-    f_total_adj = f_status * f_author_total * st.session_state.f_coop * f_specify
+    
+    # 這裡記得改用 f_coop (檢索出來的變數)
+    f_total_adj = f_status * f_author_total * f_coop * f_specify
     total_cost = round((base_cost + labor_total * sum_k) * f_total_adj)
 
     n_tune = int(st.session_state.b_tune + (total_cost // st.session_state.s_tune))
@@ -401,10 +501,32 @@ if submit_btn:
         db_details_str = ", ".join(all_sel_dbs)
         
         save_details = f"掛名：{auth_summary} | 調校：{n_tune}/{n_reanalysis}/{n_revise} | 提醒：{design_msg}"
+        
+        # --- 1. 開啟資料庫連線 ---
         conn = sqlite3.connect('phdc_orders.db')
-        conn.execute("INSERT INTO orders VALUES (?,?,?,?,?,?,?)", (oid, u_name, u_org, u_email, now, total_cost, save_details))
-        conn.commit(); conn.close()
+        
+        # --- 2. 存入 orders (注意現在有 8 個問號，最後一個是 target_client_id) ---
+        conn.execute("INSERT INTO orders VALUES (?,?,?,?,?,?,?,?)", 
+                     (oid, u_name, u_org, u_email, now, total_cost, save_details, target_client_id))
+        
+        # --- 3. [新增] 如果是既有客戶，更新醫師主檔的歷史紀錄與消費額 ---
+        if target_client_id != "NEW_CLIENT":
+            old_data = conn.execute("SELECT history_orders, total_spent FROM clients WHERE client_id=?", (target_client_id,)).fetchone()
+            if old_data:
+                # 串接新訂單編號，並累加金額
+                new_history = (old_data[0] + f", {oid}") if old_data[0] else oid
+                new_total = (old_data[1] or 0) + total_cost
+                
+                conn.execute("UPDATE clients SET history_orders=?, total_spent=? WHERE client_id=?", 
+                             (new_history, new_total, target_client_id))
+        
+        # --- 4. 提交變更並關閉連線 ---
+        conn.commit()
+        conn.close()
+        
         st.success(f"✅ 報價紀錄已送出！編號：{oid}")
+
+        # ... (後續產出報價單 quote_txt 的內容維持不變) ...
 
         quote_txt = f"""==================================================
         成大群體健康數據中心 (PHDc)
