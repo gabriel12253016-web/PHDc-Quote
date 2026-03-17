@@ -110,7 +110,7 @@ if is_admin:
         st.session_state.f_coop = st.number_input("F_coop (歷史合作校正)", value=st.session_state.f_coop)
         
         st.markdown("---")
-        st.subheader("📁 資料庫分區管理系統")
+        st.subheader("資料庫分區管理系統")
         col_db1, col_db2 = st.columns(2)
         with col_db1:
             st.write("**A. NHIRD 區 (Base=1.0)**")
@@ -124,7 +124,7 @@ if is_admin:
             st.write("**B. EHR 區 (Base=1.5)**")
             df_ehr = pd.DataFrame(st.session_state.db_ehr, columns=["資料庫名稱"])
             edit_ehr = st.data_editor(df_ehr, num_rows="dynamic", key="edit_ehr", use_container_width=True)
-            st.info("💡 註：若醫師同時選 NHIRD 與 EHR，系統會自動將 Base 設為 2.0")
+            st.info("註：若醫師同時選 NHIRD 與 EHR，系統會自動將 Base 設為 2.0")
         
         if st.button("💾 儲存所有分區設定"):
             st.session_state.db_nhird = [x.strip() for x in edit_nhird["資料庫名稱"].dropna().tolist() if x.strip()]
@@ -180,16 +180,16 @@ with col_left:
     k_write = st.session_state.write_map[write_choice]
 
     st.write("#### 2. 資料庫串聯需求")
-    with st.expander("🔍 點擊查看 NHIRD 區包含檔案 (不加價)"):
+    with st.expander("點擊查看 NHIRD 區包含資料庫"):
         st.write(", ".join(st.session_state.db_nhird))
     sel_nhird = st.multiselect("勾選所需 NHIRD 檔案", st.session_state.db_nhird)
 
-    with st.expander("🔍 點擊查看 EHR 區包含檔案"):
+    with st.expander("點擊查看 EHR 區包含資料庫"):
         st.write(", ".join(st.session_state.db_ehr))
-    sel_ehr = st.multiselect("勾選所需 EHR 檔案", st.session_state.db_ehr)
+    sel_ehr = st.multiselect("勾選所需 EHR 資料庫", st.session_state.db_ehr)
 
     sel_extra = st.multiselect("勾選需串聯之其他資料庫 (多加一項將增加權重)", st.session_state.db_extra)
-    other_db = st.text_input("其他：若未見所需資料庫請自填", placeholder="例如：勞保資料庫")
+    other_db = st.text_input("其他：若未見所需資料庫請自填", placeholder="例如：Welfare10_身心障礙檔")
 
     # --- 計價邏輯運算 ---
     has_nhird = len(sel_nhird) > 0
@@ -206,7 +206,7 @@ with col_left:
     n_extra = len(sel_extra)
     if other_db.strip():
         n_extra += 1
-        st.warning("⚠️ 自填資料庫需中心評估，若有額外費用將計入結案款項。")
+        st.warning("自填資料庫需中心評估，若有額外費用將計入結案款項。")
 
     k_link = base_db + (1.0 * n_extra) + (0.25 * (n_extra ** 2)) if (base_db > 0 or n_extra > 0) else 0
 
@@ -258,7 +258,7 @@ with col_right:
 
     design_msg = ""
     if k_design >= 6.0:
-        design_msg = "此部分呈現基本權重，最終定價以最終設定計算，多餘金額於第三期支付。"
+        design_msg = "此部分呈現基本權重，最終定價以最終設定計算，多餘金額將計入結案款項。"
         st.info(f"備註：{design_msg}")
     
     if is_admin:
