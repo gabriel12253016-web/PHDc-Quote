@@ -12,37 +12,33 @@ import os
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* 1. 強制讓主容器不要有捲動軸 */
+    /* 1. 鎖定全網頁背景，禁止主頁面捲動 */
     [data-testid="stAppViewContainer"] {
         overflow: hidden;
     }
 
-    /* 2. 讓整頁內容區域 (包含左右兩欄) 填滿視窗，且禁止整頁捲動 */
-    [data-testid="stVerticalBlock"] > [data-testid="stHorizontalBlock"] {
-        height: 90vh;
+    /* 2. 鎖定中間主要內容區塊的高度 */
+    .main .block-container {
+        max-height: 100vh;
         overflow: hidden;
+        padding-top: 2rem;
     }
 
-    /* 3. 【左側欄位】開啟獨立捲動軸 - 這是唯一會動的地方 */
+    /* 3. 【左側欄位】：強制給予獨立捲動軸 */
     [data-testid="column"]:nth-of-type(1) {
-        height: 90vh !important;
+        height: 88vh !important;
         overflow-y: auto !important;
-        padding-right: 20px;
+        padding-right: 20px !important;
         border-right: 1px solid #eeeeee;
     }
 
-    /* 4. 【右側欄位】強制鎖定高度，禁止捲動 */
+    /* 4. 【右側欄位】：強制鎖定，絕對不准動 */
     [data-testid="column"]:nth-of-type(2) {
-        height: 90vh !important;
+        height: 88vh !important;
         overflow: hidden !important;
     }
 
-    /* 5. 修正側邊欄 (Sidebar) 不要被主容器影響 */
-    [data-testid="stSidebar"] {
-        z-index: 1000;
-    }
-
-    /* 美化中間捲動軸 */
+    /* 美化捲動軸樣式 */
     [data-testid="column"]:nth-of-type(1)::-webkit-scrollbar {
         width: 6px;
     }
