@@ -10,11 +10,12 @@ import os
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 
 # ==========================================
-# 0. 資料庫初始化
+# 0. 資料庫初始化 (修正版)
 # ==========================================
 def init_db():
     conn = sqlite3.connect('phdc_orders.db')
     c = conn.cursor()
+    # 確保建立 7 個欄位
     c.execute('''CREATE TABLE IF NOT EXISTS orders 
                  (order_id TEXT PRIMARY KEY, 
                   name TEXT, 
@@ -76,7 +77,7 @@ with st.sidebar:
             st.rerun()
 
 # ==========================================
-# 3. 管理後台
+# 3. 管理後台 (新增重置功能)
 # ==========================================
 if is_admin:
     st.title("🛡️ 中心內部管理面板")
@@ -108,16 +109,22 @@ if is_admin:
             st.write("**醫學撰寫權重**")
             st.session_state.write_map = st.data_editor(st.session_state.write_map, key="edit_write")
     with t3:
-        conn = sqlite3.connect('phdc_orders.db')
-        df = pd.read_sql_query("SELECT * FROM orders ORDER BY submit_time DESC", conn)
-        conn.close()
-        st.dataframe(df, use_container_width=True)
-        tid = st.text_input("欲刪除 ID")
-        if st.button("單筆刪除"):
+        # 顯示現有紀錄
+        try:
             conn = sqlite3.connect('phdc_orders.db')
-            conn.execute("DELETE FROM orders WHERE order_id=?", (tid,))
-            conn.commit()
+            df = pd.read_sql_query("SELECT * FROM orders ORDER BY submit_time DESC", conn)
             conn.close()
+            st.dataframe(df, use_container_width=True)
+        except:
+            st.warning("目前尚無資料或資料表結構正在更新...")
+
+        st.markdown("---")
+        st.subheader("危險操作區域")
+        if st.button("⚠️ 強制重置雲端資料庫 (解決欄位報錯專用)", type="primary"):
+            if os.path.exists('phdc_orders.db'):
+                os.remove('phdc_orders.db')
+            init_db()
+            st.success("資料庫已重置為 7 欄位版本！請重新嘗試提交報價。")
             st.rerun()
 
 # ==========================================
@@ -167,7 +174,7 @@ labor_total = st.session_state.c_base * st.session_state.ratio_staff * m_work
 total_cost = round((st.session_state.c_fixed + st.session_state.c_db_buy + labor_total * sum_k) * f_status * f_author * st.session_state.f_coop * f_specify)
 
 # ==========================================
-# 5. 主介面：右側報價區 (去參數底線，純中文顯示)
+# 5. 主介面：右側報價區
 # ==========================================
 with col_right:
     st.write("### 預估專案總額")
@@ -190,9 +197,6 @@ with col_right:
     if k_design >= 6.0:
         design_msg = "此部分呈現基本權重，最終定價以最終設定計算，多餘金額於第三期支付。"
         st.info(f"備註：{design_msg}")
-        
-    if specify_choice == "是":
-        st.write("備註：指定人員需加收 20% 勞務溢價")
 
     if is_admin:
         st.markdown("---")
@@ -219,11 +223,13 @@ if submit_btn:
         now = datetime.now().strftime("%Y-%m-%d %H:%M")
         save_details = f"掛名：{auth_summary} | 資料庫：{', '.join(selected_dbs)} | 提醒：{design_msg}"
         
-        conn = sqlite3.connect('phdc_orders.db')
-        conn.execute("INSERT INTO orders VALUES (?,?,?,?,?,?,?)", 
-                     (oid, u_name, u_org, u_email, now, total_cost, save_details))
-        conn.commit()
-        conn.close()
-        
-        st.success(f"✅ 已送出報價！編號：{oid}")
-        st.download_button("💾 下載摘要", f"編號：{oid}\n總額：{total_cost}\n權重：{sum_k}\n細節：{save_details}", file_name=f"Quote_{oid}.txt")
+        try:
+            conn = sqlite3.connect('phdc_orders.db')
+            conn.execute("INSERT INTO orders VALUES (?,?,?,?,?,?,?)", 
+                         (oid, u_name, u_org, u_email, now, total_cost, save_details))
+            conn.commit()
+            conn.close()
+            st.success(f"✅ 已送出報價！編號：{oid}")
+            st.download_button("💾 下載摘要", f"編號：{oid}\n總額：{total_cost}\n權重：{sum_k}\n細節：{save_details}", file_name=f"Quote_{oid}.txt")
+        except sqlite3.OperationalError:
+            st.error("❌ 資料庫結構衝突。請聯繫管理員進入後台點擊「重置雲端資料庫」按鈕。")
