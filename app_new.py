@@ -17,6 +17,13 @@ st.markdown("""
     header, [data-testid="stHeader"], [data-testid="stSidebarCollapsedControl"], button[kind="header_button"] { 
         display: none !important; 
     }
+    /* 核心修正：鎖死側邊欄寬度，不讓滑鼠拖動調整 */
+    [data-testid="stSidebar"] {
+        min-width: 21rem !important;
+        max-width: 21rem !important;
+        width: 21rem !important;
+        z-index: 10000 !important; /* 確保側邊欄高於標題列 (9999) */
+    }
 
     /* 2. 側邊欄貼齊頂端 */
     [data-testid="stSidebarUserContent"] {
