@@ -436,24 +436,26 @@ with col_left:
                 st.info("查無此姓名紀錄。如確定曾合作過，請聯繫管理員新增至主檔。")
       
     # --- [關鍵：計算區放在這裡！] ---
-    # 確保這是在 with col_left 的最後面，所有變數 (f_coop, k_design 等) 都拿到了
+    # --- [關鍵：計算區放在這裡！] ---
+    # 確保這是在 with col_left 的最後面，所有變數都拿到了
     sum_k = k_design + k_write + k_link
     labor_total = st.session_state.c_base * st.session_state.ratio_staff * m_work
     base_cost = st.session_state.c_fixed + c_db_buy
     
-    # 這裡記得改用 f_coop (檢索出來的變數)
+    # 帶入檢索出的 f_coop 進行計算
     f_total_adj = f_status * f_author_total * f_coop * f_specify
     total_cost = round((base_cost + labor_total * sum_k) * f_total_adj)
 
+    # 根據總額計算微調額度
     n_tune = int(st.session_state.b_tune + (total_cost // st.session_state.s_tune))
     n_reanalysis = int(total_cost // st.session_state.s_reanalysis)
     n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
-    # 此段應放在 total_cost 算完後的 with col_left 底部
+    # --- [渲染頂端凍結列] ---
     st.markdown(f"""
     <div class="top-title-bar">
         <div class="title-group">
-            <h2>成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
+            <h2 style="font-size:1.6rem;">成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
         </div>
         <div class="quote-summary-card">
             <div class="total-price-box">
