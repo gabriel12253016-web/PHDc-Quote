@@ -65,12 +65,17 @@ st.markdown("""
         padding-left: 20px; line-height: 1.6;
     }
 
-    /* 4. 徹底位移內容區：鎖定所有主要內容容器 */
-    [data-testid="stMainViewContainer"] [data-testid="stVerticalBlock"] {
+    /* 4. 徹底位移內容區：鎖定 Streamlit 主容器 */
+    .stMain [data-testid="stVerticalBlock"] {
         padding-top: 150px !important; 
     }
-    .main .block-container {
-        padding-top: 180px !important;
+    
+    /* 針對標題字體大小的最後修正 */
+    .top-title-bar h2 {
+        margin: 0;
+        font-size: 1.8rem !important; /* 強制加大 */
+        font-weight: bold !important;
+        color: #262730;
     }
 
     /* 5. 淡色備註樣式 */
