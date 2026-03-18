@@ -21,29 +21,24 @@ st.markdown("""
     /* 1. 隱藏原生頂部黑條 */
     header, [data-testid="stHeader"] { display: none !important; }
 
-    /* 2. 側邊欄與箭頭按鈕修正 (找回側邊欄關鍵) */
+    /* 2. 修正側邊欄箭頭按鈕 (確保它在白板上面) */
     [data-testid="stSidebarCollapsedControl"] {
         display: block !important;
         position: fixed !important;
-        top: 15px !important;
-        left: 15px !important;
-        z-index: 100000 !important; /* 確保高於標題列 */
+        top: 20px !important;
+        left: 20px !important;
+        z-index: 100000 !important; /* 必須遠大於 9999 */
         background-color: #f0f2f6 !important;
-        border-radius: 50%;
+        border-radius: 50% !important;
     }
 
-    [data-testid="stSidebarUserContent"] {
-        padding-top: 0rem !important;
-        margin-top: -3.5rem !important;
-    }
-
-    /* 3. 建立頂端固定標題區 (避開左側按鈕) */
+    /* 3. 修改標題列：左側挖空 80px，絕對不准蓋過按鈕 */
     .top-title-bar {
         position: fixed; 
         top: 0; 
-        left: 80px !important; /* 留出左側 80px 給箭頭按鈕 */
+        left: 80px !important; /* 強制向右縮進 */
         right: 0;
-        width: calc(100vw - 80px) !important;
+        width: calc(100vw - 80px) !important; /* 寬度自動計算 */
         height: 130px; 
         background-color: white; 
         display: flex; 
@@ -51,7 +46,7 @@ st.markdown("""
         z-index: 9999; 
         border-bottom: 2px solid #f0f2f6;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        padding-left: 20px; 
+        padding-left: 10px; 
         padding-right: 40px;
     }
 
