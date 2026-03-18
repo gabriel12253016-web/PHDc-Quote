@@ -148,38 +148,39 @@ st.markdown("""
     line-height: 0;
     }
   
-   </style>
+    </style>
 
     <script>
         const fixMobile = () => {
-            // 使用 window.parent 因為內容在 iframe 裡面
             const doc = window.parent.document;
-            const width = window.parent.innerWidth;
+            // 修正：同時檢查螢幕與視窗寬度，針對手機優化
+            const width = Math.min(window.parent.innerWidth, window.parent.screen.width);
             const titleBar = doc.querySelector('.top-title-bar');
             const mainContent = doc.querySelector('.block-container');
             const sidebar = doc.querySelector('[data-testid="stSidebar"]');
 
             if (width <= 768) {
-                /* 📱 手機模式：解除所有固定與位移 */
                 if (titleBar) {
                     titleBar.style.position = 'relative';
                     titleBar.style.left = '0';
                     titleBar.style.width = '100%';
                     titleBar.style.height = 'auto';
-                    titleBar.style.padding = '15px';
+                    titleBar.style.padding = '20px';
                     titleBar.style.flexDirection = 'column';
+                    titleBar.style.alignItems = 'flex-start';
                 }
                 if (mainContent) {
-                    mainContent.style.paddingTop = '10px';
-                    mainContent.style.paddingLeft = '15px';
+                    mainContent.style.paddingTop = '20px';
+                    mainContent.style.paddingLeft = '1rem';
                     mainContent.style.marginLeft = '0';
                 }
                 if (sidebar) {
                     sidebar.style.minWidth = '100%';
                     sidebar.style.width = '100%';
+                    sidebar.style.position = 'relative';
                 }
             } else {
-                /* 💻 電腦模式：精確維持妳要求的原始數字 */
+                // 電腦版恢復：完全維持妳要求的原始數字
                 if (titleBar) {
                     titleBar.style.position = 'fixed';
                     titleBar.style.left = '0';
@@ -187,17 +188,27 @@ st.markdown("""
                     titleBar.style.height = '130px';
                     titleBar.style.paddingLeft = '280px';
                     titleBar.style.flexDirection = 'row';
+                    titleBar.style.alignItems = 'center';
                 }
                 if (mainContent) {
                     mainContent.style.paddingTop = '140px';
                     mainContent.style.paddingLeft = '2rem';
                 }
+                if (sidebar) {
+                    sidebar.style.minWidth = '280px';
+                    sidebar.style.width = '280px';
+                }
             }
         };
 
-        // 監聽縮放與載入
+        // 增加多種監聽，確保手機版一定會觸發
         window.parent.addEventListener('resize', fixMobile);
-        setTimeout(fixMobile, 200);
+        window.parent.addEventListener('load', fixMobile);
+        window.parent.addEventListener('orientationchange', fixMobile);
+        
+        // 延遲執行確保元件已經渲染
+        setTimeout(fixMobile, 300);
+        setTimeout(fixMobile, 1000);
     </script>
     """, unsafe_allow_html=True)
 # ==========================================
