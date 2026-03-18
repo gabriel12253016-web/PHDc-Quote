@@ -128,26 +128,39 @@ st.markdown("""
        2. 手機版強制修正：允許寬度超出並左右捲動
        ========================================== */
     @media (max-width: 768px) {
-        /* 讓畫布撐開到 1200px，不准手機擠壓內容 */
-        .stApp { min-width: 1200px !important; }
-        .block-container { min-width: 1200px !important; }
-        
-        /* 恢復 Fixed：讓標題列永遠卡在頂端，寬度鎖死 1200px */
+        /* 1. 讓整體 App 背景寬度鎖死在 1200px */
+        .stApp { 
+            min-width: 1200px !important; 
+            overflow-x: auto !important; 
+        }
+
+        /* 2. 標題列：改為 absolute，讓它鎖在 1200px 的畫布頂端 */
+        /* 這樣妳左右滑動時，標題會跟著內容一起移動，不會被切掉 */
         .top-title-bar { 
-            position: fixed !important; 
+            position: absolute !important; 
+            top: 0 !important;
+            left: 0 !important;
             width: 1200px !important; 
             min-width: 1200px !important;
-            left: 0 !important; 
-            z-index: 10001 !important;
+            padding-left: 280px !important; 
+            z-index: 9999 !important;
         }
         
-        /* 側邊欄同樣維持 Fixed，鎖在左側 */
+        /* 3. 側邊欄：同樣改為 absolute，釘在畫布最左側 */
         [data-testid="stSidebar"] { 
-            position: fixed !important; 
+            position: absolute !important; 
             left: 0 !important; 
             min-width: 280px !important; 
             width: 280px !important; 
-            z-index: 10002 !important;
+            height: 100% !important;
+            z-index: 10000 !important;
+        }
+
+        /* 4. 內容區補償：維持 1200px 寬度 */
+        .block-container { 
+            min-width: 1200px !important; 
+            padding-top: 140px !important;
+            padding-left: 2rem !important;
         }
     }
     </style>
