@@ -501,25 +501,27 @@ with col_left:
     n_reanalysis = int(total_cost // st.session_state.s_reanalysis)
     n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
-    # --- [渲染頂端凍結列] ---
+   # ⚠️ 最終修正：確保文字標題在上、金額在下，且與左側標題完全拉開距離
     st.markdown(f"""
 <div class="top-title-bar">
-<div style="min-width: 350px; padding-left: 20px;">
+<div style="min-width: 380px; padding-left: 20px; flex-shrink: 0;">
 <h2 style="margin:0; font-size:1.5rem; color:#262730; line-height:1.2;">成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
 </div>
 <div class="quote-summary-card" style="display: flex; align-items: center; justify-content: space-between; flex-grow: 1;">
-<div class="total-price-box" style="min-width: 200px; margin-left: 50px;">
-<div style="font-size:0.9rem; font-weight:bold; color:#666;">預估專案總額</div>
-<div class="price" style="font-size: 2rem; font-weight: bold;">TWD {total_cost:,} 元</div>
+<div class="total-price-box" style="min-width: 250px; margin-left: 60px; text-align: left;">
+<div style="font-size: 0.9rem; font-weight: bold; color: #666; margin-bottom: 5px; display: block;">預估專案總額</div>
+<div class="price" style="font-size: 2.2rem; font-weight: bold; color: #262730; display: block; line-height: 1;">TWD {total_cost:,} 元</div>
 </div>
-<div class="formula-box" style="background-color: #e8f0fe; padding: 10px 15px; border-radius: 8px; font-size: 0.85rem; color: #1967d2; margin-left: 20px;">
+<div class="formula-box" style="background-color: #e8f0fe; padding: 12px 18px; border-radius: 10px; font-size: 0.85rem; color: #1967d2; margin-left: 20px; flex-shrink: 1;">
 💡 預估總額 = (基礎成本 + 服務費) x 合作專案調整<br>
 計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) x {f_total_adj:.2f} = {total_cost:,}
 </div>
-<div class="payment-phases" style="min-width: 160px; border-left: 2px solid #eee; padding-left: 20px;">
+<div class="payment-phases" style="min-width: 170px; border-left: 2px solid #eee; padding-left: 25px; margin-left: 20px; flex-shrink: 0;">
+<div style="font-size: 0.85rem; line-height: 1.6; color: #333;">
 <b>前期 (30%)：</b> {round(total_cost*0.3):,} 元<br>
 <b>期中 (40%)：</b> {round(total_cost*0.4):,} 元<br>
 <b>結案 (30%)：</b> {round(total_cost*0.3):,} 元
+</div>
 </div>
 </div>
 </div>
