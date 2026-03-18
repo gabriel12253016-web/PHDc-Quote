@@ -10,27 +10,27 @@ import os
 # 網頁配置與 CSS 固定右側欄位
 # ==========================================
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
+st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* 1. 徹底隱藏頂部黑條、收合箭頭(<<)與所有側邊欄控制項，使其無法收合 */
+    /* 1. 核心修正：徹底消滅側邊欄收合按鈕，讓「隱藏」功能直接不存在 */
     header, [data-testid="stHeader"], [data-testid="stSidebarCollapsedControl"], button[kind="header_button"] { 
         display: none !important; 
     }
 
-    /* 2. 側邊欄貼齊頂端 (維持妳要求的原樣) */
+    /* 2. 側邊欄貼齊頂端 */
     [data-testid="stSidebarUserContent"] {
         padding-top: 0rem !important;
         margin-top: -3.5rem !important;
     }
     .st-emotion-cache-6qob1r { padding-top: 0rem !important; }
 
-    /* 3. 建立頂端固定標題區：left 設為 21rem (側邊欄標準寬度) */
+    /* 3. 建立頂端固定標題區 */
     .top-title-bar {
         position: fixed; 
-        top: 0; 
-        left: 21rem !important; /* 精確貼齊側邊欄右緣 */
-        width: calc(100vw - 21rem) !important; /* 寬度自動填滿剩餘空間 */
-        height: 130px; 
+        top: 0; left: 0; 
+        width: 100vw; 
+        height: 130px; /* 這裡改回 130px 比較不會擠 */
         background-color: white; 
         display: flex; 
         align-items: center; 
@@ -38,7 +38,7 @@ st.markdown("""
         z-index: 9999; 
         border-bottom: 2px solid #f0f2f6;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        padding-left: 20px; /* 因為已經左移，這裡恢復正常間距 */
+        padding-left: 280px; 
         padding-right: 40px;
     }
 
