@@ -41,7 +41,7 @@ st.markdown("""
         position: fixed; 
         top: 0; left: 0; 
         width: 100vw; 
-        height: 130px; /* 這裡改回 130px 比較不會擠 */
+        height: 130px; 
         background-color: white; 
         display: flex; 
         align-items: center; 
@@ -55,12 +55,12 @@ st.markdown("""
 
     .top-title-bar h2 {
         margin: 0;
-        font-size: 1.6rem; /* 標題大小在這裡調 */
+        font-size: 1.6rem;
         color: #262730;
         line-height: 1.2;
     }
 
-    /* 報價卡片容器：橫向排列並撐開 */
+    /* 報價卡片容器 */
     .quote-summary-card {
         display: flex;
         align-items: center;
@@ -69,18 +69,9 @@ st.markdown("""
         gap: 30px;
     }
 
-    /* 左側總額大字 */
-    .total-price-box {
-        min-width: 220px;
-    }
-    
-    .total-price-box .price {
-        font-size: 2.2rem; /* 加大字體 */
-        font-weight: bold;
-        color: #262730;
-    }
+    .total-price-box { min-width: 220px; }
+    .total-price-box .price { font-size: 2.2rem; font-weight: bold; color: #262730; }
 
-    /* 中間藍色計算式框 */
     .formula-box {
         background-color: #e8f0fe;
         padding: 15px 20px;
@@ -91,7 +82,6 @@ st.markdown("""
         flex-grow: 0;
     }
 
-    /* 右側三期款項 */
     .payment-phases {
         font-size: 0.9rem;
         color: #333;
@@ -101,16 +91,14 @@ st.markdown("""
         min-width: 180px;
     }
 
-    /* 4. [精簡修正] 避開標題列並消除多餘空白 */
+    /* 4. 內容區補償 */
     .block-container {
-        padding-top: 140px !important; /* 縮小到剛好避開 130px 的標題 */
-        margin-left: 0px !important; /* 確保沒有額外邊距 */
-        padding-left: 2rem !important; /* 這是內容與側邊欄的微小呼吸空間 */
+        padding-top: 140px !important;
+        margin-left: 0px !important;
+        padding-left: 2rem !important;
         max-width: 100% !important;
     }
-    }
 
-    /* 確保頂端標題字體夠大且不會變形 */
     .top-title-bar h2 {
         font-size: 1.6rem !important;
         font-weight: bold;
@@ -118,7 +106,6 @@ st.markdown("""
         min-width: 300px;
     }
 
-    /* 強制修正藍色框框與總額的左右排版 */
     .quote-summary-card {
         display: flex !important;
         align-items: center !important;
@@ -127,16 +114,6 @@ st.markdown("""
         flex-grow: 1;
     }
 
-    /* 強制修正藍色框框與總額的左右排版 */
-    .quote-summary-card {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-end;
-        gap: 20px;
-        flex-grow: 1;
-    }
-
-    /* 5. 淡色備註樣式 */
     .caption-text {
         color: #888888;
         font-size: 0.85rem;
@@ -144,72 +121,61 @@ st.markdown("""
         margin-bottom: 10px;
     }
 
-    .stMarkdown:has(.top-title-bar) {
-    line-height: 0;
-    }
-  
-    </style>
+    .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    <script>
-        const fixMobile = () => {
-            const doc = window.parent.document;
-            // 修正：同時檢查螢幕與視窗寬度，針對手機優化
-            const width = Math.min(window.parent.innerWidth, window.parent.screen.width);
-            const titleBar = doc.querySelector('.top-title-bar');
-            const mainContent = doc.querySelector('.block-container');
-            const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+    /* ==========================================
+       ⚠️ 關鍵：純 CSS 手機隔離修正 (寬度 < 768px)
+       ========================================== */
+    @media (max-width: 768px) {
+        /* 手機版標題列：由固定(fixed)改為相對(relative)，解決擋住內容的問題 */
+        .top-title-bar {
+            position: relative !important;
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+            height: auto !important;
+            width: 100% !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            padding-bottom: 20px !important;
+        }
 
-            if (width <= 768) {
-                if (titleBar) {
-                    titleBar.style.position = 'relative';
-                    titleBar.style.left = '0';
-                    titleBar.style.width = '100%';
-                    titleBar.style.height = 'auto';
-                    titleBar.style.padding = '20px';
-                    titleBar.style.flexDirection = 'column';
-                    titleBar.style.alignItems = 'flex-start';
-                }
-                if (mainContent) {
-                    mainContent.style.paddingTop = '20px';
-                    mainContent.style.paddingLeft = '1rem';
-                    mainContent.style.marginLeft = '0';
-                }
-                if (sidebar) {
-                    sidebar.style.minWidth = '100%';
-                    sidebar.style.width = '100%';
-                    sidebar.style.position = 'relative';
-                }
-            } else {
-                // 電腦版恢復：完全維持妳要求的原始數字
-                if (titleBar) {
-                    titleBar.style.position = 'fixed';
-                    titleBar.style.left = '0';
-                    titleBar.style.width = '100vw';
-                    titleBar.style.height = '130px';
-                    titleBar.style.paddingLeft = '280px';
-                    titleBar.style.flexDirection = 'row';
-                    titleBar.style.alignItems = 'center';
-                }
-                if (mainContent) {
-                    mainContent.style.paddingTop = '140px';
-                    mainContent.style.paddingLeft = '2rem';
-                }
-                if (sidebar) {
-                    sidebar.style.minWidth = '280px';
-                    sidebar.style.width = '280px';
-                }
-            }
-        };
+        /* 手機版報價卡片：橫向變縱向 */
+        .quote-summary-card {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            justify-content: flex-start !important;
+            gap: 15px !important;
+            width: 100% !important;
+        }
 
-        // 增加多種監聽，確保手機版一定會觸發
-        window.parent.addEventListener('resize', fixMobile);
-        window.parent.addEventListener('load', fixMobile);
-        window.parent.addEventListener('orientationchange', fixMobile);
+        /* 手機版側邊欄：取消 280px 鎖死 */
+        [data-testid="stSidebar"] {
+            min-width: 100% !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            position: relative !important;
+        }
+
+        /* 手機版內容區：取消 140px 頂部留白 */
+        .block-container {
+            padding-top: 20px !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        /* 修正手機版細項邊距 */
+        .total-price-box, .formula-box, .payment-phases {
+            min-width: 100% !important;
+            border-left: none !important;
+            padding-left: 0 !important;
+            margin-left: 0 !important;
+        }
         
-        // 延遲執行確保元件已經渲染
-        setTimeout(fixMobile, 300);
-        setTimeout(fixMobile, 1000);
-    </script>
+        [data-testid="stSidebarUserContent"] {
+            margin-top: 0rem !important;
+        }
+    }
+    </style>
     """, unsafe_allow_html=True)
 # ==========================================
 # 0. 資料庫初始化
