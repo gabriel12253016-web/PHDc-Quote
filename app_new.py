@@ -128,22 +128,21 @@ st.markdown("""
        2. 手機版強制修正：允許寬度超出並左右捲動
        ========================================== */
     @media (max-width: 768px) {
-        /* 徹底移除側邊欄與相關位移 */
+        /* 徹底移除側邊欄 */
         [data-testid="stSidebar"], [data-testid="stSidebarCollapsedControl"] {
             display: none !important;
         }
 
-        /* 標題列：強制固定在螢幕最上方，寬度填滿 */
+        /* 標題列：維持置頂，並確保高度不會壓縮 */
         .top-title-bar {
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
             width: 100% !important;
             height: auto !important;
-            padding: 15px !important;
+            padding: 20px 15px !important;
             flex-direction: column !important;
             align-items: flex-start !important;
-            padding-left: 15px !important; /* 取消 280px 補償 */
             z-index: 99999 !important;
             background: white !important;
         }
@@ -151,14 +150,14 @@ st.markdown("""
         .top-title-bar h2 {
             font-size: 1.2rem !important;
             min-width: 100% !important;
-            margin-bottom: 8px !important;
+            margin-bottom: 12px !important;
         }
 
-        /* 報價資訊調整為垂直小卡片，防止橫向切斷 */
+        /* 報價卡片垂直排列 */
         .quote-summary-card {
             flex-direction: column !important;
             align-items: flex-start !important;
-            gap: 10px !important;
+            gap: 12px !important;
             width: 100% !important;
         }
 
@@ -166,17 +165,13 @@ st.markdown("""
             width: 100% !important;
             min-width: 100% !important;
             border-left: none !important;
-            padding-left: 0 !important;
-            padding: 8px 0 !important;
+            padding: 5px 0 !important;
+            margin: 0 !important;
         }
 
-        .total-price-box .price {
-            font-size: 1.5rem !important;
-        }
-
-        /* 內容區補償：讓內容出現在標題列下方 */
+        /* 關鍵修正：增加補償高度至 380px，確保內容完全露出 */
         .block-container {
-            padding-top: 250px !important; /* 增加補償高度，避免被置頂標題遮擋 */
+            padding-top: 380px !important; 
             padding-left: 1rem !important;
             padding-right: 1rem !important;
             margin-left: 0 !important;
