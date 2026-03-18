@@ -66,7 +66,7 @@ st.markdown("""
     }
 
     /* 4. [精簡修正] 避開標題列並消除多餘空白 */
-    .block-container {
+    [data-testid="stAppViewBlockContainer"] {
         padding-top: 150px !important; /* 縮小到剛好避開 130px 的標題 */
     }
 
@@ -473,28 +473,26 @@ with col_left:
     # --- [渲染頂端凍結列] ---
     # 此段應放在 total_cost 算完後的 with col_left 底部
     st.markdown(f"""
-    <div class="top-title-bar">
-        <div class="title-group">
-            <h2>成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
+<div class="top-title-bar">
+    <div class="title-group">
+        <h2>成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
+    </div>
+    <div class="quote-summary-card">
+        <div class="total-price-box">
+            <div style="font-size:0.85rem; color:#888;">預估專案總額</div>
+            <div class="price">TWD {total_cost:,} 元</div>
         </div>
-        <div class="quote-summary-card">
-            <div class="total-price-box">
-                <div style="font-size:0.85rem; color:#888;">預估專案總額</div>
-                <div class="price">TWD {total_cost:,} 元</div>
-            </div>
-            
-            <div class="formula-box">
-                <b>計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) x {f_total_adj:.2f} = {total_cost:,}</b>
-            </div>
-
-            <div class="payment-phases">
-                前期 (30%)：{round(total_cost*0.3):,} 元<br>
-                期中 (40%)：{round(total_cost*0.4):,} 元<br>
-                結案 (30%)：{round(total_cost*0.3):,} 元
-            </div>
+        <div class="formula-box">
+            <b>計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) x {f_total_adj:.2f} = {total_cost:,}</b>
+        </div>
+        <div class="payment-phases">
+            前期 (30%)：{round(total_cost*0.3):,} 元<br>
+            期中 (40%)：{round(total_cost*0.4):,} 元<br>
+            結案 (30%)：{round(total_cost*0.3):,} 元
         </div>
     </div>
-    """, unsafe_allow_html=True)
+</div>
+""", unsafe_allow_html=True)
     
     # --- 3. 調整額度 (簡約條列版) ---
     st.markdown("---")
