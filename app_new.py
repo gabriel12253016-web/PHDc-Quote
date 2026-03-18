@@ -171,7 +171,7 @@ st.markdown("""
 
         /* 關鍵修正：增加補償高度至 380px，確保內容完全露出 */
         .block-container {
-            padding-top: 380px !important; 
+            padding-top: 320px !important;  /* 原本是 380px，改為 320px 會更緊湊 */
             padding-left: 1rem !important;
             padding-right: 1rem !important;
             margin-left: 0 !important;
