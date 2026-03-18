@@ -17,6 +17,20 @@ st.set_page_config(
 )
 st.markdown("""
     <style>
+    /* ⚠️ 強制恢復側邊欄按鈕與箭頭 */
+    [data-testid="stSidebarCollapsedControl"] {
+        display: block !important;
+        z-index: 10001 !important; /* 確保高於 9999 的標題列 */
+        top: 10px !important;
+        left: 10px !important;
+        color: #262730 !important;
+    }
+
+    /* 修正側邊欄內容，避免被標題列擋住 */
+    section[data-testid="stSidebar"] {
+        z-index: 10002 !important;
+    }
+    
     /* 1. 隱藏原生頂部黑條 */
     header, [data-testid="stHeader"] { display: none !important; }
 
