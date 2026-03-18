@@ -127,59 +127,57 @@ st.markdown("""
     /* ==========================================
        2. 手機版強制修正：允許寬度超出並左右捲動
        ========================================== */
+    /* ==========================================
+       2. 手機版優化：修正標題遮擋內容問題
+       ========================================== */
     @media (max-width: 768px) {
-        /* 1. 調整手機版頂端標題列的背景顏色 (例如改為深色或妳指定的顏色) */
+        /* 徹底移除側邊欄 */
+        [data-testid="stSidebar"], [data-testid="stSidebarCollapsedControl"] {
+            display: none !important;
+        }
+
+        /* 標題列：維持置頂，並確保高度不會壓縮 */
         .top-title-bar {
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
             width: 100% !important;
             height: auto !important;
-            padding: 15px !important;
+            padding: 20px 15px !important;
             flex-direction: column !important;
             align-items: flex-start !important;
             z-index: 99999 !important;
-            
-            /* --- 背景顏色修改處 --- */
-            background-color: #262730 !important; /* 這裡改為深色，妳可以換成任何 HEX 色碼 */
-            border-bottom: 1px solid #333 !important;
+            background: white !important;
         }
 
-        /* 2. 去掉文字標題並更換為 SVG */
         .top-title-bar h2 {
-            display: block !important;
-            width: 180px !important; /* 根據 SVG 寬度調整 */
-            height: 50px !important;  /* 根據 SVG 高度調整 */
+            font-size: 1.2rem !important;
+            min-width: 100% !important;
             margin-bottom: 12px !important;
-            
-            /* 隱藏原本的文字 */
-            font-size: 0 !important; 
-            color: transparent !important;
-            
-            /* 嵌入 SVG 作為背景圖 (請將下方的 URL 替換為妳的 SVG 原始碼轉碼或路徑) */
-            background-image: url('data:image/svg+xml;utf8,<svg ...>...</svg>') !important;
-            background-repeat: no-repeat !important;
-            background-size: contain !important;
-            background-position: left center !important;
         }
 
-        /* 3. 調整標題列內文字的顏色 (配合深色背景) */
-        .total-price-box .price, 
-        .total-price-box span,
-        .payment-phases {
-            color: white !important;
-        }
-        
-        .formula-box {
-            background-color: rgba(255, 255, 255, 0.1) !important;
-            color: #80afff !important;
+        /* 報價卡片垂直排列 */
+        .quote-summary-card {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 12px !important;
+            width: 100% !important;
         }
 
-        /* 4. 內容垂直位移微調 */
+        .total-price-box, .formula-box, .payment-phases {
+            width: 100% !important;
+            min-width: 100% !important;
+            border-left: none !important;
+            padding: 5px 0 !important;
+            margin: 0 !important;
+        }
+
+        /* 關鍵修正：增加補償高度至 380px，確保內容完全露出 */
         .block-container {
-            padding-top: 330px !important; 
+            padding-top: 380px !important; 
             padding-left: 1rem !important;
             padding-right: 1rem !important;
+            margin-left: 0 !important;
         }
     }
     </style>
