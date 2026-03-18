@@ -502,6 +502,7 @@ with col_left:
     n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
    # ⚠️ 維持完全貼左格式：調整左側高度對齊與右側藍框寬度
+   # ⚠️ 修正：補回三期款，並維持繁體中文、左側間距與藍框不換行格式
     st.markdown(f"""
 <div class="top-title-bar">
 <div style="min-width: 380px; padding-left: 20px; flex-shrink: 0;">
