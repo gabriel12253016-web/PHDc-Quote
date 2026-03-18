@@ -77,7 +77,7 @@ st.markdown("""
 
     /* 4. 內容區主體位移：防止被標題遮住第一行 */
     .main .block-container {
-        padding-top: 150px !important; 
+        padding-top: 120px !important; 
     }
 
     /* 5. 妳原本的淡色備註樣式 */
