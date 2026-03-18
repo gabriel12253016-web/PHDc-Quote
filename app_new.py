@@ -29,20 +29,44 @@ st.markdown("""
     }
 
     /* 3. 建立頂端固定標題區 (中間的標題列) */
+    /* 3. 建立頂端固定標題區 (更新高度與佈局) */
     .top-title-bar {
         position: fixed; 
         top: 0; 
         left: 0; 
         width: 100vw; 
-        height: 75px; 
+        height: 130px; /* 這裡高度改為 130px 以容納多行資訊 */
         background-color: white; 
         display: flex; 
         align-items: center; 
+        justify-content: space-between; /* 關鍵：讓標題靠左，報價資訊靠右 */
         z-index: 9999; 
         border-bottom: 2px solid #f0f2f6;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        /* 關鍵位移：避開左側側邊欄 */
         padding-left: 280px; 
+        padding-right: 40px; /* 右側留一點邊距 */
+    }
+
+    .top-title-bar h2 {
+        margin: 0;
+        font-size: 1.6rem;
+        color: #262730;
+        line-height: 1.2;
+    }
+
+    /* 以下為新增的內部排版組件，不影響外部位移邏輯 */
+    .quote-summary-card { display: flex; align-items: center; gap: 25px; }
+    
+    .formula-box {
+        background-color: #e8f0fe; padding: 10px 15px; border-radius: 8px;
+        font-size: 0.85rem; color: #1967d2; line-height: 1.4;
+    }
+    .total-price-box { text-align: right; min-width: 150px; }
+    .total-price-box .price { font-size: 1.8rem; font-weight: bold; color: #262730; }
+    
+    .payment-phases {
+        font-size: 0.8rem; color: #666; border-left: 1px solid #ddd;
+        padding-left: 20px; line-height: 1.6;
     }
 
     .top-title-bar h2 {
@@ -53,7 +77,7 @@ st.markdown("""
 
     /* 4. 內容區主體位移：防止被標題遮住第一行 */
     .main .block-container {
-        padding-top: 100px !important; 
+        padding-top: 150px !important; 
     }
 
     /* 5. 妳原本的淡色備註樣式 */
@@ -436,6 +460,30 @@ with col_left:
     n_reanalysis = int(total_cost // st.session_state.s_reanalysis)
     n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
+    # 2. 渲染頂端凍結列 (雖然寫在 col_left 裡，但 CSS 會把它拉到螢幕最頂端)
+    st.markdown(f"""
+        <div class="top-title-bar">
+            <div class="title-group">
+                <h2>成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
+            </div>
+            <div class="quote-summary-card">
+                <div class="formula-box">
+                    💡 預估總額 = (基礎成本 + 服務費) × 合作專案調整<br>
+                    <b>計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) × {f_total_adj:.2f} = {total_cost:,}</b>
+                </div>
+                <div class="total-price-box">
+                    <div style="font-size:0.85rem; color:#888;">預估專案總額</div>
+                    <div class="price">TWD {total_cost:,} 元</div>
+                </div>
+                <div class="payment-phases">
+                    前期 (30%)：{round(total_cost*0.3):,} 元<br>
+                    期中 (40%)：{round(total_cost*0.4):,} 元<br>
+                    結案 (30%)：{round(total_cost*0.3):,} 元
+                </div>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+    
     # --- 3. 調整額度 (簡約條列版) ---
     st.markdown("---")
     st.write("#### 3. 本案預計調整額度")
