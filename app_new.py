@@ -148,19 +148,19 @@ st.markdown("""
     line-height: 0;
     }
   
-    </style>
+   </style>
 
     <script>
         const fixMobile = () => {
-            // 使用 window.parent.innerWidth 確保抓到手機螢幕的實際寬度
-            const width = window.parent.innerWidth;
+            // 使用 window.parent 因為內容在 iframe 裡面
             const doc = window.parent.document;
+            const width = window.parent.innerWidth;
             const titleBar = doc.querySelector('.top-title-bar');
             const mainContent = doc.querySelector('.block-container');
             const sidebar = doc.querySelector('[data-testid="stSidebar"]');
 
             if (width <= 768) {
-                // 📱 手機版：取消 fixed 定位，讓標題列與內容垂直排列
+                /* 📱 手機模式：解除所有固定與位移 */
                 if (titleBar) {
                     titleBar.style.position = 'relative';
                     titleBar.style.left = '0';
@@ -168,7 +168,6 @@ st.markdown("""
                     titleBar.style.height = 'auto';
                     titleBar.style.padding = '15px';
                     titleBar.style.flexDirection = 'column';
-                    titleBar.style.zIndex = '1';
                 }
                 if (mainContent) {
                     mainContent.style.paddingTop = '10px';
@@ -180,25 +179,25 @@ st.markdown("""
                     sidebar.style.width = '100%';
                 }
             } else {
-                // 💻 電腦版：恢復妳原本要求的固定數字
+                /* 💻 電腦模式：精確維持妳要求的原始數字 */
                 if (titleBar) {
                     titleBar.style.position = 'fixed';
                     titleBar.style.left = '0';
                     titleBar.style.width = '100vw';
                     titleBar.style.height = '130px';
                     titleBar.style.paddingLeft = '280px';
-                    titleBar.style.zIndex = '9999';
+                    titleBar.style.flexDirection = 'row';
                 }
                 if (mainContent) {
                     mainContent.style.paddingTop = '140px';
+                    mainContent.style.paddingLeft = '2rem';
                 }
             }
         };
 
         // 監聽縮放與載入
         window.parent.addEventListener('resize', fixMobile);
-        // 延遲執行確保元件已經渲染出來
-        setTimeout(fixMobile, 300);
+        setTimeout(fixMobile, 200);
     </script>
     """, unsafe_allow_html=True)
 # ==========================================
