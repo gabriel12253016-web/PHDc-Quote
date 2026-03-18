@@ -77,8 +77,13 @@ st.markdown("""
 
     /* 4. 內容區主體位移：徹底避開 130px 高度的標題列 */
     .main .block-container {
-        padding-top: 180px !important; /* 增加到 180 */
-        margin-top: 20px !important;   /* 額外增加外邊距確保推開 */
+        padding-top: 200px !important; /* 增加到 200px */
+        margin-top: 0px !important;
+    }
+
+    /* 針對 Streamlit 內部的列容器也強制位移 */
+    [data-testid="stVerticalBlock"] > [data-testid="stHorizontalBlock"] {
+        margin-top: 20px !important;
     }
 
     /* 5. 妳原本的淡色備註樣式 */
