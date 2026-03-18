@@ -9,7 +9,12 @@ import os
 # ==========================================
 # 網頁配置與 CSS 固定右側欄位
 # ==========================================
-st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
+st.set_page_config(
+    page_title="成大群體健康數據中心 - 合作報價系統", 
+    page_icon="📊", 
+    layout="wide",
+    initial_sidebar_state="expanded" # 確保重新整理後會自動打開
+)
 st.markdown("""
     <style>
     /* 1. 隱藏原生頂部黑條 */
