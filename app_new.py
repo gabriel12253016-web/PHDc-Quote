@@ -128,37 +128,37 @@ st.markdown("""
        2. 手機版強制修正：允許寬度超出並左右捲動
        ========================================== */
     @media (max-width: 768px) {
-        /* 手機版不鎖死 1200px，回歸正常垂直流動 */
-        .stApp, .stMain, .stAppViewContainer {
-            min-width: 100% !important;
-            width: 100% !important;
+        /* 徹底移除側邊欄與相關位移 */
+        [data-testid="stSidebar"], [data-testid="stSidebarCollapsedControl"] {
+            display: none !important;
         }
 
-        /* 標題列：改為隨頁面滾動的「相對定位」，確保不擋住下方表單 */
+        /* 標題列：強制固定在螢幕最上方，寬度填滿 */
         .top-title-bar {
-            position: relative !important;
-            padding: 20px !important;
-            height: auto !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
             width: 100% !important;
-            flex-direction: column !important; /* 橫向變縱向 */
+            height: auto !important;
+            padding: 15px !important;
+            flex-direction: column !important;
             align-items: flex-start !important;
-            z-index: 1 !important;
-            box-shadow: none !important;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 20px !important;
+            padding-left: 15px !important; /* 取消 280px 補償 */
+            z-index: 99999 !important;
+            background: white !important;
         }
 
         .top-title-bar h2 {
-            font-size: 1.3rem !important;
+            font-size: 1.2rem !important;
             min-width: 100% !important;
-            margin-bottom: 15px !important;
+            margin-bottom: 8px !important;
         }
 
-        /* 報價卡片：在手機上垂直堆疊顯示 */
+        /* 報價資訊調整為垂直小卡片，防止橫向切斷 */
         .quote-summary-card {
             flex-direction: column !important;
             align-items: flex-start !important;
-            gap: 15px !important;
+            gap: 10px !important;
             width: 100% !important;
         }
 
@@ -167,31 +167,19 @@ st.markdown("""
             min-width: 100% !important;
             border-left: none !important;
             padding-left: 0 !important;
-            margin: 5px 0 !important;
+            padding: 8px 0 !important;
         }
 
         .total-price-box .price {
-            font-size: 1.8rem !important;
+            font-size: 1.5rem !important;
         }
 
-        /* 側邊欄：手機版隱藏或放在內容最上方 */
-        [data-testid="stSidebar"] {
-            position: relative !important;
-            width: 100% !important;
-            min-width: 100% !important;
-            max-width: 100% !important;
-            height: auto !important;
-        }
-
-        /* 內容區：取消電腦版 140px 大補償，改為小邊距 */
+        /* 內容區補償：讓內容出現在標題列下方 */
         .block-container {
-            padding-top: 10px !important;
+            padding-top: 250px !important; /* 增加補償高度，避免被置頂標題遮擋 */
             padding-left: 1rem !important;
             padding-right: 1rem !important;
-        }
-        
-        [data-testid="stSidebarUserContent"] {
-            margin-top: 0rem !important;
+            margin-left: 0 !important;
         }
     }
     </style>
