@@ -501,7 +501,7 @@ with col_left:
     n_reanalysis = int(total_cost // st.session_state.s_reanalysis)
     n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
-   # ⚠️ 最終修正：確保文字標題在上、金額在下，且與左側標題完全拉開距離
+   # ⚠️ 維持完全貼左格式：調整左側高度對齊與右側藍框寬度
     st.markdown(f"""
 <div class="top-title-bar">
 <div style="min-width: 380px; padding-left: 20px; flex-shrink: 0;">
@@ -509,10 +509,10 @@ with col_left:
 </div>
 <div class="quote-summary-card" style="display: flex; align-items: center; justify-content: space-between; flex-grow: 1;">
 <div class="total-price-box" style="min-width: 250px; margin-left: 60px; text-align: left;">
-<div style="font-size: 0.9rem; font-weight: bold; color: #666; margin-bottom: 5px; display: block;">預估專案總額</div>
+<div style="font-size: 0.9rem; font-weight: bold; color: #666; margin-bottom: 15px; display: block;">預估專案總額</div>
 <div class="price" style="font-size: 2.2rem; font-weight: bold; color: #262730; display: block; line-height: 1;">TWD {total_cost:,} 元</div>
 </div>
-<div class="formula-box" style="background-color: #e8f0fe; padding: 12px 18px; border-radius: 10px; font-size: 0.85rem; color: #1967d2; margin-left: 20px; flex-shrink: 1;">
+<div class="formula-box" style="background-color: #e8f0fe; padding: 15px 25px; border-radius: 10px; font-size: 0.85rem; color: #1967d2; margin-left: 20px; flex-shrink: 0; min-width: 480px; white-space: nowrap;">
 💡 預估總額 = (基礎成本 + 服務費) x 合作專案調整<br>
 計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) x {f_total_adj:.2f} = {total_cost:,}
 </div>
