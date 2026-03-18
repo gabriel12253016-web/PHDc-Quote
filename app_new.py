@@ -126,36 +126,39 @@ st.markdown("""
     /* ==========================================
        ⚠️ 最終修正：手機版強制「電腦模式」
        ========================================== */
+    /* ==========================================
+       2. 手機版強制修正：允許寬度超出並左右捲動
+       ========================================== */
     @media (max-width: 768px) {
-        /* 強制 App 容器不准收縮 */
-        .stApp {
-            min-width: 1200px !important;
-        }
-
-        /* 內容區鎖死寬度 */
-        .block-container {
-            min-width: 1200px !important;
-            padding-left: 2rem !important;
-        }
-
-        /* 標題列：改為相對於內容寬度的 1200px */
-        .top-title-bar {
-            position: absolute !important; /* 隨畫布滾動，不會浮在螢幕固定位置擋住 */
-            width: 1200px !important;
-            left: 0 !important;
-            padding-left: 280px !important;
-        }
-
-        /* 側邊欄：強制固定在 1200px 畫布的最左邊 */
-        [data-testid="stSidebar"] {
-            position: absolute !important;
-            left: 0 !important;
-            display: block !important;
-            min-width: 280px !important;
-            width: 280px !important;
-        }
+        /* 讓畫布鎖死在 1200px 寬度，不准手機自動壓縮內容 */
+        .stApp { overflow-x: auto !important; min-width: 1200px !important; }
+        .block-container { min-width: 1200px !important; }
+        
+        /* 標題與側邊欄改為 absolute，讓它們釘在 1200px 的最左端 */
+        .top-title-bar { position: absolute !important; width: 1200px !important; left: 0 !important; }
+        [data-testid="stSidebar"] { position: absolute !important; left: 0 !important; min-width: 280px !important; width: 280px !important; }
     }
     </style>
+
+    <script>
+        // 核心修正：強制手機瀏覽器將視角設為 1200px 寬，達成「縮小看全景」的效果
+        const fixViewport = () => {
+            const viewport = window.parent.document.querySelector('meta[name="viewport"]');
+            if (viewport) {
+                if (window.innerWidth <= 768) {
+                    // 手機：強制 1200px 渲染，initial-scale 設為 0.35 讓畫面一進去就是縮小的
+                    viewport.setAttribute('content', 'width=1200, initial-scale=0.35, user-scalable=yes');
+                } else {
+                    // 電腦：恢復預設
+                    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+                }
+            }
+        };
+        
+        // 監聽並執行
+        window.parent.addEventListener('resize', fixViewport);
+        setTimeout(fixViewport, 200);
+    </script>
     """, unsafe_allow_html=True)
 # ==========================================
 # 0. 資料庫初始化
