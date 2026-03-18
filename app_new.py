@@ -17,12 +17,13 @@ st.markdown("""
     header, [data-testid="stHeader"], [data-testid="stSidebarCollapsedControl"], button[kind="header_button"] { 
         display: none !important; 
     }
-    /* 核心修正：鎖死側邊欄寬度，不讓滑鼠拖動調整 */
+
+    /* 核心修正：將側邊欄寬度精確鎖死在 280px，與妳的標題 padding 一致 */
     [data-testid="stSidebar"] {
-        min-width: 21rem !important;
-        max-width: 21rem !important;
-        width: 21rem !important;
-        z-index: 10000 !important; /* 確保側邊欄高於標題列 (9999) */
+        min-width: 280px !important;
+        max-width: 280px !important;
+        width: 280px !important;
+        z-index: 10000 !important; /* 確保高於標題列 (9999) */
     }
 
     /* 2. 側邊欄貼齊頂端 */
