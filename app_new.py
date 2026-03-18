@@ -147,76 +147,59 @@ st.markdown("""
     .stMarkdown:has(.top-title-bar) {
     line-height: 0;
     }
-
-   /* 📱 手機版 RWD 強制重置：等比縮放並取消固定定位 */
-    @media (max-width: 768px) {
-        /* 1. 讓頂端標題區不再「浮動」，改為隨頁面捲動的普通區塊 */
-        .top-title-bar {
-            position: relative !important; 
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: auto !important; /* 高度隨內容自動撐開 */
-            flex-direction: column !important; /* 橫向變縱向堆疊 */
-            align-items: flex-start !important;
-            padding: 20px !important;
-            z-index: 1 !important;
-            box-shadow: none !important;
-            border-bottom: 1px solid #eee;
-        }
-
-        /* 2. 標題字體等比縮小 */
-        .top-title-bar h2 {
-            font-size: 1.2rem !important;
-            min-width: 100% !important;
-            margin-bottom: 10px !important;
-        }
-
-        /* 3. 報價資訊卡片：在手機上改為垂直排列，不強擠在同一行 */
-        .quote-summary-card {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 10px !important;
-            width: 100% !important;
-            justify-content: flex-start !important;
-        }
-
-        /* 4. 側邊欄重置：手機版不鎖死 280px，讓它回歸原生寬度或隱藏 */
-        [data-testid="stSidebar"] {
-            min-width: 100% !important;
-            max-width: 100% !important;
-            width: 100% !important;
-            position: relative !important;
-        }
-
-        /* 5. 內容區塊重置：取消電腦版的大位移 (140px) */
-        .block-container {
-            padding-top: 10px !important;
-            padding-left: 15px !important;
-            padding-right: 15px !important;
-            margin-left: 0px !important;
-        }
-
-        /* 6. 修正總額大字與藍色框框在手機上的寬度 */
-        .total-price-box, .formula-box, .payment-phases {
-            min-width: 100% !important;
-            width: 100% !important;
-            margin: 5px 0 !important;
-            padding-left: 0px !important;
-            border-left: none !important;
-        }
-        
-        .total-price-box .price {
-            font-size: 1.8rem !important;
-        }
-
-        /* 7. 移除手機版不必要的負邊距 */
-        [data-testid="stSidebarUserContent"] {
-            margin-top: 0rem !important;
-        }
-    }
-   
+  
     </style>
+
+    <script>
+        const fixMobile = () => {
+            // 使用 window.parent.innerWidth 確保抓到手機螢幕的實際寬度
+            const width = window.parent.innerWidth;
+            const doc = window.parent.document;
+            const titleBar = doc.querySelector('.top-title-bar');
+            const mainContent = doc.querySelector('.block-container');
+            const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+
+            if (width <= 768) {
+                // 📱 手機版：取消 fixed 定位，讓標題列與內容垂直排列
+                if (titleBar) {
+                    titleBar.style.position = 'relative';
+                    titleBar.style.left = '0';
+                    titleBar.style.width = '100%';
+                    titleBar.style.height = 'auto';
+                    titleBar.style.padding = '15px';
+                    titleBar.style.flexDirection = 'column';
+                    titleBar.style.zIndex = '1';
+                }
+                if (mainContent) {
+                    mainContent.style.paddingTop = '10px';
+                    mainContent.style.paddingLeft = '15px';
+                    mainContent.style.marginLeft = '0';
+                }
+                if (sidebar) {
+                    sidebar.style.minWidth = '100%';
+                    sidebar.style.width = '100%';
+                }
+            } else {
+                // 💻 電腦版：恢復妳原本要求的固定數字
+                if (titleBar) {
+                    titleBar.style.position = 'fixed';
+                    titleBar.style.left = '0';
+                    titleBar.style.width = '100vw';
+                    titleBar.style.height = '130px';
+                    titleBar.style.paddingLeft = '280px';
+                    titleBar.style.zIndex = '9999';
+                }
+                if (mainContent) {
+                    mainContent.style.paddingTop = '140px';
+                }
+            }
+        };
+
+        // 監聽縮放與載入
+        window.parent.addEventListener('resize', fixMobile);
+        // 延遲執行確保元件已經渲染出來
+        setTimeout(fixMobile, 300);
+    </script>
     """, unsafe_allow_html=True)
 # ==========================================
 # 0. 資料庫初始化
