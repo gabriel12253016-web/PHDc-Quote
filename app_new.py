@@ -12,15 +12,16 @@ import os
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* 1. 徹底消滅側邊欄收合箭頭 (包括所有可能的圖示與按鈕容器) */
+    /* 1. 暴力消滅：針對所有可能出現收合箭頭的容器與按鈕 */
     header, [data-testid="stHeader"], 
-    [data-testid="stSidebarCollapsedControl"], 
-    button[kind="header_button"],
-    .st-emotion-cache-6qob1r button { 
+    [data-testid="stSidebarCollapsedControl"],
+    .st-emotion-cache-6qob1r button,
+    .st-emotion-cache-15ec669 button,
+    section[data-testid="stSidebar"] button { 
         display: none !important; 
     }
 
-    /* 2. 鎖死側邊欄寬度並推到頂端，覆蓋按鈕殘留空間 */
+    /* 2. 側邊欄固定寬度 (維持 280px) */
     [data-testid="stSidebar"] {
         min-width: 280px !important;
         max-width: 280px !important;
@@ -30,14 +31,9 @@ st.markdown("""
 
     [data-testid="stSidebarUserContent"] {
         padding-top: 0rem !important;
-        margin-top: -4rem !important; /* 加大向上補償，把按鈕位置壓掉 */
+        margin-top: -4rem !important;
     }
 
-    /* 2. 側邊欄貼齊頂端 */
-    [data-testid="stSidebarUserContent"] {
-        padding-top: 0rem !important;
-        margin-top: -3.5rem !important;
-    }
     .st-emotion-cache-6qob1r { padding-top: 0rem !important; }
 
     /* 3. 建立頂端固定標題區 */
@@ -108,6 +104,10 @@ st.markdown("""
     /* 4. [精簡修正] 避開標題列並消除多餘空白 */
     .block-container {
         padding-top: 140px !important; /* 縮小到剛好避開 130px 的標題 */
+        margin-left: 0px !important; /* 確保沒有額外邊距 */
+        padding-left: 1rem !important; /* 這是內容與側邊欄的微小呼吸空間 */
+        max-width: 100% !important;
+    }
     }
 
     /* 確保頂端標題字體夠大且不會變形 */
