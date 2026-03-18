@@ -34,27 +34,30 @@ st.markdown("""
     /* 1. 隱藏原生頂部黑條 */
     header, [data-testid="stHeader"] { display: none !important; }
 
-    /* 2. 側邊欄貼齊頂端 */
-    [data-testid="stSidebarUserContent"] {
-        padding-top: 0rem !important;
-        margin-top: -3.5rem !important;
+    /* 2. 強制把側邊欄箭頭按鈕固定在最左上角，並確保它在最前面 */
+    [data-testid="stSidebarCollapsedControl"] {
+        display: block !important;
+        position: fixed !important;
+        top: 20px !important;
+        left: 10px !important;
+        z-index: 100000 !important; /* 給它一個誇張的層級 */
     }
     .st-emotion-cache-6qob1r { padding-top: 0rem !important; }
 
     /* 3. 建立頂端固定標題區 */
     .top-title-bar {
         position: fixed; 
-        top: 0; left: 0; 
-        width: 100vw; 
+        top: 0; left: 50px; 
+        right: 100vw; 
         height: 130px; /* 這裡改回 130px 比較不會擠 */
         background-color: white; 
         display: flex; 
         align-items: center; 
         justify-content: space-between; 
-        z-index: 9999; 
+        z-index: 999; 
         border-bottom: 2px solid #f0f2f6;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        padding-left: 280px; 
+        padding-left: 230px; 
         padding-right: 40px;
     }
 
