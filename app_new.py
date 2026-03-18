@@ -124,57 +124,80 @@ st.markdown("""
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
     /* ==========================================
-       ⚠️ 關鍵：純 CSS 手機隔離修正 (寬度 < 768px)
+       ⚠️ 最終修正：手機版 RWD 隔離與重置
        ========================================== */
     @media (max-width: 768px) {
-        /* 手機版標題列：由固定(fixed)改為相對(relative)，解決擋住內容的問題 */
+        /* 1. 恢復手機版 Header 顯示，否則內容會亂跳 */
+        header, [data-testid="stHeader"] { 
+            display: flex !important; 
+            height: 3rem !important;
+        }
+
+        /* 2. 標題列：由固定(fixed)改為相對(relative)，寬度設為 100% */
         .top-title-bar {
             position: relative !important;
-            padding-left: 20px !important;
-            padding-right: 20px !important;
+            padding: 20px !important; /* 蓋掉電腦版的 280px */
             height: auto !important;
             width: 100% !important;
             flex-direction: column !important;
             align-items: flex-start !important;
-            padding-bottom: 20px !important;
+            left: 0 !important;
+            z-index: 1 !important;
+            box-shadow: none !important;
+            border-bottom: 1px solid #eee;
         }
 
-        /* 手機版報價卡片：橫向變縱向 */
-        .quote-summary-card {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            justify-content: flex-start !important;
-            gap: 15px !important;
-            width: 100% !important;
-        }
-
-        /* 手機版側邊欄：取消 280px 鎖死 */
-        [data-testid="stSidebar"] {
+        /* 3. 標題文字縮小避免爆版 */
+        .top-title-bar h2 {
+            font-size: 1.2rem !important;
             min-width: 100% !important;
-            max-width: 100% !important;
-            width: 100% !important;
-            position: relative !important;
+            margin-bottom: 10px !important;
         }
 
-        /* 手機版內容區：取消 140px 頂部留白 */
+        /* 4. 報價卡片：強制改為垂直排列 */
+        .quote-summary-card {
+            display: block !important;
+            width: 100% !important;
+            margin-top: 10px !important;
+        }
+
+        /* 5. 側邊欄：恢復手機版預設行為 */
+        [data-testid="stSidebar"] {
+            min-width: 0px !important;
+            max-width: 100vw !important;
+            width: auto !important;
+        }
+
+        /* 6. 內容區：取消電腦版的 140px 留白 */
         .block-container {
-            padding-top: 20px !important;
+            padding-top: 1rem !important;
             padding-left: 1rem !important;
             padding-right: 1rem !important;
+            margin-top: 0px !important;
         }
 
-        /* 修正手機版細項邊距 */
+        /* 7. 細項重置：取消左邊界與縮進 */
         .total-price-box, .formula-box, .payment-phases {
-            min-width: 100% !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            margin: 10px 0 !important;
+            padding: 10px 0 !important;
             border-left: none !important;
-            padding-left: 0 !important;
-            margin-left: 0 !important;
         }
-        
+
+        .total-price-box .price {
+            font-size: 1.8rem !important;
+        }
+
+        .payment-phases {
+            border-top: 1px solid #eee;
+            padding-top: 15px !important;
+        }
+
         [data-testid="stSidebarUserContent"] {
             margin-top: 0rem !important;
         }
-    }
+    }}
     </style>
     """, unsafe_allow_html=True)
 # ==========================================
