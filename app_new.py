@@ -502,21 +502,27 @@ with col_left:
     n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
     # --- [渲染頂端凍結列] ---
-    # ⚠️ 注意：下面的 HTML 代碼必須「靠左邊緣貼齊」，不要跟著 Python 縮進
+    # ⚠️ 修正：標題重新加入 + 確保橫向排版空間
     st.markdown(f"""
 <div class="top-title-bar">
+    <div style="min-width: 300px; padding-right: 20px;">
+        <h2 style="margin:0; font-size:1.5rem; color:#262730; line-height:1.2;">
+            成大群體健康數據中心 (PHDc)<br>合作報價系統
+        </h2>
+    </div>
+
     <div class="quote-summary-card">
-        <div class="total-price-box">
-            <div style="font-size:1.1rem; font-weight:bold; color:#333; margin-bottom:5px;">預估專案總額</div>
-            <div class="price">TWD {total_cost:,} 元</div>
+        <div class="total-price-box" style="min-width: 220px;">
+            <div style="font-size:0.9rem; font-weight:bold; color:#666;">預估專案總額</div>
+            <div class="price" style="font-size: 2rem; font-weight: bold;">TWD {total_cost:,} 元</div>
         </div>
         
-        <div class="formula-box">
+        <div class="formula-box" style="flex-shrink: 1;">
             💡 預估總額 = (基礎成本 + 服務費) x 合作專案調整<br>
             計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) x {f_total_adj:.2f} = {total_cost:,}
         </div>
 
-        <div class="payment-phases">
+        <div class="payment-phases" style="min-width: 160px;">
             <b>前期 (30%)：</b> {round(total_cost*0.3):,} 元<br>
             <b>期中 (40%)：</b> {round(total_cost*0.4):,} 元<br>
             <b>結案 (30%)：</b> {round(total_cost*0.3):,} 元
