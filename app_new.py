@@ -144,7 +144,9 @@ st.markdown("""
             flex-direction: column !important;
             align-items: flex-start !important;
             z-index: 99999 !important;
-            background: white !important;
+            background-color: #f8f9fb !important; 
+            border-bottom: 1px solid #eee !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03) !important;
         }
 
         .top-title-bar h2 {
