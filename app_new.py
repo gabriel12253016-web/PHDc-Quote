@@ -124,50 +124,35 @@ st.markdown("""
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
     /* ==========================================
-       ⚠️ 手機版強制等比呈現 (支援水平捲動看側邊欄)
+       ⚠️ 最終修正：手機版強制「電腦模式」
        ========================================== */
     @media (max-width: 768px) {
-        /* 1. 讓整體 App 背景寬度鎖死，允許水平捲動 */
+        /* 強制 App 容器不准收縮 */
         .stApp {
             min-width: 1200px !important;
         }
 
-        /* 2. 標題列：改為 absolute，讓它鎖在 1200px 的最左端，而非螢幕的最左端 */
-        .top-title-bar {
-            position: absolute !important; 
-            top: 0 !important;
-            left: 0 !important;
-            width: 1200px !important; /* 跟隨鎖定的內容寬度 */
-            min-width: 1200px !important;
-            padding-left: 280px !important; /* 確保閃開左邊 280px 的空間給側邊欄 */
-            height: 130px !important;
-            display: flex !important;
-            flex-direction: row !important;
-        }
-
-        /* 3. 側邊欄：強制顯示並鎖死在 280px */
-        [data-testid="stSidebar"] {
-            position: absolute !important;
-            min-width: 280px !important;
-            max-width: 280px !important;
-            width: 280px !important;
-            height: 100% !important;
-            z-index: 10000 !important;
-        }
-
-        /* 4. 內容區補償：維持電腦版數字 */
+        /* 內容區鎖死寬度 */
         .block-container {
             min-width: 1200px !important;
-            padding-top: 140px !important;
             padding-left: 2rem !important;
-            margin-left: 0px !important;
         }
 
-        /* 5. 確保報價卡片橫向排列不縮放 */
-        .quote-summary-card {
-            display: flex !important;
-            flex-direction: row !important;
-            min-width: 600px !important;
+        /* 標題列：改為相對於內容寬度的 1200px */
+        .top-title-bar {
+            position: absolute !important; /* 隨畫布滾動，不會浮在螢幕固定位置擋住 */
+            width: 1200px !important;
+            left: 0 !important;
+            padding-left: 280px !important;
+        }
+
+        /* 側邊欄：強制固定在 1200px 畫布的最左邊 */
+        [data-testid="stSidebar"] {
+            position: absolute !important;
+            left: 0 !important;
+            display: block !important;
+            min-width: 280px !important;
+            width: 280px !important;
         }
     }
     </style>
