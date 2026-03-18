@@ -65,17 +65,26 @@ st.markdown("""
         padding-left: 20px; line-height: 1.6;
     }
 
-    /* 4. 徹底位移內容區：鎖定 Streamlit 主容器 */
-    .stMain [data-testid="stVerticalBlock"] {
-        padding-top: 150px !important; 
+    /* 4. [精簡修正] 避開標題列並消除多餘空白 */
+    .block-container {
+        padding-top: 150px !important; /* 縮小到剛好避開 130px 的標題 */
     }
-    
-    /* 針對標題字體大小的最後修正 */
+
+    /* 確保頂端標題字體夠大且不會變形 */
     .top-title-bar h2 {
-        margin: 0;
-        font-size: 1.8rem !important; /* 強制加大 */
-        font-weight: bold !important;
-        color: #262730;
+        font-size: 1.6rem !important;
+        font-weight: bold;
+        line-height: 1.2;
+        min-width: 300px;
+    }
+
+    /* 強制修正藍色框框與總額的左右排版 */
+    .quote-summary-card {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end;
+        gap: 20px;
+        flex-grow: 1;
     }
 
     /* 5. 淡色備註樣式 */
@@ -462,8 +471,7 @@ with col_left:
     n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
     # --- [渲染頂端凍結列] ---
-    # 此段放在 total_cost 算完後的 with col_left 底部
-    # 這裡使用 f-string 置入變數，確保 unsafe_allow_html 參數有寫
+    # 此段應放在 total_cost 算完後的 with col_left 底部
     st.markdown(f"""
     <div class="top-title-bar">
         <div class="title-group">
@@ -471,13 +479,12 @@ with col_left:
         </div>
         <div class="quote-summary-card">
             <div class="total-price-box">
-                <div style="font-size:0.9rem; color:#888;">預估專案總額</div>
+                <div style="font-size:0.85rem; color:#888;">預估專案總額</div>
                 <div class="price">TWD {total_cost:,} 元</div>
             </div>
             
             <div class="formula-box">
-                💡 預估總額 = (基礎成本 + 服務費) × 合作專案調整<br>
-                <b>計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) × {f_total_adj:.2f} = {total_cost:,}</b>
+                <b>計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) x {f_total_adj:.2f} = {total_cost:,}</b>
             </div>
 
             <div class="payment-phases">
