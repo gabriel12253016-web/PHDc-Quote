@@ -75,6 +75,7 @@ st.markdown("""
         margin: 0;
         font-size: 1.8rem !important; /* 強制加大 */
         font-weight: bold !important;
+        display: block !important;
         color: #262730;
     }
 
@@ -85,12 +86,11 @@ st.markdown("""
         margin-top: -10px;
         margin-bottom: 10px;
     }
-    /* 避免標題在原位留下多餘的空白或重複顯示 */
-    div:has(> .top-title-bar) {
-        height: 0px !important;
-        margin: 0px !important;
-        padding: 0px !important;
+
+    .stMarkdown:has(.top-title-bar) {
+    line-height: 0;
     }
+   
     </style>
     """, unsafe_allow_html=True)
 
