@@ -147,6 +147,48 @@ st.markdown("""
     .stMarkdown:has(.top-title-bar) {
     line-height: 0;
     }
+
+    /* 手機版 RWD 修正 */
+    @media (max-width: 768px) {
+        /* 1. 讓頂端標題區不要固定，改為隨網頁滾動 */
+        .top-title-bar {
+            position: relative !important; 
+            padding-left: 20px !important; 
+            width: 100% !important;
+            height: auto !important;
+            flex-direction: column !important; /* 讓內容垂直堆疊 */
+            align-items: flex-start !important;
+            padding-top: 20px !important;
+            padding-bottom: 20px !important;
+        }
+
+        /* 2. 讓側邊欄在手機上寬度自動化 (不鎖死 280px) */
+        [data-testid="stSidebar"] {
+            min-width: 100% !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            position: relative !important;
+        }
+
+        /* 3. 取消內容區的位移補償 */
+        .block-container {
+            padding-top: 20px !important;
+            padding-left: 1rem !important;
+        }
+
+        /* 4. 讓報價資訊在手機上垂直堆疊 */
+        .quote-summary-card {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 15px !important;
+            justify-content: flex-start !important;
+        }
+        
+        /* 5. 隱藏手機版多餘的向上位移 */
+        [data-testid="stSidebarUserContent"] {
+            margin-top: 0rem !important;
+        }
+    }
    
     </style>
     """, unsafe_allow_html=True)
