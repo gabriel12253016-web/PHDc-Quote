@@ -75,9 +75,10 @@ st.markdown("""
         color: #262730;
     }
 
-    /* 4. 內容區主體位移：防止被標題遮住第一行 */
+    /* 4. 內容區主體位移：徹底避開 130px 高度的標題列 */
     .main .block-container {
-        padding-top: 120px !important; 
+        padding-top: 180px !important; /* 增加到 180 */
+        margin-top: 20px !important;   /* 額外增加外邊距確保推開 */
     }
 
     /* 5. 妳原本的淡色備註樣式 */
