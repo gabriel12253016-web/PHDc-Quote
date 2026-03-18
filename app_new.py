@@ -123,45 +123,51 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-   /* ==========================================
-       ⚠️ 手機版強制維持電腦版排版 (不跑版修正)
+    /* ==========================================
+       ⚠️ 手機版強制等比呈現 (支援水平捲動看側邊欄)
        ========================================== */
     @media (max-width: 768px) {
-        /* 1. 鎖死內容區寬度，防止手機自動擠壓排版 */
-        .block-container {
-            min-width: 1200px !important; /* 強制手機以寬螢幕渲染，需左右滑動 */
-            padding-top: 140px !important;
-            padding-left: 2rem !important;
-        }
-
-        /* 2. 鎖死頂端標題列寬度，確保與內容同步且不變形 */
-        .top-title-bar {
-            position: fixed !important;
+        /* 1. 讓整體 App 背景寬度鎖死，允許水平捲動 */
+        .stApp {
             min-width: 1200px !important;
-            width: 1200px !important;
-            padding-left: 280px !important;
-            display: flex !important;
-            flex-direction: row !important; /* 強制維持橫向 */
-            justify-content: space-between !important;
         }
 
-        /* 3. 鎖死側邊欄，防止其在手機上變寬或消失 */
+        /* 2. 標題列：改為 absolute，讓它鎖在 1200px 的最左端，而非螢幕的最左端 */
+        .top-title-bar {
+            position: absolute !important; 
+            top: 0 !important;
+            left: 0 !important;
+            width: 1200px !important; /* 跟隨鎖定的內容寬度 */
+            min-width: 1200px !important;
+            padding-left: 280px !important; /* 確保閃開左邊 280px 的空間給側邊欄 */
+            height: 130px !important;
+            display: flex !important;
+            flex-direction: row !important;
+        }
+
+        /* 3. 側邊欄：強制顯示並鎖死在 280px */
         [data-testid="stSidebar"] {
+            position: absolute !important;
             min-width: 280px !important;
             max-width: 280px !important;
             width: 280px !important;
+            height: 100% !important;
+            z-index: 10000 !important;
         }
 
-        /* 4. 確保報價卡片內的細項維持電腦版橫向排版 */
+        /* 4. 內容區補償：維持電腦版數字 */
+        .block-container {
+            min-width: 1200px !important;
+            padding-top: 140px !important;
+            padding-left: 2rem !important;
+            margin-left: 0px !important;
+        }
+
+        /* 5. 確保報價卡片橫向排列不縮放 */
         .quote-summary-card {
             display: flex !important;
             flex-direction: row !important;
-            gap: 20px !important;
-        }
-
-        /* 5. 修正手機顯示時可能的黑色背景遮擋 */
-        .stApp {
-            min-width: 1200px !important;
+            min-width: 600px !important;
         }
     }
     </style>
