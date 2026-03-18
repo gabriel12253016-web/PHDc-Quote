@@ -502,7 +502,7 @@ with col_left:
     n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
     # --- [渲染頂端凍結列] ---
-    # 這裡的 HTML 內容請務必貼齊左側，不要有縮排
+    # ⚠️ 注意：下面的 HTML 代碼必須「靠左邊緣貼齊」，不要跟著 Python 縮進
     st.markdown(f"""
 <div class="top-title-bar">
     <div class="quote-summary-card">
