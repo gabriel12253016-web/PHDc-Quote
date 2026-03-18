@@ -18,30 +18,23 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* 1. 修正：不要完全隱藏 header，否則按鈕會消失 */
-    [data-testid="stHeader"] {
-        background-color: rgba(0,0,0,0) !important; /* 背景透明 */
-        height: 3rem !important;
-        z-index: 100001 !important; /* 確保在最前方 */
+    /* 1. 隱藏原生頂部黑條與收合按鈕 (禁止隱藏側邊欄) */
+    header, [data-testid="stHeader"], [data-testid="stSidebarCollapsedControl"] { 
+        display: none !important; 
     }
 
-    /* 強制顯示側邊欄展開箭頭 */
-    [data-testid="stSidebarCollapsedControl"] {
-        display: block !important;
-        z-index: 100002 !important;
-        background-color: #f0f2f6 !important; /* 給它一個淡灰色圓圈底 */
-        border-radius: 50% !important;
-        margin-left: 10px !important;
-        margin-top: 5px !important;
+    /* 2. 側邊欄內容貼齊頂端 */
+    [data-testid="stSidebarUserContent"] {
+        padding-top: 1rem !important;
     }
 
-    /* 2. 標題列：左邊空出 80px，絕對不准蓋到按鈕 */
+    /* 3. 標題列：固定在側邊欄右側 (側邊欄寬度約 21rem) */
     .top-title-bar {
         position: fixed; 
         top: 0; 
-        left: 80px !important; /* 關鍵：從 80px 開始 */
+        left: 21rem !important; /* 核心修正：讓出固定側邊欄的寬度 */
         right: 0;
-        width: calc(100vw - 80px) !important; 
+        width: calc(100vw - 21rem) !important; 
         height: 130px; 
         background-color: white; 
         display: flex; 
@@ -49,7 +42,7 @@ st.markdown("""
         z-index: 9999; 
         border-bottom: 2px solid #f0f2f6;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        padding-left: 10px; 
+        padding-left: 20px; 
         padding-right: 40px;
     }
 
@@ -68,9 +61,9 @@ st.markdown("""
     .quote-summary-card {
         display: flex !important;
         align-items: center !important;
-        justify-content: flex-start !important; /* 改為靠左對齊 */
+        justify-content: flex-start !important;
         flex-grow: 1;
-        gap: 15px; /* 縮減元件間距 */
+        gap: 15px;
     }
 
     /* 總額大字 */
@@ -81,13 +74,13 @@ st.markdown("""
     }
     
     .total-price-box .price {
-        font-size: 2rem;
+        font-size: 2.2rem;
         font-weight: bold;
         color: #262730;
         line-height: 1;
     }
 
-    /* 藍色計算式框：寬度剛好就好 */
+    /* 藍色計算式框 */
     .formula-box {
         background-color: #e8f0fe;
         padding: 12px 18px;
@@ -95,7 +88,7 @@ st.markdown("""
         font-size: 0.85rem;
         color: #1967d2;
         line-height: 1.5;
-        width: fit-content; /* 關鍵：寬度隨內容自動縮放 */
+        width: fit-content;
         white-space: nowrap;
         flex-shrink: 0;
     }
@@ -111,9 +104,9 @@ st.markdown("""
         flex-shrink: 0;
     }
 
-    /* 4. 避開標題列 */
+    /* 4. 全域內容位移 (防止被標題列擋住) */
     .block-container {
-        padding-top: 140px !important;
+        padding-top: 150px !important;
     }
 
     /* 5. 其他樣式 */
