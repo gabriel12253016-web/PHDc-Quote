@@ -127,9 +127,6 @@ st.markdown("""
     /* ==========================================
        2. 手機版強制修正：允許寬度超出並左右捲動
        ========================================== */
-    /* ==========================================
-       2. 手機版優化：修正標題遮擋內容問題
-       ========================================== */
     @media (max-width: 768px) {
         /* 徹底移除側邊欄 */
         [data-testid="stSidebar"], [data-testid="stSidebarCollapsedControl"] {
@@ -174,7 +171,7 @@ st.markdown("""
 
         /* 關鍵修正：增加補償高度至 380px，確保內容完全露出 */
         .block-container {
-            padding-top: 380px !important; 
+            padding-top: 350px !important; 
             padding-left: 1rem !important;
             padding-right: 1rem !important;
             margin-left: 0 !important;
