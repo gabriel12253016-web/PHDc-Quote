@@ -128,18 +128,14 @@ st.markdown("""
        2. 手機版強制修正：允許寬度超出並左右捲動
        ========================================== */
     @media (max-width: 768px) {
-        /* 強制 App 畫布寬度為 1200px */
-        .stApp, .stMain, .stAppViewContainer {
+        /* 鎖死最外層容器，禁止手機版自動縮放與位移 */
+        [data-testid="stAppViewContainer"], .stApp {
             min-width: 1200px !important;
             overflow-x: auto !important;
+            display: block !important;
         }
 
-        .block-container {
-            min-width: 1200px !important;
-        }
-
-        /* 核心修正：改為 absolute 並鎖死在 top: 0 */
-        /* 這會讓標題列待在畫布最上方，且妳向左滑動內容時，標題會跟著動 */
+        /* 標題列：改為相對於 1200px 寬度的 absolute，並鎖死在頂端 */
         .top-title-bar {
             position: absolute !important; 
             top: 0 !important;
@@ -147,17 +143,23 @@ st.markdown("""
             width: 1200px !important; 
             min-width: 1200px !important;
             padding-left: 280px !important;
-            z-index: 99999 !important; /* 超高層級確保不被擋住 */
+            z-index: 99999 !important;
         }
 
-        /* 側邊欄釘在畫布最左側 */
+        /* 側邊欄：同樣改為 absolute 並鎖死在最左側 */
         [data-testid="stSidebar"] {
             position: absolute !important;
+            top: 0 !important;
             left: 0 !important;
             min-width: 280px !important;
             width: 280px !important;
             height: 100% !important;
             z-index: 100000 !important;
+        }
+
+        /* 內容區：保持寬度 1200px */
+        .block-container {
+            min-width: 1200px !important;
         }
     }
     </style>
@@ -167,15 +169,15 @@ st.markdown("""
             const viewport = window.parent.document.querySelector('meta[name="viewport"]');
             if (viewport) {
                 if (window.innerWidth <= 768) {
-                    // 強制手機以 1200px 渲染全景
-                    viewport.setAttribute('content', 'width=1200, initial-scale=0.35, user-scalable=yes');
+                    // 強制手機以 1200px 渲染，initial-scale 設為 0.3 確保一進入就縮小看到全景
+                    viewport.setAttribute('content', 'width=1200, initial-scale=0.3, user-scalable=yes');
                 } else {
                     viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
                 }
             }
         };
         window.parent.addEventListener('resize', fixViewport);
-        setTimeout(fixViewport, 500);
+        setTimeout(fixViewport, 300);
     </script>
     """, unsafe_allow_html=True)
 # ==========================================
