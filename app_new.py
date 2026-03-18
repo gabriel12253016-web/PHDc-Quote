@@ -128,59 +128,51 @@ st.markdown("""
        2. 手機版強制修正：允許寬度超出並左右捲動
        ========================================== */
     @media (max-width: 768px) {
-        /* 1. 讓整體 App 背景寬度鎖死在 1200px */
-        .stApp { 
-            min-width: 1200px !important; 
-            overflow-x: auto !important; 
+        /* 強制所有容器允許水平溢出，不要切掉內容 */
+        .stApp, .stMain, .stAppViewContainer, .stAppMainPresenter {
+            min-width: 1200px !important;
+            overflow-x: visible !important;
         }
 
-        /* 2. 標題列：改為 absolute，讓它鎖在 1200px 的畫布頂端 */
-        /* 這樣妳左右滑動時，標題會跟著內容一起移動，不會被切掉 */
-        .top-title-bar { 
+        /* 標題列：改為相對於 1200px 畫布的固定位置 */
+        .top-title-bar {
             position: absolute !important; 
-            top: 0 !important;
-            left: 0 !important;
             width: 1200px !important; 
             min-width: 1200px !important;
-            padding-left: 280px !important; 
-            z-index: 9999 !important;
-        }
-        
-        /* 3. 側邊欄：同樣改為 absolute，釘在畫布最左側 */
-        [data-testid="stSidebar"] { 
-            position: absolute !important; 
-            left: 0 !important; 
-            min-width: 280px !important; 
-            width: 280px !important; 
-            height: 100% !important;
-            z-index: 10000 !important;
+            left: 0 !important;
+            padding-left: 280px !important;
         }
 
-        /* 4. 內容區補償：維持 1200px 寬度 */
-        .block-container { 
-            min-width: 1200px !important; 
-            padding-top: 140px !important;
-            padding-left: 2rem !important;
+        /* 側邊欄：釘在 1200px 畫布的最左邊 */
+        [data-testid="stSidebar"] {
+            position: absolute !important;
+            left: 0 !important;
+            min-width: 280px !important;
+            width: 280px !important;
+            height: 100% !important;
+        }
+
+        /* 內容區補償 */
+        .block-container {
+            min-width: 1200px !important;
         }
     }
     </style>
 
     <script>
-        // 強制手機瀏覽器以電腦寬度渲染
         const fixViewport = () => {
             const viewport = window.parent.document.querySelector('meta[name="viewport"]');
             if (viewport) {
                 if (window.innerWidth <= 768) {
-                    // 強制 1200 寬度，並允許手勢縮放
-                    viewport.setAttribute('content', 'width=1200, initial-scale=0.35, user-scalable=yes');
+                    // 核心：告訴瀏覽器這是一個 1200px 寬的桌面版網頁
+                    viewport.setAttribute('content', 'width=1200, initial-scale=0.3, user-scalable=yes');
                 } else {
                     viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
                 }
             }
         };
-        
         window.parent.addEventListener('resize', fixViewport);
-        setTimeout(fixViewport, 200);
+        setTimeout(fixViewport, 300);
     </script>
     """, unsafe_allow_html=True)
 # ==========================================
