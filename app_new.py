@@ -10,7 +10,6 @@ import os
 # 網頁配置與 CSS 固定右側欄位
 # ==========================================
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
-st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
     /* 1. 徹底消滅側邊欄收合箭頭 (包括所有可能的圖示與按鈕容器) */
@@ -21,12 +20,17 @@ st.markdown("""
         display: none !important; 
     }
 
-    /* 核心修正：將側邊欄寬度精確鎖死在 280px，與妳的標題 padding 一致 */
+    /* 2. 鎖死側邊欄寬度並推到頂端，覆蓋按鈕殘留空間 */
     [data-testid="stSidebar"] {
         min-width: 280px !important;
         max-width: 280px !important;
         width: 280px !important;
-        z-index: 10000 !important; /* 確保高於標題列 (9999) */
+        z-index: 10000 !important;
+    }
+
+    [data-testid="stSidebarUserContent"] {
+        padding-top: 0rem !important;
+        margin-top: -4rem !important; /* 加大向上補償，把按鈕位置壓掉 */
     }
 
     /* 2. 側邊欄貼齊頂端 */
