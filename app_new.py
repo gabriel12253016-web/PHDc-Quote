@@ -46,28 +46,50 @@ st.markdown("""
         line-height: 1.2;
     }
 
-    .quote-summary-card { 
-        display: flex; 
-        align-items: center; 
-        gap: 25px; 
-        flex-direction: row; 
-    } /* <-- 剛才妳漏了這個閉合括號，導致後面全掛 */
-
-    .formula-box {
-        background-color: #e8f0fe; padding: 10px 15px; border-radius: 8px;
-        font-size: 0.85rem; color: #1967d2; line-height: 1.4;
+    /* 報價卡片容器：橫向排列並撐開 */
+    .quote-summary-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-grow: 1;
+        gap: 30px;
     }
-    .total-price-box { text-align: right; min-width: 150px; }
-    .total-price-box .price { font-size: 1.8rem; font-weight: bold; color: #262730; }
+
+    /* 左側總額大字 */
+    .total-price-box {
+        min-width: 220px;
+    }
     
+    .total-price-box .price {
+        font-size: 2.2rem; /* 加大字體 */
+        font-weight: bold;
+        color: #262730;
+    }
+
+    /* 中間藍色計算式框 */
+    .formula-box {
+        background-color: #e8f0fe;
+        padding: 15px 20px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        color: #1967d2;
+        line-height: 1.6;
+        flex-grow: 0;
+    }
+
+    /* 右側三期款項 */
     .payment-phases {
-        font-size: 0.8rem; color: #666; border-left: 1px solid #ddd;
-        padding-left: 20px; line-height: 1.6;
+        font-size: 0.9rem;
+        color: #333;
+        border-left: 2px solid #eee;
+        padding-left: 25px;
+        line-height: 1.8;
+        min-width: 180px;
     }
 
     /* 4. [精簡修正] 避開標題列並消除多餘空白 */
-    [data-testid="stAppViewBlockContainer"] {
-        padding-top: 150px !important; /* 縮小到剛好避開 130px 的標題 */
+    .block-container {
+        padding-top: 140px !important; /* 縮小到剛好避開 130px 的標題 */
     }
 
     /* 確保頂端標題字體夠大且不會變形 */
@@ -76,6 +98,15 @@ st.markdown("""
         font-weight: bold;
         line-height: 1.2;
         min-width: 300px;
+    }
+
+    /* 強制修正藍色框框與總額的左右排版 */
+    .quote-summary-card {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end;
+        gap: 20px;
+        flex-grow: 1;
     }
 
     /* 強制修正藍色框框與總額的左右排版 */
@@ -471,24 +502,24 @@ with col_left:
     n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
     # --- [渲染頂端凍結列] ---
-    # 此段應放在 total_cost 算完後的 with col_left 底部
+    # 這裡的 HTML 內容請務必貼齊左側，不要有縮排
     st.markdown(f"""
 <div class="top-title-bar">
-    <div class="title-group">
-        <h2>成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
-    </div>
     <div class="quote-summary-card">
         <div class="total-price-box">
-            <div style="font-size:0.85rem; color:#888;">預估專案總額</div>
+            <div style="font-size:1.1rem; font-weight:bold; color:#333; margin-bottom:5px;">預估專案總額</div>
             <div class="price">TWD {total_cost:,} 元</div>
         </div>
+        
         <div class="formula-box">
-            <b>計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) x {f_total_adj:.2f} = {total_cost:,}</b>
+            💡 預估總額 = (基礎成本 + 服務費) x 合作專案調整<br>
+            計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) x {f_total_adj:.2f} = {total_cost:,}
         </div>
+
         <div class="payment-phases">
-            前期 (30%)：{round(total_cost*0.3):,} 元<br>
-            期中 (40%)：{round(total_cost*0.4):,} 元<br>
-            結案 (30%)：{round(total_cost*0.3):,} 元
+            <b>前期 (30%)：</b> {round(total_cost*0.3):,} 元<br>
+            <b>期中 (40%)：</b> {round(total_cost*0.4):,} 元<br>
+            <b>結案 (30%)：</b> {round(total_cost*0.3):,} 元
         </div>
     </div>
 </div>
