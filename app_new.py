@@ -502,27 +502,28 @@ with col_left:
     n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
     # --- [渲染頂端凍結列] ---
-    # ⚠️ 這是唯一能解亂碼的寫法：標籤必須完全靠左，無視 Python 的縮進層級
+    # ⚠️ 修正：手動指定各區塊寬度，避免 TWD 重疊標題
     st.markdown(f"""
 <div class="top-title-bar">
-<div style="min-width: 320px; padding-left: 20px;">
-<h2 style="margin:0; font-size:1.5rem; color:#262730; line-height:1.2;">成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
-</div>
-<div class="quote-summary-card" style="display: flex; align-items: center; justify-content: space-between; flex-grow: 1;">
-<div class="total-price-box" style="min-width: 200px;">
-<div style="font-size:0.9rem; font-weight:bold; color:#666;">預估專案總額</div>
-<div class="price" style="font-size: 2rem; font-weight: bold;">TWD {total_cost:,} 元</div>
-</div>
-<div class="formula-box" style="background-color: #e8f0fe; padding: 10px 15px; border-radius: 8px; font-size: 0.85rem; color: #1967d2;">
-💡 預估總額 = (基礎成本 + 服務費) x 合作專案調整<br>
-計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) x {f_total_adj:.2f} = {total_cost:,}
-</div>
-<div class="payment-phases" style="min-width: 160px; border-left: 2px solid #eee; padding-left: 20px;">
-<b>前期 (30%)：</b> {round(total_cost*0.3):,} 元<br>
-<b>期中 (40%)：</b> {round(total_cost*0.4):,} 元<br>
-<b>結案 (30%)：</b> {round(total_cost*0.3):,} 元
-</div>
-</div>
+    <div style="width: 320px; flex-shrink: 0; padding-left: 20px;">
+        <h2 style="margin:0; font-size:1.5rem; color:#262730; line-height:1.2;">成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
+    </div>
+
+    <div style="flex-grow: 1; text-align: right; padding-right: 30px; min-width: 250px;">
+        <div style="font-size:0.9rem; font-weight:bold; color:#666; margin-bottom:5px;">預估專案總額</div>
+        <div style="font-size:2rem; font-weight:bold; color:#262730;">TWD {total_cost:,} 元</div>
+    </div>
+
+    <div style="background-color: #e8f0fe; padding: 10px 15px; border-radius: 8px; font-size: 0.85rem; color: #1967d2; margin-right: 30px; flex-shrink: 0;">
+        💡 預估總額 = (基礎成本 + 服務費) x 合作專案調整<br>
+        計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) x {f_total_adj:.2f} = {total_cost:,}
+    </div>
+
+    <div style="min-width: 170px; border-left: 2px solid #eee; padding-left: 20px; flex-shrink: 0; font-size: 0.85rem; color: #333;">
+        <b>前期 (30%)：</b> {round(total_cost*0.3):,} 元<br>
+        <b>期中 (40%)：</b> {round(total_cost*0.4):,} 元<br>
+        <b>結案 (30%)：</b> {round(total_cost*0.3):,} 元
+    </div>
 </div>
 """, unsafe_allow_html=True)
     
