@@ -148,28 +148,40 @@ st.markdown("""
     line-height: 0;
     }
 
-    /* 手機版 RWD 自動等比縮放與重置 */
+   /* 📱 手機版 RWD 強制重置：等比縮放並取消固定定位 */
     @media (max-width: 768px) {
-        /* 1. 讓頂端標題列不再固定，改為自動寬度並垂直排列 */
+        /* 1. 讓頂端標題區不再「浮動」，改為隨頁面捲動的普通區塊 */
         .top-title-bar {
             position: relative !important; 
+            top: 0 !important;
             left: 0 !important;
             width: 100% !important;
-            height: auto !important;
-            flex-direction: column !important; /* 讓標題與報價垂直堆疊 */
+            height: auto !important; /* 高度隨內容自動撐開 */
+            flex-direction: column !important; /* 橫向變縱向堆疊 */
             align-items: flex-start !important;
             padding: 20px !important;
-            z-index: 100 !important;
+            z-index: 1 !important;
+            box-shadow: none !important;
+            border-bottom: 1px solid #eee;
         }
 
-        /* 2. 標題字體縮放 (使用 vw 讓它隨螢幕寬度等比縮小) */
+        /* 2. 標題字體等比縮小 */
         .top-title-bar h2 {
-            font-size: 5vw !important; /* 隨螢幕寬度自動縮放字體 */
+            font-size: 1.2rem !important;
             min-width: 100% !important;
             margin-bottom: 10px !important;
         }
 
-        /* 3. 側邊欄鎖死取消：手機版讓它變回 100% 寬度 */
+        /* 3. 報價資訊卡片：在手機上改為垂直排列，不強擠在同一行 */
+        .quote-summary-card {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 10px !important;
+            width: 100% !important;
+            justify-content: flex-start !important;
+        }
+
+        /* 4. 側邊欄重置：手機版不鎖死 280px，讓它回歸原生寬度或隱藏 */
         [data-testid="stSidebar"] {
             min-width: 100% !important;
             max-width: 100% !important;
@@ -177,32 +189,28 @@ st.markdown("""
             position: relative !important;
         }
 
-        /* 4. 內容區塊重置：取消電腦版的大位移 */
+        /* 5. 內容區塊重置：取消電腦版的大位移 (140px) */
         .block-container {
-            padding-top: 20px !important;
-            padding-left: 5vw !important;
-            padding-right: 5vw !important;
-        }
-
-        /* 5. 報價資訊卡片自動轉為垂直堆疊 */
-        .quote-summary-card {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 15px !important;
-            width: 100% !important;
-            justify-content: flex-start !important;
-        }
-
-        /* 讓藍色框框跟三期款項也自動填滿寬度 */
-        .formula-box, .payment-phases {
-            width: 100% !important;
-            margin: 0 !important;
-            border-left: none !important;
-            border-top: 1px solid #eee;
             padding-top: 10px !important;
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+            margin-left: 0px !important;
+        }
+
+        /* 6. 修正總額大字與藍色框框在手機上的寬度 */
+        .total-price-box, .formula-box, .payment-phases {
+            min-width: 100% !important;
+            width: 100% !important;
+            margin: 5px 0 !important;
+            padding-left: 0px !important;
+            border-left: none !important;
         }
         
-        /* 隱藏手機版沒必要的負邊距 */
+        .total-price-box .price {
+            font-size: 1.8rem !important;
+        }
+
+        /* 7. 移除手機版不必要的負邊距 */
         [data-testid="stSidebarUserContent"] {
             margin-top: 0rem !important;
         }
