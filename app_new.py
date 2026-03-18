@@ -75,15 +75,19 @@ st.markdown("""
         color: #262730;
     }
 
-    /* 4. 內容區主體位移：徹底避開 130px 高度的標題列 */
-    .main .block-container {
-        padding-top: 200px !important; /* 增加到 200px */
-        margin-top: 0px !important;
+    /* 4. [更新版] 徹底位移內容區：鎖定所有主要內容容器 */
+    [data-testid="stMainViewContainer"] [data-testid="stVerticalBlock"] {
+        padding-top: 150px !important; 
     }
 
-    /* 針對 Streamlit 內部的列容器也強制位移 */
-    [data-testid="stVerticalBlock"] > [data-testid="stHorizontalBlock"] {
-        margin-top: 20px !important;
+    /* 針對所有內層 Block 強制推開 */
+    .st-emotion-cache-1kyxreq, .st-emotion-cache-z5fcl4 {
+        margin-top: 50px !important;
+    }
+
+    /* 針對原本標題遮擋的細微修正 */
+    .main .block-container {
+        padding-top: 180px !important;
     }
 
     /* 5. 妳原本的淡色備註樣式 */
