@@ -140,11 +140,12 @@ st.markdown("""
             left: 0 !important;
             width: 100% !important;
             height: auto !important;
-            padding: 20px 15px !important;
+            padding: 15px !important;
+            /* --- 手機版也可以單獨設定顏色 --- */
+            background: #f8f9fa !important; 
             flex-direction: column !important;
             align-items: flex-start !important;
             z-index: 99999 !important;
-            background: white !important;
         }
 
         .top-title-bar h2 {
