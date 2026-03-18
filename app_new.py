@@ -12,8 +12,10 @@ import os
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* 1. 隱藏原生頂部黑條 */
-    header, [data-testid="stHeader"] { display: none !important; }
+    /* 1. 核心修正：除了隱藏頂部，連側邊欄的「收合按鈕」也一併消滅，使其無法隱藏 */
+    header, [data-testid="stHeader"], [data-testid="stSidebarCollapsedControl"] { 
+        display: none !important; 
+    }
 
     /* 2. 側邊欄貼齊頂端 */
     [data-testid="stSidebarUserContent"] {
@@ -22,12 +24,14 @@ st.markdown("""
     }
     .st-emotion-cache-6qob1r { padding-top: 0rem !important; }
 
-    /* 3. 建立頂端固定標題區 */
+    /* 3. 建立頂端固定標題區：修正 left 值，讓它避開「永遠固定在那」的側邊欄 */
+    /* 預設側邊欄寬度約為 21rem (336px) */
     .top-title-bar {
         position: fixed; 
-        top: 0; left: 0; 
-        width: 100vw; 
-        height: 130px; /* 這裡改回 130px 比較不會擠 */
+        top: 0; 
+        left: 21rem !important; /* 讓標題列從側邊欄右緣開始 */
+        width: calc(100vw - 21rem) !important; /* 寬度扣掉側邊欄 */
+        height: 130px; 
         background-color: white; 
         display: flex; 
         align-items: center; 
@@ -35,7 +39,7 @@ st.markdown("""
         z-index: 9999; 
         border-bottom: 2px solid #f0f2f6;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        padding-left: 280px; 
+        padding-left: 20px; /* 因為 left 已經移位，這邊 padding 縮小回正常值 */
         padding-right: 40px;
     }
 
