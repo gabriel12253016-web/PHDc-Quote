@@ -105,7 +105,7 @@ st.markdown("""
     .block-container {
         padding-top: 140px !important; /* 縮小到剛好避開 130px 的標題 */
         margin-left: 0px !important; /* 確保沒有額外邊距 */
-        padding-left: 3rem !important; /* 這是內容與側邊欄的微小呼吸空間 */
+        padding-left: 2rem !important; /* 這是內容與側邊欄的微小呼吸空間 */
         max-width: 100% !important;
     }
     }
