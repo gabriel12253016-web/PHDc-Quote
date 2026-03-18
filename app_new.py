@@ -128,56 +128,45 @@ st.markdown("""
        2. 手機版強制修正：允許寬度超出並左右捲動
        ========================================== */
     @media (max-width: 768px) {
-        /* 鎖死最外層容器，禁止手機版自動縮放與位移 */
-        [data-testid="stAppViewContainer"], .stApp {
+        /* 強制 App 容器不准切斷橫向內容 */
+        .stApp, [data-testid="stAppViewContainer"] {
             min-width: 1200px !important;
-            overflow-x: auto !important;
-            display: block !important;
+            overflow: visible !important;
         }
-
-        /* 標題列：改為相對於 1200px 寬度的 absolute，並鎖死在頂端 */
+        
+        /* 標題列：在手機上寬度鎖死 1200px，確保報價金額不被切掉 */
         .top-title-bar {
-            position: absolute !important; 
-            top: 0 !important;
-            left: 0 !important;
-            width: 1200px !important; 
-            min-width: 1200px !important;
-            padding-left: 280px !important;
-            z-index: 99999 !important;
-        }
-
-        /* 側邊欄：同樣改為 absolute 並鎖死在最左側 */
-        [data-testid="stSidebar"] {
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            min-width: 280px !important;
-            width: 280px !important;
-            height: 100% !important;
-            z-index: 100000 !important;
-        }
-
-        /* 內容區：保持寬度 1200px */
-        .block-container {
+            width: 1200px !important;
             min-width: 1200px !important;
         }
     }
     </style>
 
     <script>
-        const fixViewport = () => {
-            const viewport = window.parent.document.querySelector('meta[name="viewport"]');
-            if (viewport) {
-                if (window.innerWidth <= 768) {
-                    // 強制手機以 1200px 渲染，initial-scale 設為 0.3 確保一進入就縮小看到全景
-                    viewport.setAttribute('content', 'width=1200, initial-scale=0.3, user-scalable=yes');
-                } else {
-                    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        // 強制修改手機瀏覽器的 Viewport 設定，模擬電腦寬度
+        const forceDesktopLayout = () => {
+            const doc = window.parent.document;
+            let viewport = doc.querySelector('meta[name="viewport"]');
+            
+            if (window.innerWidth <= 768) {
+                // 如果沒有 viewport 標籤就建立一個，有的話就修改
+                if (!viewport) {
+                    viewport = doc.createElement('meta');
+                    viewport.name = "viewport";
+                    doc.head.appendChild(viewport);
                 }
+                // 強制設為 1200px 寬，initial-scale 設小讓全景出現
+                viewport.setAttribute('content', 'width=1200, initial-scale=0.3, minimum-scale=0.1, user-scalable=yes');
             }
         };
-        window.parent.addEventListener('resize', fixViewport);
-        setTimeout(fixViewport, 300);
+
+        // 執行多次以確保在 Streamlit 載入過程中生效
+        forceDesktopLayout();
+        setTimeout(forceDesktopLayout, 500);
+        setTimeout(forceDesktopLayout, 2000);
+        
+        // 監聽視窗變化
+        window.parent.addEventListener('resize', forceDesktopLayout);
     </script>
     """, unsafe_allow_html=True)
 # ==========================================
