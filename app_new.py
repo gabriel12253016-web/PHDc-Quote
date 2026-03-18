@@ -35,7 +35,7 @@ st.markdown("""
         top: 0; 
         left: 0; 
         width: 100vw; 
-        height: 130px; /* 這裡高度改為 130px 以容納多行資訊 */
+        height: 110px; /* 這裡高度改為 130px 以容納多行資訊 */
         background-color: white; 
         display: flex; 
         align-items: center; 
@@ -49,13 +49,17 @@ st.markdown("""
 
     .top-title-bar h2 {
         margin: 0;
-        font-size: 1.6rem;
+        font-size: 2.0rem;
         color: #262730;
         line-height: 1.2;
     }
 
-    /* 以下為新增的內部排版組件，不影響外部位移邏輯 */
-    .quote-summary-card { display: flex; align-items: center; gap: 25px; }
+    /* [問題3] 調整此處讓總額在左、藍框在右 */
+    .quote-summary-card { 
+        display: flex; 
+        align-items: center; 
+        gap: 25px; 
+        flex-direction: row; /* 確保水平排列 */
     
     .formula-box {
         background-color: #e8f0fe; padding: 10px 15px; border-radius: 8px;
@@ -472,26 +476,28 @@ with col_left:
 
     # 2. 渲染頂端凍結列 (雖然寫在 col_left 裡，但 CSS 會把它拉到螢幕最頂端)
     st.markdown(f"""
-        <div class="top-title-bar">
-            <div class="title-group">
-                <h2>成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
+    <div class="top-title-bar">
+        <div class="title-group">
+            <h2>成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
+        </div>
+        <div class="quote-summary-card">
+            <div class="total-price-box">
+                <div style="font-size:0.85rem; color:#888;">預估專案總額</div>
+                <div class="price">TWD {total_cost:,} 元</div>
             </div>
-            <div class="quote-summary-card">
-                <div class="formula-box">
-                    💡 預估總額 = (基礎成本 + 服務費) × 合作專案調整<br>
-                    <b>計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) × {f_total_adj:.2f} = {total_cost:,}</b>
-                </div>
-                <div class="total-price-box">
-                    <div style="font-size:0.85rem; color:#888;">預估專案總額</div>
-                    <div class="price">TWD {total_cost:,} 元</div>
-                </div>
-                <div class="payment-phases">
-                    前期 (30%)：{round(total_cost*0.3):,} 元<br>
-                    期中 (40%)：{round(total_cost*0.4):,} 元<br>
-                    結案 (30%)：{round(total_cost*0.3):,} 元
-                </div>
+            
+            <div class="formula-box">
+                💡 預估總額 = (基礎成本 + 服務費) × 合作專案調整<br>
+                <b>計算式：({base_cost:,.0f} + {labor_total * sum_k:,.0f}) × {f_total_adj:.2f} = {total_cost:,}</b>
+            </div>
+
+            <div class="payment-phases">
+                前期 (30%)：{round(total_cost*0.3):,} 元<br>
+                期中 (40%)：{round(total_cost*0.4):,} 元<br>
+                結案 (30%)：{round(total_cost*0.3):,} 元
             </div>
         </div>
+    </div>
     """, unsafe_allow_html=True)
     
     # --- 3. 調整額度 (簡約條列版) ---
