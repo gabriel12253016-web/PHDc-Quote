@@ -128,46 +128,73 @@ st.markdown("""
        2. 手機版強制修正：允許寬度超出並左右捲動
        ========================================== */
     @media (max-width: 768px) {
-        /* 強制 App 容器不准切斷橫向內容 */
-        .stApp, [data-testid="stAppViewContainer"] {
-            min-width: 1200px !important;
-            overflow: visible !important;
+        /* 手機版不鎖死 1200px，回歸正常垂直流動 */
+        .stApp, .stMain, .stAppViewContainer {
+            min-width: 100% !important;
+            width: 100% !important;
+        }
+
+        /* 標題列：改為隨頁面滾動的「相對定位」，確保不擋住下方表單 */
+        .top-title-bar {
+            position: relative !important;
+            padding: 20px !important;
+            height: auto !important;
+            width: 100% !important;
+            flex-direction: column !important; /* 橫向變縱向 */
+            align-items: flex-start !important;
+            z-index: 1 !important;
+            box-shadow: none !important;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px !important;
+        }
+
+        .top-title-bar h2 {
+            font-size: 1.3rem !important;
+            min-width: 100% !important;
+            margin-bottom: 15px !important;
+        }
+
+        /* 報價卡片：在手機上垂直堆疊顯示 */
+        .quote-summary-card {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 15px !important;
+            width: 100% !important;
+        }
+
+        .total-price-box, .formula-box, .payment-phases {
+            width: 100% !important;
+            min-width: 100% !important;
+            border-left: none !important;
+            padding-left: 0 !important;
+            margin: 5px 0 !important;
+        }
+
+        .total-price-box .price {
+            font-size: 1.8rem !important;
+        }
+
+        /* 側邊欄：手機版隱藏或放在內容最上方 */
+        [data-testid="stSidebar"] {
+            position: relative !important;
+            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
+        }
+
+        /* 內容區：取消電腦版 140px 大補償，改為小邊距 */
+        .block-container {
+            padding-top: 10px !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
         }
         
-        /* 標題列：在手機上寬度鎖死 1200px，確保報價金額不被切掉 */
-        .top-title-bar {
-            width: 1200px !important;
-            min-width: 1200px !important;
+        [data-testid="stSidebarUserContent"] {
+            margin-top: 0rem !important;
         }
     }
     </style>
-
-    <script>
-        // 強制修改手機瀏覽器的 Viewport 設定，模擬電腦寬度
-        const forceDesktopLayout = () => {
-            const doc = window.parent.document;
-            let viewport = doc.querySelector('meta[name="viewport"]');
-            
-            if (window.innerWidth <= 768) {
-                // 如果沒有 viewport 標籤就建立一個，有的話就修改
-                if (!viewport) {
-                    viewport = doc.createElement('meta');
-                    viewport.name = "viewport";
-                    doc.head.appendChild(viewport);
-                }
-                // 強制設為 1200px 寬，initial-scale 設小讓全景出現
-                viewport.setAttribute('content', 'width=1200, initial-scale=0.3, minimum-scale=0.1, user-scalable=yes');
-            }
-        };
-
-        // 執行多次以確保在 Streamlit 載入過程中生效
-        forceDesktopLayout();
-        setTimeout(forceDesktopLayout, 500);
-        setTimeout(forceDesktopLayout, 2000);
-        
-        // 監聽視窗變化
-        window.parent.addEventListener('resize', forceDesktopLayout);
-    </script>
     """, unsafe_allow_html=True)
 # ==========================================
 # 0. 資料庫初始化
