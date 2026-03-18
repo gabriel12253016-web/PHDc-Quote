@@ -9,130 +9,124 @@ import os
 # ==========================================
 # 網頁配置與 CSS 固定右側欄位
 # ==========================================
-st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
+st.set_page_config(
+    page_title="成大群體健康數據中心 - 合作報價系統", 
+    page_icon="📊", 
+    layout="wide",
+    initial_sidebar_state="expanded" # 強制初始狀態為展開
+)
+
 st.markdown("""
     <style>
     /* 1. 隱藏原生頂部黑條 */
     header, [data-testid="stHeader"] { display: none !important; }
 
-    /* 2. 側邊欄貼齊頂端 */
+    /* 2. 側邊欄與箭頭按鈕修正 (找回側邊欄關鍵) */
+    [data-testid="stSidebarCollapsedControl"] {
+        display: block !important;
+        position: fixed !important;
+        top: 15px !important;
+        left: 15px !important;
+        z-index: 100000 !important; /* 確保高於標題列 */
+        background-color: #f0f2f6 !important;
+        border-radius: 50%;
+    }
+
     [data-testid="stSidebarUserContent"] {
         padding-top: 0rem !important;
         margin-top: -3.5rem !important;
     }
-    .st-emotion-cache-6qob1r { padding-top: 0rem !important; }
 
-    /* 3. 建立頂端固定標題區 */
+    /* 3. 建立頂端固定標題區 (避開左側按鈕) */
     .top-title-bar {
         position: fixed; 
-        top: 0; left: 0; 
-        width: 100vw; 
-        height: 130px; /* 這裡改回 130px 比較不會擠 */
+        top: 0; 
+        left: 80px !important; /* 留出左側 80px 給箭頭按鈕 */
+        right: 0;
+        width: calc(100vw - 80px) !important;
+        height: 130px; 
         background-color: white; 
         display: flex; 
         align-items: center; 
-        justify-content: space-between; 
         z-index: 9999; 
         border-bottom: 2px solid #f0f2f6;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        padding-left: 280px; 
+        padding-left: 20px; 
         padding-right: 40px;
     }
 
+    /* 標題字體 */
     .top-title-bar h2 {
         margin: 0;
-        font-size: 1.6rem; /* 標題大小在這裡調 */
+        font-size: 1.5rem !important;
+        font-weight: bold;
         color: #262730;
         line-height: 1.2;
+        min-width: 320px;
+        flex-shrink: 0;
     }
 
-    /* 報價卡片容器：橫向排列並撐開 */
+    /* 報價卡片容器：靠左緊湊排列 */
     .quote-summary-card {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important; /* 改為靠左對齊 */
         flex-grow: 1;
-        gap: 30px;
+        gap: 15px; /* 縮減元件間距 */
     }
 
-    /* 左側總額大字 */
+    /* 總額大字 */
     .total-price-box {
-        min-width: 220px;
+        min-width: 200px;
+        margin-left: 30px;
+        flex-shrink: 0;
     }
     
     .total-price-box .price {
-        font-size: 2.2rem; /* 加大字體 */
+        font-size: 2rem;
         font-weight: bold;
         color: #262730;
+        line-height: 1;
     }
 
-    /* 中間藍色計算式框 */
+    /* 藍色計算式框：寬度剛好就好 */
     .formula-box {
         background-color: #e8f0fe;
-        padding: 15px 20px;
+        padding: 12px 18px;
         border-radius: 10px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         color: #1967d2;
-        line-height: 1.6;
-        flex-grow: 0;
+        line-height: 1.5;
+        width: fit-content; /* 關鍵：寬度隨內容自動縮放 */
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 
     /* 右側三期款項 */
     .payment-phases {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         color: #333;
         border-left: 2px solid #eee;
-        padding-left: 25px;
-        line-height: 1.8;
-        min-width: 180px;
+        padding-left: 20px;
+        line-height: 1.6;
+        min-width: 160px;
+        flex-shrink: 0;
     }
 
-    /* 4. [精簡修正] 避開標題列並消除多餘空白 */
+    /* 4. 避開標題列 */
     .block-container {
-        padding-top: 140px !important; /* 縮小到剛好避開 130px 的標題 */
+        padding-top: 140px !important;
     }
 
-    /* 確保頂端標題字體夠大且不會變形 */
-    .top-title-bar h2 {
-        font-size: 1.6rem !important;
-        font-weight: bold;
-        line-height: 1.2;
-        min-width: 300px;
-    }
-
-    /* 強制修正藍色框框與總額的左右排版 */
-    .quote-summary-card {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-end;
-        gap: 20px;
-        flex-grow: 1;
-    }
-
-    /* 強制修正藍色框框與總額的左右排版 */
-    .quote-summary-card {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-end;
-        gap: 20px;
-        flex-grow: 1;
-    }
-
-    /* 5. 淡色備註樣式 */
+    /* 5. 其他樣式 */
     .caption-text {
         color: #888888;
         font-size: 0.85rem;
         margin-top: -10px;
         margin-bottom: 10px;
     }
-
-    .stMarkdown:has(.top-title-bar) {
-    line-height: 0;
-    }
-   
     </style>
     """, unsafe_allow_html=True)
-
 # ==========================================
 # 0. 資料庫初始化
 # ==========================================
