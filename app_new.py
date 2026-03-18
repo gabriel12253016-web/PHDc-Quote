@@ -123,82 +123,45 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* ==========================================
-       ⚠️ 最終修正：手機版 RWD 隔離與排隊重置
+   /* ==========================================
+       ⚠️ 手機版強制維持電腦版排版 (不跑版修正)
        ========================================== */
     @media (max-width: 768px) {
-        /* 1. 恢復 Header 顯示，手機版需要基準高度 */
-        header, [data-testid="stHeader"] { 
-            display: flex !important; 
+        /* 1. 鎖死內容區寬度，防止手機自動擠壓排版 */
+        .block-container {
+            min-width: 1200px !important; /* 強制手機以寬螢幕渲染，需左右滑動 */
+            padding-top: 140px !important;
+            padding-left: 2rem !important;
         }
 
-        /* 2. 標題列：由「漂浮」改為「排隊 (Relative)」 */
+        /* 2. 鎖死頂端標題列寬度，確保與內容同步且不變形 */
         .top-title-bar {
-            position: relative !important; 
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: auto !important; /* 高度隨文字撐開，不再鎖死 130px */
-            min-height: 0px !important;
-            padding: 20px !important; /* 覆蓋電腦版的 280px，讓它靠左 */
-            flex-direction: column !important; /* 讓報價資訊垂直堆疊 */
-            align-items: flex-start !important;
-            z-index: 1 !important;
-            box-shadow: none !important;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 10px !important;
+            position: fixed !important;
+            min-width: 1200px !important;
+            width: 1200px !important;
+            padding-left: 280px !important;
+            display: flex !important;
+            flex-direction: row !important; /* 強制維持橫向 */
+            justify-content: space-between !important;
         }
 
-        /* 3. 標題文字：縮小並取消最小寬度，避免爆出版面 */
-        .top-title-bar h2 {
-            font-size: 1.2rem !important;
-            min-width: 0px !important;
-            width: 100% !important;
-            margin-bottom: 15px !important;
+        /* 3. 鎖死側邊欄，防止其在手機上變寬或消失 */
+        [data-testid="stSidebar"] {
+            min-width: 280px !important;
+            max-width: 280px !important;
+            width: 280px !important;
         }
 
-        /* 4. 報價卡片：在手機上改為垂直排列 */
+        /* 4. 確保報價卡片內的細項維持電腦版橫向排版 */
         .quote-summary-card {
             display: flex !important;
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            justify-content: flex-start !important;
-            gap: 12px !important;
-            width: 100% !important;
-            margin: 0 !important;
+            flex-direction: row !important;
+            gap: 20px !important;
         }
 
-        /* 5. 側邊欄：手機版不鎖死 280px，否則內容會被推走 */
-        [data-testid="stSidebar"] {
-            min-width: 0px !important;
-            max-width: 100vw !important;
-            width: auto !important;
-        }
-
-        /* 6. 內容區：取消電腦版 140px 的頂部留白 */
-        /* 因為標題已經不漂浮了，內容會自動排在標題下方 */
-        .block-container {
-            padding-top: 10px !important;
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
-            margin-top: 0px !important;
-        }
-
-        /* 7. 細項重置：取消左邊界、縮進與藍框邊界 */
-        .total-price-box, .formula-box, .payment-phases {
-            width: 100% !important;
-            min-width: 0 !important;
-            margin: 5px 0 !important;
-            padding: 5px 0 !important;
-            border-left: none !important;
-        }
-
-        .total-price-box .price {
-            font-size: 1.8rem !important;
-        }
-
-        [data-testid="stSidebarUserContent"] {
-            margin-top: 0rem !important;
+        /* 5. 修正手機顯示時可能的黑色背景遮擋 */
+        .stApp {
+            min-width: 1200px !important;
         }
     }
     </style>
