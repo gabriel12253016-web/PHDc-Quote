@@ -128,51 +128,42 @@ st.markdown("""
        2. 手機版強制修正：允許寬度超出並左右捲動
        ========================================== */
     @media (max-width: 768px) {
-        /* 強制所有容器允許水平溢出，不要切掉內容 */
-        .stApp, .stMain, .stAppViewContainer, .stAppMainPresenter {
+        /* 鎖死 App 寬度，防止手機瀏覽器切斷固定定位的標題列 */
+        .stApp, .stMain, .stAppViewContainer {
             min-width: 1200px !important;
-            overflow-x: visible !important;
+            overflow-x: auto !important;
         }
 
-        /* 標題列：改為相對於 1200px 畫布的固定位置 */
-        .top-title-bar {
-            position: absolute !important; 
-            width: 1200px !important; 
-            min-width: 1200px !important;
-            left: 0 !important;
-            padding-left: 280px !important;
-        }
-
-        /* 側邊欄：釘在 1200px 畫布的最左邊 */
-        [data-testid="stSidebar"] {
-            position: absolute !important;
-            left: 0 !important;
-            min-width: 280px !important;
-            width: 280px !important;
-            height: 100% !important;
-        }
-
-        /* 內容區補償 */
         .block-container {
+            min-width: 1200px !important;
+        }
+
+        /* 在手機上，讓標題列寬度與 App 容器同步，不再使用 100vw */
+        .top-title-bar {
+            width: 1200px !important;
             min-width: 1200px !important;
         }
     }
     </style>
 
     <script>
-        const fixViewport = () => {
+        // 核心修正：強制手機瀏覽器渲染為 1200px 寬度的電腦版視角
+        const forceDesktopView = () => {
             const viewport = window.parent.document.querySelector('meta[name="viewport"]');
             if (viewport) {
                 if (window.innerWidth <= 768) {
-                    // 核心：告訴瀏覽器這是一個 1200px 寬的桌面版網頁
-                    viewport.setAttribute('content', 'width=1200, initial-scale=0.3, user-scalable=yes');
+                    // 強制手機以 1200px 渲染，並將初始縮放設低，讓全景出現
+                    viewport.setAttribute('content', 'width=1200, initial-scale=0.3, minimum-scale=0.1, user-scalable=yes');
                 } else {
                     viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
                 }
             }
         };
-        window.parent.addEventListener('resize', fixViewport);
-        setTimeout(fixViewport, 300);
+        
+        // 監聽並定時執行，確保在 iframe 載入後生效
+        window.parent.addEventListener('resize', forceDesktopView);
+        setTimeout(forceDesktopView, 500);
+        setTimeout(forceDesktopView, 2000);
     </script>
     """, unsafe_allow_html=True)
 # ==========================================
