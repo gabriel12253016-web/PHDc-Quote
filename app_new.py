@@ -80,6 +80,12 @@ st.markdown("""
         margin-top: -10px;
         margin-bottom: 10px;
     }
+    /* 避免標題在原位留下多餘的空白或重複顯示 */
+    div:has(> .top-title-bar) {
+        height: 0px !important;
+        margin: 0px !important;
+        padding: 0px !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -499,17 +505,6 @@ with col_left:
 # 5. 主介面：右側報價區
 # ==========================================
 with col_right:
-    st.write("### 預估專案總額")
-    st.header(f"TWD {total_cost:,} 元")
-    
-    formula_val = f"({base_cost:,.0f} + {labor_total * sum_k:,.0f}) × {f_total_adj:.2f}"
-    st.info(f"💡 預估總額 = (基礎成本 + 服務費) × 合作專案調整\n\n計算式：{formula_val} = {total_cost:,}")
-
-    st.write(f"**前期 (30%)：** {round(total_cost*0.3):,} 元")
-    st.write(f"**期中 (40%) :** {round(total_cost*0.4):,} 元")
-    st.write(f"**結案 (30%) :** {round(total_cost*0.3):,} 元")
-    
-    st.markdown("---")
     st.write("#### 報價項目權重說明")
     st.write(f"工作需求乘數: {m_work}")
     st.write(f"研究設計權重: {k_design}")
