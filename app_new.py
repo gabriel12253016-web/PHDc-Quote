@@ -18,27 +18,30 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* 1. 隱藏原生頂部黑條 */
-    header, [data-testid="stHeader"] { display: none !important; }
-
-    /* 2. 修正側邊欄箭頭按鈕 (確保它在白板上面) */
-    [data-testid="stSidebarCollapsedControl"] {
-        display: block !important;
-        position: fixed !important;
-        top: 20px !important;
-        left: 20px !important;
-        z-index: 100000 !important; /* 必須遠大於 9999 */
-        background-color: #f0f2f6 !important;
-        border-radius: 50% !important;
+    /* 1. 修正：不要完全隱藏 header，否則按鈕會消失 */
+    [data-testid="stHeader"] {
+        background-color: rgba(0,0,0,0) !important; /* 背景透明 */
+        height: 3rem !important;
+        z-index: 100001 !important; /* 確保在最前方 */
     }
 
-    /* 3. 修改標題列：左側挖空 80px，絕對不准蓋過按鈕 */
+    /* 強制顯示側邊欄展開箭頭 */
+    [data-testid="stSidebarCollapsedControl"] {
+        display: block !important;
+        z-index: 100002 !important;
+        background-color: #f0f2f6 !important; /* 給它一個淡灰色圓圈底 */
+        border-radius: 50% !important;
+        margin-left: 10px !important;
+        margin-top: 5px !important;
+    }
+
+    /* 2. 標題列：左邊空出 80px，絕對不准蓋到按鈕 */
     .top-title-bar {
         position: fixed; 
         top: 0; 
-        left: 80px !important; /* 強制向右縮進 */
+        left: 80px !important; /* 關鍵：從 80px 開始 */
         right: 0;
-        width: calc(100vw - 80px) !important; /* 寬度自動計算 */
+        width: calc(100vw - 80px) !important; 
         height: 130px; 
         background-color: white; 
         display: flex; 
