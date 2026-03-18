@@ -148,21 +148,28 @@ st.markdown("""
     line-height: 0;
     }
 
-    /* 手機版 RWD 修正 */
+    /* 手機版 RWD 自動等比縮放與重置 */
     @media (max-width: 768px) {
-        /* 1. 讓頂端標題區不要固定，改為隨網頁滾動 */
+        /* 1. 讓頂端標題列不再固定，改為自動寬度並垂直排列 */
         .top-title-bar {
             position: relative !important; 
-            padding-left: 20px !important; 
+            left: 0 !important;
             width: 100% !important;
             height: auto !important;
-            flex-direction: column !important; /* 讓內容垂直堆疊 */
+            flex-direction: column !important; /* 讓標題與報價垂直堆疊 */
             align-items: flex-start !important;
-            padding-top: 20px !important;
-            padding-bottom: 20px !important;
+            padding: 20px !important;
+            z-index: 100 !important;
         }
 
-        /* 2. 讓側邊欄在手機上寬度自動化 (不鎖死 280px) */
+        /* 2. 標題字體縮放 (使用 vw 讓它隨螢幕寬度等比縮小) */
+        .top-title-bar h2 {
+            font-size: 5vw !important; /* 隨螢幕寬度自動縮放字體 */
+            min-width: 100% !important;
+            margin-bottom: 10px !important;
+        }
+
+        /* 3. 側邊欄鎖死取消：手機版讓它變回 100% 寬度 */
         [data-testid="stSidebar"] {
             min-width: 100% !important;
             max-width: 100% !important;
@@ -170,21 +177,32 @@ st.markdown("""
             position: relative !important;
         }
 
-        /* 3. 取消內容區的位移補償 */
+        /* 4. 內容區塊重置：取消電腦版的大位移 */
         .block-container {
             padding-top: 20px !important;
-            padding-left: 1rem !important;
+            padding-left: 5vw !important;
+            padding-right: 5vw !important;
         }
 
-        /* 4. 讓報價資訊在手機上垂直堆疊 */
+        /* 5. 報價資訊卡片自動轉為垂直堆疊 */
         .quote-summary-card {
             flex-direction: column !important;
             align-items: flex-start !important;
             gap: 15px !important;
+            width: 100% !important;
             justify-content: flex-start !important;
         }
+
+        /* 讓藍色框框跟三期款項也自動填滿寬度 */
+        .formula-box, .payment-phases {
+            width: 100% !important;
+            margin: 0 !important;
+            border-left: none !important;
+            border-top: 1px solid #eee;
+            padding-top: 10px !important;
+        }
         
-        /* 5. 隱藏手機版多餘的向上位移 */
+        /* 隱藏手機版沒必要的負邊距 */
         [data-testid="stSidebarUserContent"] {
             margin-top: 0rem !important;
         }
