@@ -75,7 +75,6 @@ st.markdown("""
         margin: 0;
         font-size: 1.8rem !important; /* 強制加大 */
         font-weight: bold !important;
-        display: block !important;
         color: #262730;
     }
 
@@ -463,14 +462,16 @@ with col_left:
     n_revise = int(st.session_state.b_revise + (total_cost // st.session_state.s_revise)) if k_write > 0 else 0
 
     # --- [渲染頂端凍結列] ---
+    # 此段放在 total_cost 算完後的 with col_left 底部
+    # 這裡使用 f-string 置入變數，確保 unsafe_allow_html 參數有寫
     st.markdown(f"""
     <div class="top-title-bar">
         <div class="title-group">
-            <h2 style="font-size:1.6rem;">成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
+            <h2>成大群體健康數據中心 (PHDc)<br>合作報價系統</h2>
         </div>
         <div class="quote-summary-card">
             <div class="total-price-box">
-                <div style="font-size:0.85rem; color:#888;">預估專案總額</div>
+                <div style="font-size:0.9rem; color:#888;">預估專案總額</div>
                 <div class="price">TWD {total_cost:,} 元</div>
             </div>
             
