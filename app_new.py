@@ -12,21 +12,6 @@ import os
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* 1. 精準隱藏右上角雜訊，只保留三個點選單 */
-    [data-testid="stStatusWidget"], 
-    .stAppDeployButton, 
-    [data-testid="stToolbar"] a, 
-    [data-testid="stToolbar"] button:not([data-testid="stConnectionStatus"]):not(:last-child) {
-        display: none !important;
-    }
-
-    /* 2. 恢復 Header 的基礎功能，但不產生白色背景擋住妳的標題 */
-    header[data-testid="stHeader"] {
-        background-color: transparent !important;
-        background: none !important;
-        z-index: 10001 !important;
-    }
-
     /* 3. 找回左側原本被我切掉的「返回/登出」控制按鈕 */
     [data-testid="stSidebarCollapsedControl"] {
         display: none !important; /* 依舊不顯示箭頭 */
