@@ -140,18 +140,26 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* 強制側邊欄按鈕文字與內容完全置中 */
+    /* 1. 強制按鈕容器與內部文字百分之百置中 */
     section[data-testid="stSidebar"] .stButton button {
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
         text-align: center !important;
+        display: block !important; /* 改為 block 確保內部的 p 能撐滿並置中 */
+        width: 100% !important;
     }
 
-    section[data-testid="stSidebar"] .stButton button p {
-        width: 100% !important;
+    /* 2. 鎖定按鈕內部的文字容器，強制對齊 */
+    section[data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
         text-align: center !important;
+        width: 100% !important;
         margin: 0 !important;
+        display: block !important;
+    }
+
+    /* 3. 確保 Expander (安全與權限管理) 的標題也居中 */
+    section[data-testid="stSidebar"] .st-emotion-cache-p5msec {
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
     }
     
     /* ==========================================
