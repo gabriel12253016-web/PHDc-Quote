@@ -140,29 +140,27 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* 1. 讓側邊欄按鈕文字居中：使用最保險的 text-align */
-    [data-testid="stSidebar"] .stButton button {
-        width: 100% !important;
-    }
-
+    /* 1. 確保側邊欄按鈕文字靠左，並留下一點左側內距與標題對齊 */
     [data-testid="stSidebar"] .stButton button p {
-        text-align: center !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
         width: 100% !important;
-        display: block !important;
-        color: #262730 !important; /* 確保文字顏色不是白色 */
-        margin: 0 !important;
+        display: flex !important;
+        padding-left: 5px !important;
+        color: #262730 !important; /* 確保文字顏色清晰 */
     }
 
-    /* 2. 移除 Expander 標題的靠左慣性 */
+    /* 2. 確保 Expander 標題也維持靠左 (通常是預設，這裡做二次強化) */
     [data-testid="stSidebar"] .st-emotion-cache-p5msec p {
-        text-align: center !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
         width: 100% !important;
     }
 
-    /* 3. 修正妳截圖中消失的文字顏色 (可能是被背景色蓋掉了) */
-    [data-testid="stSidebar"] .stButton button:hover {
-        border-color: #ff4b4b !important;
-        color: #ff4b4b !important;
+    /* 3. 移除按鈕可能存在的置中內距偏移 */
+    [data-testid="stSidebar"] .stButton button {
+        text-align: left !important;
+        padding-left: 10px !important;
     }
     
     /* ==========================================
