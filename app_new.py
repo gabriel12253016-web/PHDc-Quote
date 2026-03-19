@@ -7,20 +7,18 @@ from datetime import datetime
 import json
 import os
 
-# 定義密碼檔案路徑
-PASSWORD_FILE = "admin_config.json"
+# 定義密碼存放檔案
+CONFIG_FILE = "admin_config.json"
 
-def load_admin_password():
-    # 如果檔案不存在，預設密碼為 0000
-    if not os.path.exists(PASSWORD_FILE):
-        return "0000"
-    with open(PASSWORD_FILE, "r", encoding="utf-8") as f:
-        data = json.load(f)
-        return data.get("password", "0000")
+def get_stored_password():
+    if os.path.exists(CONFIG_FILE):
+        with open(CONFIG_FILE, "r") as f:
+            return json.load(f).get("password", "0000")
+    return "0000"
 
-def save_admin_password(new_password):
-    with open(PASSWORD_FILE, "w", encoding="utf-8") as f:
-        json.dump({"password": new_password}, f)
+def update_stored_password(new_pwd):
+    with open(CONFIG_FILE, "w") as f:
+        json.dump({"password": new_pwd}, f)
 
 # ==========================================
 # 網頁配置與 CSS 固定右側欄位
@@ -307,42 +305,39 @@ with st.sidebar:
         </div>
     """, unsafe_allow_html=True)
     st.markdown("---")
-    if not st.session_state.admin_mode:
-        pwd = st.text_input("🛡️ 後台解鎖密碼", type="password")
-        # 改為讀取最新儲存的密碼
-        if pwd == load_admin_password():
+    # --- 驗證模式切換 ---
+    if not st.session_state.get("admin_mode", False):
+        pwd_input = st.text_input("🛡️ 後台解鎖密碼", type="password")
+        if pwd_input == get_stored_password():
             st.session_state.admin_mode = True
             st.rerun()
     else:
         st.success("✅ 中心內部模式")
-        st.markdown("---")
         
-        # 取得目前儲存在檔案中的密碼
-        current_stored_pwd = load_admin_password()
-
-        with st.expander("🔑 安全與權限管理", expanded=False):
+        # 3. 修改密碼區塊
+        st.markdown("---")
+        with st.expander("🔑 安全與權限管理"):
             st.write("修改中心人員密碼")
-            input_old_pwd = st.text_input("輸入當前密碼", type="password", key="admin_old_pwd")
-            input_new_pwd = st.text_input("輸入新密碼", type="password", key="admin_new_pwd")
-            input_confirm_pwd = st.text_input("確認新密碼", type="password", key="admin_confirm_pwd")
+            old_pwd = st.text_input("輸入當前密碼", type="password", key="opwd")
+            new_pwd = st.text_input("輸入新密碼", type="password", key="npwd")
+            confirm_pwd = st.text_input("確認新密碼", type="password", key="cpwd")
             
+            # 強制確認按鈕出現在展開盒內
             if st.button("確認變更密碼", use_container_width=True):
-                if input_old_pwd != current_stored_pwd:
-                    st.error("當前密碼錯誤")
-                elif input_new_pwd != input_confirm_pwd:
+                if old_pwd != get_stored_password():
+                    st.error("當前密碼不正確")
+                elif new_pwd != confirm_pwd:
                     st.error("新密碼與確認密碼不符")
-                elif len(input_new_pwd) < 4:
-                    st.error("新密碼長度太短（至少 4 位）")
+                elif len(new_pwd) < 4:
+                    st.error("密碼過短")
                 else:
-                    # 關鍵：將新密碼寫入檔案
-                    save_admin_password(input_new_pwd)
-                    st.success("密碼變更成功！下次請使用新密碼登入。")
-                    # 建議變更後強制登出或重新整理
-                    # st.session_state.admin_mode = False
-                    # st.rerun()
+                    update_stored_password(new_pwd)
+                    st.success("密碼已永久變更！")
+                    st.balloons()
 
         st.markdown("<br>", unsafe_allow_html=True)
         
+        # 4. 登出與返回按鈕 (確保在 expander 外部)
         if st.button("🚪 登出內部模式", type="primary", use_container_width=True):
             st.session_state.admin_mode = False
             st.rerun()
