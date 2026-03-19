@@ -166,8 +166,7 @@ st.markdown("""
         text-align: center !important;
         width: 100% !important;
         margin: 0 !important;
-        /* 關鍵：向左補償位移。-12px 到 -16px 通常能抵銷箭頭的推力 */
-        transform: translateX(-14px) !important;
+        transform: translateX(-20px) !important;
     }
 
     /* 3. 調整箭頭圖示，確保它不吃掉太多空間 */
