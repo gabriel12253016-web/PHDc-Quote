@@ -298,8 +298,39 @@ with st.sidebar:
             st.rerun()
     else:
         st.success("✅ 中心內部模式")
-        if st.sidebar.button("登出"):
+        
+        # --- 新增：安全管理與功能按鈕 ---
+        st.markdown("---")
+        with st.expander("🔑 安全與權限管理"):
+            st.write("修改中心人員密碼")
+            # 這裡的 key 建議加上 admin 前綴避免衝突
+            current_pwd = st.text_input("輸入當前密碼", type="password", key="admin_old_pwd")
+            new_pwd = st.text_input("輸入新密碼", type="password", key="admin_new_pwd")
+            confirm_pwd = st.text_input("確認新密碼", type="password", key="admin_confirm_pwd")
+            
+            if st.button("確認變更密碼", use_container_width=True):
+                # 這裡目前僅做邏輯判斷，妳之後可對接資料庫更新 0000 這個值
+                if current_pwd != "0000":
+                    st.error("當前密碼錯誤")
+                elif new_pwd != confirm_pwd:
+                    st.error("新密碼與確認密碼不符")
+                elif len(new_pwd) < 4:
+                    st.error("密碼長度太短")
+                else:
+                    st.success("密碼已更新，下次登入生效")
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # 原有的登出按鈕改為 type="primary" 放在這裡
+        if st.button("🚪 登出內部模式", type="primary", use_container_width=True):
             st.session_state.admin_mode = False
+            # 視需求決定是否要 clear，如果只是關閉管理模式，直接設為 False 即可
+            st.rerun()
+            
+        if st.button("🔄 返回客戶報價介面", use_container_width=True):
+            # 雖然目前逻辑 admin_mode 為 True 就在後台，
+            # 但如果妳有切換分頁，這裡可以強制跳回主分頁
+            st.session_state.admin_mode = False 
             st.rerun()
 
 # ==========================================
