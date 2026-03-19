@@ -141,37 +141,40 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* 1. 鎖定側邊欄按鈕：強制外框與內容靠左 */
+    /* 1. 強制側邊欄所有按鈕內的文字絕對置中 */
     [data-testid="stSidebar"] .stButton button {
-        text-align: left !important;
-        justify-content: flex-start !important;
-        width: 100% !important;
-        padding-left: 15px !important; /* 增加左側內距，確保不貼邊 */
-    }
-
-    /* 2. 鎖定按鈕內層文字容器：消除 Flex 居中慣性 */
-    [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] {
-        justify-content: flex-start !important;
-        text-align: left !important;
         width: 100% !important;
         display: flex !important;
+        justify-content: center !important; /* 第一層：按鈕外框置中 */
+        align-items: center !important;
     }
 
+    /* 2. 鎖定按鈕內部的 Markdown 容器 */
+    [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important; /* 第二層：容器置中 */
+    }
+
+    /* 3. 鎖定最內層的文字標籤 */
     [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
-        text-align: left !important;
+        text-align: center !important;      /* 第三層：文字內容置中 */
         width: 100% !important;
         margin: 0 !important;
+        display: block !important;
     }
 
-    /* 3. 確保 Expander (安全與權限管理) 標題文字靠左 */
+    /* 4. 確保「安全與權限管理」的 Expander 標題也強制置中 */
     [data-testid="stSidebar"] .st-emotion-cache-p5msec {
-        justify-content: flex-start !important;
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
     }
 
     [data-testid="stSidebar"] .st-emotion-cache-p5msec p {
-        text-align: left !important;
+        text-align: center !important;
         width: 100% !important;
-        margin-left: 0 !important;
+        margin: 0 !important;
     }
     
     /* ==========================================
