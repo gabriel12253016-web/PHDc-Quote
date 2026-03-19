@@ -140,27 +140,31 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* 1. 確保側邊欄按鈕文字靠左，並留下一點左側內距與標題對齊 */
-    [data-testid="stSidebar"] .stButton button p {
-        text-align: left !important;
-        justify-content: flex-start !important;
-        width: 100% !important;
-        display: flex !important;
-        padding-left: 5px !important;
-        color: #262730 !important; /* 確保文字顏色清晰 */
-    }
-
-    /* 2. 確保 Expander 標題也維持靠左 (通常是預設，這裡做二次強化) */
-    [data-testid="stSidebar"] .st-emotion-cache-p5msec p {
-        text-align: left !important;
-        justify-content: flex-start !important;
-        width: 100% !important;
-    }
-
-    /* 3. 移除按鈕可能存在的置中內距偏移 */
+    /* 1. 鎖定側邊欄按鈕：強制文字與內容靠左 */
     [data-testid="stSidebar"] .stButton button {
         text-align: left !important;
-        padding-left: 10px !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        padding-left: 15px !important; /* 增加左側內距，對齊標題 */
+    }
+
+    /* 2. 針對按鈕內層文字容器強制對齊 */
+    [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
+        text-align: left !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        display: block !important;
+        margin: 0 !important;
+    }
+
+    /* 3. 確保 Expander (安全與權限管理) 標題維持原生的靠左狀態 */
+    [data-testid="stSidebar"] .st-emotion-cache-p5msec {
+        justify-content: flex-start !important;
+    }
+
+    [data-testid="stSidebar"] .st-emotion-cache-p5msec p {
+        text-align: left !important;
+        width: 100% !important;
     }
     
     /* ==========================================
