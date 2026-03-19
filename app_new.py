@@ -140,26 +140,32 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* 1. 鎖定側邊欄按鈕內部的所有文字容器 */
-    [data-testid="stSidebar"] button div p {
-        display: block !important;
+    /* 1. 鎖定側邊欄按鈕：強制內部的 flex 容器置中 */
+    [data-testid="stSidebar"] button div[data-testid="stMarkdownContainer"] {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    /* 2. 鎖定最內層文字：消除所有靠左的偏移與內距 */
+    [data-testid="stSidebar"] button div[data-testid="stMarkdownContainer"] p {
         text-align: center !important;
         width: 100% !important;
+        justify-content: center !important;
+        display: flex !important;
         margin: 0 !important;
         padding: 0 !important;
     }
 
-    /* 2. 針對按鈕本身的 Flex 排版進行校正 */
-    [data-testid="stSidebar"] button div {
-        display: flex !important;
-        justify-content: center !important;
-        width: 100% !important;
-    }
-
-    /* 3. 確保「安全與權限管理」的 Expander 標題也置中 */
+    /* 3. 針對 Expander (安全與權限管理) 標題的對齊修正 */
     [data-testid="stSidebar"] .st-emotion-cache-p5msec p {
         text-align: center !important;
         width: 100% !important;
+    }
+    
+    /* 移除可能存在的圖示間距，確保文字水平居中 */
+    [data-testid="stSidebar"] .stButton button span {
+        display: none !important; 
     }
     
     /* ==========================================
