@@ -26,9 +26,10 @@ def update_stored_password(new_pwd):
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* 1. 精確隱藏：只消滅「收合箭頭」，不要消滅側邊欄的「功能按鈕」 */
+    /* 1. 精確隱藏：消滅收合箭頭、Header 與工具列 */
     header, [data-testid="stHeader"], 
     [data-testid="stSidebarCollapsedControl"],
+    button[kind="headerNoPadding"],
     .stAppToolbar { 
         display: none !important; 
     }
@@ -140,32 +141,37 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* 1. 鎖定側邊欄按鈕：強制文字與內容靠左，並對齊標題 */
+    /* 1. 鎖定側邊欄按鈕：強制外框與內容靠左 */
     [data-testid="stSidebar"] .stButton button {
         text-align: left !important;
         justify-content: flex-start !important;
         width: 100% !important;
-        padding-left: 10px !important;
+        padding-left: 15px !important; /* 增加左側內距，確保不貼邊 */
     }
 
-    /* 2. 針對按鈕內層文字容器強制對齊，解決偏移問題 */
-    [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
-        text-align: left !important;
+    /* 2. 鎖定按鈕內層文字容器：消除 Flex 居中慣性 */
+    [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] {
         justify-content: flex-start !important;
+        text-align: left !important;
         width: 100% !important;
         display: flex !important;
+    }
+
+    [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
+        text-align: left !important;
+        width: 100% !important;
         margin: 0 !important;
     }
 
-    /* 3. 確保 Expander 標題與按鈕起始點一致 */
+    /* 3. 確保 Expander (安全與權限管理) 標題文字靠左 */
     [data-testid="stSidebar"] .st-emotion-cache-p5msec {
         justify-content: flex-start !important;
-        padding-left: 0 !important;
     }
 
     [data-testid="stSidebar"] .st-emotion-cache-p5msec p {
         text-align: left !important;
         width: 100% !important;
+        margin-left: 0 !important;
     }
     
     /* ==========================================
