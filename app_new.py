@@ -318,10 +318,9 @@ with st.sidebar:
         st.success("✅ 中心內部模式")
         st.markdown("---")
         
-        # 取得儲存的密碼
-        current_stored_pwd = get_pwd()
+        # 修正：使用妳定義的 get_stored_password()
+        current_stored_pwd = get_stored_password()
 
-        # 1. 修改密碼區塊
         with st.expander("🔑 安全與權限管理", expanded=False):
             st.write("修改中心人員密碼")
             op = st.text_input("輸入當前密碼", type="password", key="op")
@@ -334,13 +333,13 @@ with st.sidebar:
                 elif np != cp:
                     st.error("新密碼與確認密碼不符")
                 elif len(np) < 4:
-                    st.error("新密碼長度太短（至少 4 位）")
+                    st.error("新密碼長度太短")
                 else:
-                    set_pwd(np)
+                    # 修正：使用妳定義的 update_stored_password()
+                    update_stored_password(np)
                     st.success("密碼已永久變更！")
 
-        # 2. 返回按鈕 (緊跟在 expander 下方，縮小間距)
-        # 移除原本的 <br> 標籤，讓它靠近上方區塊
+        # 返回按鈕緊跟在下方
         if st.button("🔄 返回客戶報價介面", use_container_width=True):
             st.session_state.admin_mode = False 
             st.rerun()
