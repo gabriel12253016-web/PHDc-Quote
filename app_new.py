@@ -141,27 +141,16 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* 1. 強制側邊欄所有按鈕內的文字「絕對置中」 */
-    [data-testid="stSidebar"] .stButton button {
-        width: 100% !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        padding-left: 0 !important; /* 移除可能的偏移 */
-        padding-right: 0 !important;
-    }
-
-    /* 鎖定按鈕內部的容器與文字 */
-    [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"],
+    /* 1. 強制按鈕文字絕對置中 */
     [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
-        width: 100% !important;
         text-align: center !important;
+        width: 100% !important;
         justify-content: center !important;
         display: flex !important;
         margin: 0 !important;
     }
 
-    /* 2. 鎖定「安全與權限管理」Expander 標題置中 */
+    /* 2. 鎖定 Expander 標題置中，並補償左側箭頭造成的位移 */
     [data-testid="stSidebar"] .st-emotion-cache-p5msec {
         display: flex !important;
         justify-content: center !important;
@@ -173,13 +162,14 @@ st.markdown("""
         text-align: center !important;
         width: 100% !important;
         margin: 0 !important;
-        /* 補償箭頭 icon 造成的位移感，讓文字視覺更中 */
-        padding-right: 20px !important; 
+        /* 關鍵：利用右側內距抵銷左側箭頭的寬度，讓文字看起來在正中間 */
+        padding-right: 24px !important; 
     }
 
-    /* 3. 移除 Expander 標題內部的預設間距 */
-    [data-testid="stSidebar"] .st-emotion-cache-p5msec svg {
-        margin-right: 5px !important;
+    /* 3. 確保按鈕外框不會有預設偏移 */
+    [data-testid="stSidebar"] .stButton button {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
     
     /* ==========================================
