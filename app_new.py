@@ -12,6 +12,15 @@ import os
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
+    /* 1. 暴力消滅：針對所有可能出現收合箭頭的容器與按鈕 */
+    header, [data-testid="stHeader"], 
+    [data-testid="stSidebarCollapsedControl"],
+    .st-emotion-cache-6qob1r button,
+    .st-emotion-cache-15ec669 button,
+    section[data-testid="stSidebar"] button { 
+        display: none !important; 
+    }
+    
     /* 3. 找回左側原本被我切掉的「返回/登出」控制按鈕 */
     [data-testid="stSidebarCollapsedControl"] {
         display: none !important; /* 依舊不顯示箭頭 */
