@@ -140,6 +140,19 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
+    /* 強制側邊欄按鈕文字與內容完全置中 */
+    section[data-testid="stSidebar"] .stButton button {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    section[data-testid="stSidebar"] .stButton button p {
+        width: 100% !important;
+        text-align: center !important;
+        margin: 0 !important;
+    }
     
     /* ==========================================
        2. 手機版強制修正：允許寬度超出並左右捲動
