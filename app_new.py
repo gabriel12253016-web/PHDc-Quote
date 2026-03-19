@@ -166,13 +166,18 @@ st.markdown("""
         text-align: center !important;
         width: 100% !important;
         margin: 0 !important;
-        transform: translateX(-20px) !important;
+        transform: translateX(20px) !important;
     }
 
     /* 3. 調整箭頭圖示，確保它不吃掉太多空間 */
     [data-testid="stSidebar"] .st-emotion-cache-p5msec svg {
         margin-right: 0 !important;
         flex-shrink: 0 !important;
+    }
+
+    /* 💡 讓綠色的中心內部模式文字往右移 */
+    [data-testid="stNotificationContent"] p {
+        padding-left: 55px !important; 
     }
     
     /* ==========================================
