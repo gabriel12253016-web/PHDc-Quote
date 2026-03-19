@@ -26,21 +26,24 @@ def update_stored_password(new_pwd):
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* 1. 暴力消滅：針對所有可能出現收合箭頭的容器與按鈕 */
+    /* 1. 精確隱藏：只消滅「收合箭頭」，不要消滅側邊欄的「功能按鈕」 */
     header, [data-testid="stHeader"], 
     [data-testid="stSidebarCollapsedControl"],
-    .st-emotion-cache-6qob1r button,
-    .st-emotion-cache-15ec669 button,
-    section[data-testid="stSidebar"] button { 
+    .stAppToolbar { 
         display: none !important; 
     }
-    
-    /* 2. 側邊欄固定寬度 (維持 280px) */
+
+    /* 2. 電腦版原始細節 (維持 280px 與 130px) */
     [data-testid="stSidebar"] {
         min-width: 280px !important;
         max-width: 280px !important;
         width: 280px !important;
         z-index: 10000 !important;
+    }
+
+    /* 修正：確保側邊欄內的按鈕是可見的 */
+    section[data-testid="stSidebar"] .stButton button {
+        display: inline-flex !important;
     }
 
     [data-testid="stSidebarUserContent"] {
