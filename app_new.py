@@ -141,40 +141,45 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* 1. 強制側邊欄所有按鈕內的文字絕對置中 */
+    /* 1. 強制側邊欄所有按鈕內的文字「絕對置中」 */
     [data-testid="stSidebar"] .stButton button {
         width: 100% !important;
         display: flex !important;
-        justify-content: center !important; /* 第一層：按鈕外框置中 */
+        justify-content: center !important;
         align-items: center !important;
+        padding-left: 0 !important; /* 移除可能的偏移 */
+        padding-right: 0 !important;
     }
 
-    /* 2. 鎖定按鈕內部的 Markdown 容器 */
-    [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] {
-        width: 100% !important;
-        display: flex !important;
-        justify-content: center !important; /* 第二層：容器置中 */
-    }
-
-    /* 3. 鎖定最內層的文字標籤 */
+    /* 鎖定按鈕內部的容器與文字 */
+    [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"],
     [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
-        text-align: center !important;      /* 第三層：文字內容置中 */
         width: 100% !important;
+        text-align: center !important;
+        justify-content: center !important;
+        display: flex !important;
         margin: 0 !important;
-        display: block !important;
     }
 
-    /* 4. 確保「安全與權限管理」的 Expander 標題也強制置中 */
+    /* 2. 鎖定「安全與權限管理」Expander 標題置中 */
     [data-testid="stSidebar"] .st-emotion-cache-p5msec {
         display: flex !important;
         justify-content: center !important;
         width: 100% !important;
+        padding-left: 0 !important;
     }
 
     [data-testid="stSidebar"] .st-emotion-cache-p5msec p {
         text-align: center !important;
         width: 100% !important;
         margin: 0 !important;
+        /* 補償箭頭 icon 造成的位移感，讓文字視覺更中 */
+        padding-right: 20px !important; 
+    }
+
+    /* 3. 移除 Expander 標題內部的預設間距 */
+    [data-testid="stSidebar"] .st-emotion-cache-p5msec svg {
+        margin-right: 5px !important;
     }
     
     /* ==========================================
