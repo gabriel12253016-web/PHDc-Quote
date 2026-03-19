@@ -21,16 +21,6 @@ st.markdown("""
         display: none !important; 
     }
     
-    /* 3. 找回左側原本被我切掉的「返回/登出」控制按鈕 */
-    [data-testid="stSidebarCollapsedControl"] {
-        display: none !important; /* 依舊不顯示箭頭 */
-    }
-    
-    /* 確保側邊欄頂部的原生成份不會被強制隱藏 */
-    section[data-testid="stSidebar"] > div:first-child {
-        display: block !important;
-    }
-
     /* 2. 側邊欄固定寬度 (維持 280px) */
     [data-testid="stSidebar"] {
         min-width: 280px !important;
