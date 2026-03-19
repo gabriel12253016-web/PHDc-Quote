@@ -140,32 +140,29 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* 1. 鎖定側邊欄按鈕：強制內部的 flex 容器置中 */
-    [data-testid="stSidebar"] button div[data-testid="stMarkdownContainer"] {
+    /* 1. 讓側邊欄按鈕文字居中：使用最保險的 text-align */
+    [data-testid="stSidebar"] .stButton button {
         width: 100% !important;
-        display: flex !important;
-        justify-content: center !important;
     }
 
-    /* 2. 鎖定最內層文字：消除所有靠左的偏移與內距 */
-    [data-testid="stSidebar"] button div[data-testid="stMarkdownContainer"] p {
+    [data-testid="stSidebar"] .stButton button p {
         text-align: center !important;
         width: 100% !important;
-        justify-content: center !important;
-        display: flex !important;
+        display: block !important;
+        color: #262730 !important; /* 確保文字顏色不是白色 */
         margin: 0 !important;
-        padding: 0 !important;
     }
 
-    /* 3. 針對 Expander (安全與權限管理) 標題的對齊修正 */
+    /* 2. 移除 Expander 標題的靠左慣性 */
     [data-testid="stSidebar"] .st-emotion-cache-p5msec p {
         text-align: center !important;
         width: 100% !important;
     }
-    
-    /* 移除可能存在的圖示間距，確保文字水平居中 */
-    [data-testid="stSidebar"] .stButton button span {
-        display: none !important; 
+
+    /* 3. 修正妳截圖中消失的文字顏色 (可能是被背景色蓋掉了) */
+    [data-testid="stSidebar"] .stButton button:hover {
+        border-color: #ff4b4b !important;
+        color: #ff4b4b !important;
     }
     
     /* ==========================================
