@@ -141,16 +141,20 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* 1. 強制按鈕文字絕對置中 */
+    /* 1. 按鈕置中 (這部分妳已經成功了，維持標準鎖定) */
+    [data-testid="stSidebar"] .stButton button {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
     [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
         text-align: center !important;
         width: 100% !important;
-        justify-content: center !important;
-        display: flex !important;
         margin: 0 !important;
     }
 
-    /* 2. 鎖定 Expander 標題置中，並補償左側箭頭造成的位移 */
+    /* 2. Expander 標題置中：修正「被箭頭擠歪」的問題 */
     [data-testid="stSidebar"] .st-emotion-cache-p5msec {
         display: flex !important;
         justify-content: center !important;
@@ -162,14 +166,14 @@ st.markdown("""
         text-align: center !important;
         width: 100% !important;
         margin: 0 !important;
-        /* 關鍵：利用右側內距抵銷左側箭頭的寬度，讓文字看起來在正中間 */
-        padding-right: 24px !important; 
+        /* 關鍵：向左補償位移。-12px 到 -16px 通常能抵銷箭頭的推力 */
+        transform: translateX(-14px) !important;
     }
 
-    /* 3. 確保按鈕外框不會有預設偏移 */
-    [data-testid="stSidebar"] .stButton button {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
+    /* 3. 調整箭頭圖示，確保它不吃掉太多空間 */
+    [data-testid="stSidebar"] .st-emotion-cache-p5msec svg {
+        margin-right: 0 !important;
+        flex-shrink: 0 !important;
     }
     
     /* ==========================================
