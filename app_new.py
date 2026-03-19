@@ -140,26 +140,27 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* 1. 鎖定側邊欄按鈕：強制文字與內容靠左 */
+    /* 1. 鎖定側邊欄按鈕：強制文字與內容靠左，並對齊標題 */
     [data-testid="stSidebar"] .stButton button {
         text-align: left !important;
         justify-content: flex-start !important;
         width: 100% !important;
-        padding-left: 15px !important; /* 增加左側內距，對齊標題 */
+        padding-left: 10px !important;
     }
 
-    /* 2. 針對按鈕內層文字容器強制對齊 */
+    /* 2. 針對按鈕內層文字容器強制對齊，解決偏移問題 */
     [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
         text-align: left !important;
         justify-content: flex-start !important;
         width: 100% !important;
-        display: block !important;
+        display: flex !important;
         margin: 0 !important;
     }
 
-    /* 3. 確保 Expander (安全與權限管理) 標題維持原生的靠左狀態 */
+    /* 3. 確保 Expander 標題與按鈕起始點一致 */
     [data-testid="stSidebar"] .st-emotion-cache-p5msec {
         justify-content: flex-start !important;
+        padding-left: 0 !important;
     }
 
     [data-testid="stSidebar"] .st-emotion-cache-p5msec p {
