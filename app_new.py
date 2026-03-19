@@ -4,7 +4,23 @@ import uuid
 import sqlite3
 import pandas as pd
 from datetime import datetime
+import json
 import os
+
+# 定義密碼檔案路徑
+PASSWORD_FILE = "admin_config.json"
+
+def load_admin_password():
+    # 如果檔案不存在，預設密碼為 0000
+    if not os.path.exists(PASSWORD_FILE):
+        return "0000"
+    with open(PASSWORD_FILE, "r", encoding="utf-8") as f:
+        data = json.load(f)
+        return data.get("password", "0000")
+
+def save_admin_password(new_password):
+    with open(PASSWORD_FILE, "w", encoding="utf-8") as f:
+        json.dump({"password": new_password}, f)
 
 # ==========================================
 # 網頁配置與 CSS 固定右側欄位
@@ -293,43 +309,45 @@ with st.sidebar:
     st.markdown("---")
     if not st.session_state.admin_mode:
         pwd = st.text_input("🛡️ 後台解鎖密碼", type="password")
-        if pwd == "0000":
+        # 改為讀取最新儲存的密碼
+        if pwd == load_admin_password():
             st.session_state.admin_mode = True
             st.rerun()
     else:
         st.success("✅ 中心內部模式")
-        
-        # --- 新增：安全管理與功能按鈕 ---
         st.markdown("---")
-        with st.expander("🔑 安全與權限管理"):
+        
+        # 取得目前儲存在檔案中的密碼
+        current_stored_pwd = load_admin_password()
+
+        with st.expander("🔑 安全與權限管理", expanded=False):
             st.write("修改中心人員密碼")
-            # 這裡的 key 建議加上 admin 前綴避免衝突
-            current_pwd = st.text_input("輸入當前密碼", type="password", key="admin_old_pwd")
-            new_pwd = st.text_input("輸入新密碼", type="password", key="admin_new_pwd")
-            confirm_pwd = st.text_input("確認新密碼", type="password", key="admin_confirm_pwd")
+            input_old_pwd = st.text_input("輸入當前密碼", type="password", key="admin_old_pwd")
+            input_new_pwd = st.text_input("輸入新密碼", type="password", key="admin_new_pwd")
+            input_confirm_pwd = st.text_input("確認新密碼", type="password", key="admin_confirm_pwd")
             
             if st.button("確認變更密碼", use_container_width=True):
-                # 這裡目前僅做邏輯判斷，妳之後可對接資料庫更新 0000 這個值
-                if current_pwd != "0000":
+                if input_old_pwd != current_stored_pwd:
                     st.error("當前密碼錯誤")
-                elif new_pwd != confirm_pwd:
+                elif input_new_pwd != input_confirm_pwd:
                     st.error("新密碼與確認密碼不符")
-                elif len(new_pwd) < 4:
-                    st.error("密碼長度太短")
+                elif len(input_new_pwd) < 4:
+                    st.error("新密碼長度太短（至少 4 位）")
                 else:
-                    st.success("密碼已更新，下次登入生效")
+                    # 關鍵：將新密碼寫入檔案
+                    save_admin_password(input_new_pwd)
+                    st.success("密碼變更成功！下次請使用新密碼登入。")
+                    # 建議變更後強制登出或重新整理
+                    # st.session_state.admin_mode = False
+                    # st.rerun()
 
         st.markdown("<br>", unsafe_allow_html=True)
         
-        # 原有的登出按鈕改為 type="primary" 放在這裡
         if st.button("🚪 登出內部模式", type="primary", use_container_width=True):
             st.session_state.admin_mode = False
-            # 視需求決定是否要 clear，如果只是關閉管理模式，直接設為 False 即可
             st.rerun()
             
         if st.button("🔄 返回客戶報價介面", use_container_width=True):
-            # 雖然目前逻辑 admin_mode 為 True 就在後台，
-            # 但如果妳有切換分頁，這裡可以強制跳回主分頁
             st.session_state.admin_mode = False 
             st.rerun()
 
