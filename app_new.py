@@ -12,17 +12,13 @@ import os
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* [1] 修正隱藏規則：保留 Header 功能 */
+    /* 1. 暴力消滅：針對所有可能出現收合箭頭的容器與按鈕 */
+    header, [data-testid="stHeader"], 
     [data-testid="stSidebarCollapsedControl"],
-    section[data-testid="stSidebar"] button:not([kind="primary"]) { 
+    .st-emotion-cache-6qob1r button,
+    .st-emotion-cache-15ec669 button,
+    section[data-testid="stSidebar"] button { 
         display: none !important; 
-    }
-
-    /* 讓原生 Header 透明化但保留點擊功能 */
-    header[data-testid="stHeader"] {
-        background-color: transparent !important;
-        background: none !important;
-        z-index: 10001 !important; 
     }
 
     /* 2. 側邊欄固定寬度 (維持 280px) */
