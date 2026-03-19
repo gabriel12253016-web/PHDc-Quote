@@ -12,13 +12,29 @@ import os
 st.set_page_config(page_title="成大群體健康數據中心 - 合作報價系統", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* 1. 暴力消滅：針對所有可能出現收合箭頭的容器與按鈕 */
-    header, [data-testid="stHeader"], 
-    [data-testid="stSidebarCollapsedControl"],
-    .st-emotion-cache-6qob1r button,
-    .st-emotion-cache-15ec669 button,
-    section[data-testid="stSidebar"] button { 
-        display: none !important; 
+    /* 1. 精準隱藏右上角雜訊，只保留三個點選單 */
+    [data-testid="stStatusWidget"], 
+    .stAppDeployButton, 
+    [data-testid="stToolbar"] a, 
+    [data-testid="stToolbar"] button:not([data-testid="stConnectionStatus"]):not(:last-child) {
+        display: none !important;
+    }
+
+    /* 2. 恢復 Header 的基礎功能，但不產生白色背景擋住妳的標題 */
+    header[data-testid="stHeader"] {
+        background-color: transparent !important;
+        background: none !important;
+        z-index: 10001 !important;
+    }
+
+    /* 3. 找回左側原本被我切掉的「返回/登出」控制按鈕 */
+    [data-testid="stSidebarCollapsedControl"] {
+        display: none !important; /* 依舊不顯示箭頭 */
+    }
+    
+    /* 確保側邊欄頂部的原生成份不會被強制隱藏 */
+    section[data-testid="stSidebar"] > div:first-child {
+        display: block !important;
     }
 
     /* 2. 側邊欄固定寬度 (維持 280px) */
