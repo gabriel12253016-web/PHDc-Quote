@@ -145,8 +145,8 @@ st.markdown("""
     [data-testid="stSidebar"] .stButton button {
         width: 100% !important;
         display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
+        justify-content: left !important;
+        align-items: left !important;
     }
     [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
         text-align: center !important;
