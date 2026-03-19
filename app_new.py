@@ -316,35 +316,31 @@ with st.sidebar:
             st.rerun()
     else:
         st.success("✅ 中心內部模式")
-        
-        # 3. 修改密碼區塊
         st.markdown("---")
-        with st.expander("🔑 安全與權限管理"):
-            st.write("修改中心人員密碼")
-            old_pwd = st.text_input("輸入當前密碼", type="password", key="opwd")
-            new_pwd = st.text_input("輸入新密碼", type="password", key="npwd")
-            confirm_pwd = st.text_input("確認新密碼", type="password", key="cpwd")
-            
-            # 強制確認按鈕出現在展開盒內
-            if st.button("確認變更密碼", use_container_width=True):
-                if old_pwd != get_stored_password():
-                    st.error("當前密碼不正確")
-                elif new_pwd != confirm_pwd:
-                    st.error("新密碼與確認密碼不符")
-                elif len(new_pwd) < 4:
-                    st.error("密碼過短")
-                else:
-                    update_stored_password(new_pwd)
-                    st.success("密碼已永久變更！")
-                    st.balloons()
-
-        st.markdown("<br>", unsafe_allow_html=True)
         
-        # 4. 登出與返回按鈕 (確保在 expander 外部)
-        if st.button("🚪 登出內部模式", type="primary", use_container_width=True):
-            st.session_state.admin_mode = False
-            st.rerun()
+        # 取得儲存的密碼
+        current_stored_pwd = get_pwd()
+
+        # 1. 修改密碼區塊
+        with st.expander("🔑 安全與權限管理", expanded=False):
+            st.write("修改中心人員密碼")
+            op = st.text_input("輸入當前密碼", type="password", key="op")
+            np = st.text_input("輸入新密碼", type="password", key="np")
+            cp = st.text_input("確認新密碼", type="password", key="cp")
             
+            if st.button("確認變更密碼", use_container_width=True):
+                if op != current_stored_pwd:
+                    st.error("當前密碼不正確")
+                elif np != cp:
+                    st.error("新密碼與確認密碼不符")
+                elif len(np) < 4:
+                    st.error("新密碼長度太短（至少 4 位）")
+                else:
+                    set_pwd(np)
+                    st.success("密碼已永久變更！")
+
+        # 2. 返回按鈕 (緊跟在 expander 下方，縮小間距)
+        # 移除原本的 <br> 標籤，讓它靠近上方區塊
         if st.button("🔄 返回客戶報價介面", use_container_width=True):
             st.session_state.admin_mode = False 
             st.rerun()
