@@ -154,30 +154,28 @@ st.markdown("""
         margin: 0 !important;
     }
 
-    /* 2. Expander 標題置中：修正「被箭頭擠歪」的問題 */
+    /* 1. 綠色框框 (中心內部模式) 的文字強制置中/右移 */
+    [data-testid="stNotificationContent"] {
+        display: flex !important;
+        justify-content: center !important; /* 強制內容區塊置中 */
+        width: 100% !important;
+    }
+    [data-testid="stNotificationContent"] p {
+        text-align: center !important;
+        width: 100% !important;
+        margin-left: 30px !important; /* 如果要更往右，增加這個數字 */
+    }
+
+    /* 2. 安全與權限管理標題的強制位移 */
     [data-testid="stSidebar"] .st-emotion-cache-p5msec {
         display: flex !important;
         justify-content: center !important;
-        width: 100% !important;
-        padding-left: 0 !important;
     }
-
     [data-testid="stSidebar"] .st-emotion-cache-p5msec p {
+        flex: 1 !important;
         text-align: center !important;
-        width: 100% !important;
-        margin: 0 !important;
-        transform: translateX(40px) !important;
-    }
-
-    /* 3. 調整箭頭圖示，確保它不吃掉太多空間 */
-    [data-testid="stSidebar"] .st-emotion-cache-p5msec svg {
-        margin-right: 0 !important;
-        flex-shrink: 0 !important;
-    }
-
-    /* 💡 讓綠色的中心內部模式文字往右移 */
-    [data-testid="stNotificationContent"] p {
-        padding-left: 70px !important; 
+        /* 改用 margin-left 直接推擠，這比 transform 更容易突破佈局限制 */
+        margin-left: 40px !important; 
     }
     
     /* ==========================================
