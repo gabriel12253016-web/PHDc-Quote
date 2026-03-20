@@ -141,54 +141,46 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* ============================================
-   CENTER-ALIGNED SOLUTION
+   /* ============================================
+   AGGRESSIVE CENTER-ALIGNED SOLUTION
    ============================================ */
 
-/* Sidebar buttons - CENTER-ALIGNED */
-[data-testid="stSidebar"] .stButton button {
-    width: 100% !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-[data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
-    text-align: center !important;
-    width: 100% !important;
-    margin: 0 !important;
-}
-
-/* Top navigation buttons - CENTER-ALIGNED */
-.stButton > button {
-    justify-content: center !important;
-    text-align: center !important;
-}
-
-.stButton > button p {
-    text-align: center !important;
-    width: 100% !important;
-    margin: 0 !important;
-}
-
-/* Expander headers - CENTER-ALIGNED */
-[data-testid="stExpander"] summary {
-    text-align: center !important;
-}
-
-[data-testid="stExpander"] summary p {
-    text-align: center !important;
-    margin: 0 !important;
-}
-
-[data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] p {
-    text-align: center !important;
-    margin: 0 !important;
-}
-
-button [data-testid="stMarkdownContainer"] p {
-    text-align: center !important;
-}
+    [data-testid="stSidebar"] .stButton button {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+    
+    [data-testid="stSidebar"] .stButton button * {
+        text-align: center !important;
+        justify-content: center !important;
+        display: flex !important;
+    }
+    
+    .stButton button {
+        justify-content: center !important;
+        text-align: center !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    .stButton button * {
+        text-align: center !important;
+        justify-content: center !important;
+    }
+    
+    [data-testid="stExpander"] details summary {
+        justify-content: center !important;
+        text-align: center !important;
+        display: flex !important;
+    }
+    
+    [data-testid="stExpander"] details summary * {
+        text-align: center !important;
+        justify-content: center !important;
+    }
     
     /* ==========================================
        2. 手機版強制修正：允許寬度超出並左右捲動
