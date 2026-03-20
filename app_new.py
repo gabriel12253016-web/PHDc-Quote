@@ -142,65 +142,63 @@ st.markdown("""
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
     
+    
     /* ============================================
-   ULTRA-AGGRESSIVE CENTER (Override Everything)
+   MODIFIED AGGRESSIVE - Fine Tuned Centering
    ============================================ */
 
-.cm-line {
+/* Expander headers */
+[data-testid="stExpander"] details summary {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding-left: 20px !important;
+}
+
+[data-testid="stExpander"] details summary * {
+    text-align: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    display: block !important;
+}
+
+[data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] {
+    display: flex !important;
+    text-align: center !important;
+    justify-content: center !important;
+    flex: 1 !important;
+}
+
+[data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] p {
+    text-align: center !important;
+    margin: 0 !important;
+    display: block !important;
+    width: auto !important;
+}
+
+/* Notification box - "中心內部模式" */
+[data-testid="stNotificationContent"] {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    text-align: center !important;
     width: 100% !important;
+    text-align: center !important;
+}
+
+[data-testid="stNotificationContent"] * {
+    text-align: center !important;
+    justify-content: center !important;
     margin: 0 !important;
-    padding: 0 !important;
 }
 
-.cm-line * {
+[data-testid="stNotificationContent"] p {
     text-align: center !important;
-    justify-content: center !important;
-    display: inline-flex !important;
-}
-
-.cm-line span {
-    text-align: center !important;
-    display: inline-flex !important;
-    justify-content: center !important;
-    align-items: center !important;
     width: auto !important;
     margin: 0 auto !important;
+    display: block !important;
 }
 
-/* Force center on all elements inside cm-line */
-.cm-line > * {
-    margin-left: auto !important;
-    margin-right: auto !important;
-    text-align: center !important;
-}
-
-/* Notification specific */
-[data-testid="stNotificationContent"] {
-    text-align: center !important;
-}
-
-[data-testid="stNotificationContent"] .cm-line {
-    justify-content: center !important;
-}
-
-[data-testid="stNotificationContent"] .cm-line span {
-    margin: 0 auto !important;
-    text-align: center !important;
-}
-
-/* Expander specific */
-[data-testid="stExpander"] summary .cm-line {
-    justify-content: center !important;
-}
-
-[data-testid="stExpander"] summary .cm-line span {
-    margin: 0 auto !important;
-    text-align: center !important;
-}
     
     /* ==========================================
        2. 手機版強制修正：允許寬度超出並左右捲動
