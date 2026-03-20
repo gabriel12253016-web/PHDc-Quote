@@ -142,71 +142,44 @@ st.markdown("""
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
     
+    
     /* ============================================
-   EXPANDER - Centered + Horizontal Align
+   CENTERED TEXT - Using cm-line class
    ============================================ */
 
-/* Expander headers - "安全與權限管理" */
-[data-testid="stExpander"] details summary {
+/* Target cm-line divs */
+.cm-line {
     display: flex !important;
-    justify-content: flex-start !important;
     align-items: center !important;
-    text-align: center !important;
-    gap: 8px !important;
-    padding-left: 20px !important;
-}
-
-[data-testid="stExpander"] details summary * {
-    text-align: center !important;
     justify-content: center !important;
-    margin: 0 !important;
-    align-items: center !important;
+    width: 100% !important;
 }
 
-[data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] {
-    display: flex !important;
+.cm-line span {
     text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
     justify-content: center !important;
-    flex: 1 !important;
-    align-items: center !important;
 }
 
-[data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] p {
+/* Notification - "中心內部模式" */
+[data-testid="stNotificationContent"] .cm-line {
+    justify-content: center !important;
+}
+
+[data-testid="stNotificationContent"] .cm-line span {
     text-align: center !important;
-    margin: 0 !important;
-    width: auto !important;
+    margin: 0 auto !important;
 }
 
-/* Icons on left */
-[data-testid="stExpander"] details summary svg {
-    order: -1 !important;
-    flex-shrink: 0 !important;
+/* Expander - "安全與權限管理" */
+[data-testid="stExpander"] summary .cm-line {
+    justify-content: center !important;
 }
 
-/* ============================================
-   NOTIFICATION - Centered + Horizontal Align
-   ============================================ */
-
-/* Notification box - "中心內部模式" */
-[data-testid="stNotificationContent"] {
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-}
-
-[data-testid="stNotificationContent"] * {
-    display: flex !important;
-    align-items: center !important;
-}
-
-[data-testid="stNotificationContent"] p {
+[data-testid="stExpander"] summary .cm-line span {
     text-align: center !important;
-    margin: 0 !important;
-}
-
-[data-testid="stNotificationContent"] svg {
-    order: -1 !important;
-    flex-shrink: 0 !important;
+    margin: 0 auto !important;
 }
 
         
