@@ -141,42 +141,54 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-    /* 1. 按鈕置中 (這部分妳已經成功了，維持標準鎖定) */
-    [data-testid="stSidebar"] .stButton button {
-        width: 100% !important;
-        display: flex !important;
-        justify-content: left !important;
-        align-items: left !important;
-    }
-    [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
-        text-align: center !important;
-        width: 100% !important;
-        margin: 0 !important;
-    }
+    /* ============================================
+   CENTER-ALIGNED SOLUTION
+   ============================================ */
 
-    /* 1. 綠色框框 (中心內部模式) 的文字強制置中/右移 */
-    [data-testid="stNotificationContent"] {
-        display: flex !important;
-        justify-content: center !important; /* 強制內容區塊置中 */
-        width: 100% !important;
-    }
-    [data-testid="stNotificationContent"] p {
-        text-align: center !important;
-        width: 100% !important;
-        margin-left: 30px !important; /* 如果要更往右，增加這個數字 */
-    }
+/* Sidebar buttons - CENTER-ALIGNED */
+[data-testid="stSidebar"] .stButton button {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
 
-    /* 2. 安全與權限管理標題的強制位移 */
-    [data-testid="stSidebar"] .st-emotion-cache-p5msec {
-        display: flex !important;
-        justify-content: center !important;
-    }
-    [data-testid="stSidebar"] .st-emotion-cache-p5msec p {
-        flex: 1 !important;
-        text-align: center !important;
-        /* 改用 margin-left 直接推擠，這比 transform 更容易突破佈局限制 */
-        margin-left: 40px !important; 
-    }
+[data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+/* Top navigation buttons - CENTER-ALIGNED */
+.stButton > button {
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+.stButton > button p {
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+/* Expander headers - CENTER-ALIGNED */
+[data-testid="stExpander"] summary {
+    text-align: center !important;
+}
+
+[data-testid="stExpander"] summary p {
+    text-align: center !important;
+    margin: 0 !important;
+}
+
+[data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] p {
+    text-align: center !important;
+    margin: 0 !important;
+}
+
+button [data-testid="stMarkdownContainer"] p {
+    text-align: center !important;
+}
     
     /* ==========================================
        2. 手機版強制修正：允許寬度超出並左右捲動
