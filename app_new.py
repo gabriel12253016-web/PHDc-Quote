@@ -142,62 +142,59 @@ st.markdown("""
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
     
-    
     /* ============================================
-   MODIFIED AGGRESSIVE - Fine Tuned Centering
+   CENTERED TEXT - Horizontal Align with Icon
    ============================================ */
 
-/* Expander headers */
-[data-testid="stExpander"] details summary {
+/* Notification box - "中心內部模式" RIGHT OF ICON */
+[data-testid="stNotificationContent"] {
     display: flex !important;
-    justify-content: flex-start !important;
     align-items: center !important;
-    text-align: center !important;
-    padding-left: 20px !important;
+    justify-content: center !important;
+    width: 100% !important;
+    gap: 10px !important;
 }
 
-[data-testid="stExpander"] details summary * {
+[data-testid="stNotificationContent"] p {
     text-align: center !important;
-    justify-content: center !important;
     margin: 0 !important;
-    display: block !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Expander headers - "安全與權限管理" RIGHT OF ICON */
+[data-testid="stExpander"] details summary {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
 }
 
 [data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] {
     display: flex !important;
-    text-align: center !important;
+    align-items: center !important;
     justify-content: center !important;
-    flex: 1 !important;
+    text-align: center !important;
 }
 
 [data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] p {
     text-align: center !important;
     margin: 0 !important;
-    display: block !important;
-    width: auto !important;
-}
-
-/* Notification box - "中心內部模式" */
-[data-testid="stNotificationContent"] {
     display: flex !important;
-    justify-content: center !important;
     align-items: center !important;
-    width: 100% !important;
-    text-align: center !important;
 }
 
-[data-testid="stNotificationContent"] * {
-    text-align: center !important;
-    justify-content: center !important;
-    margin: 0 !important;
+/* Ensure icons stay on the left */
+[data-testid="stExpander"] details summary svg {
+    order: -1 !important;
+    flex-shrink: 0 !important;
 }
 
-[data-testid="stNotificationContent"] p {
-    text-align: center !important;
-    width: auto !important;
-    margin: 0 auto !important;
-    display: block !important;
+[data-testid="stNotificationContent"] svg {
+    order: -1 !important;
+    flex-shrink: 0 !important;
 }
+
 
     
     /* ==========================================
