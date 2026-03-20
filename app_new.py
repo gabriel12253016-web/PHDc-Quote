@@ -145,41 +145,144 @@ st.markdown("""
    AGGRESSIVE CENTER-ALIGNED SOLUTION
    ============================================ */
 
+    
+    /* FORCE ALL BUTTONS LEFT */
+    button {
+        justify-content: flex-start !important;
+        text-align: left !important;
+    }
+    
+    button * {
+        text-align: left !important;
+        justify-content: flex-start !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+    }
+    
+    /* Sidebar buttons */
     [data-testid="stSidebar"] .stButton button {
         width: 100% !important;
         display: flex !important;
-        justify-content: center !important;
+        justify-content: flex-start !important;
         align-items: center !important;
-        text-align: center !important;
+        text-align: left !important;
+        padding-left: 10px !important;
     }
     
     [data-testid="stSidebar"] .stButton button * {
-        text-align: center !important;
-        justify-content: center !important;
-        display: flex !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     
-    .stButton button {
-        justify-content: center !important;
-        text-align: center !important;
+    [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] {
+        display: block !important;
+        text-align: left !important;
+    }
+    
+    [data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
+        text-align: left !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+    
+    /* Top navigation buttons */
+    .stButton > button {
+        justify-content: flex-start !important;
+        text-align: left !important;
         display: flex !important;
         align-items: center !important;
+        padding-left: 10px !important;
     }
     
-    .stButton button * {
-        text-align: center !important;
-        justify-content: center !important;
+    .stButton > button * {
+        text-align: left !important;
+        justify-content: flex-start !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     
+    .stButton > button p {
+        text-align: left !important;
+        width: 100% !important;
+        margin: 0 !important;
+        display: block !important;
+    }
+    
+    .stButton > button span {
+        text-align: left !important;
+        display: block !important;
+    }
+    
+    /* Expander headers */
     [data-testid="stExpander"] details summary {
-        justify-content: center !important;
-        text-align: center !important;
         display: flex !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+        text-align: left !important;
+        padding-left: 10px !important;
     }
     
     [data-testid="stExpander"] details summary * {
-        text-align: center !important;
-        justify-content: center !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
+        margin: 0 !important;
+        display: block !important;
+    }
+    
+    [data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] {
+        display: block !important;
+        text-align: left !important;
+    }
+    
+    [data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] p {
+        text-align: left !important;
+        margin: 0 !important;
+        display: block !important;
+        width: 100% !important;
+    }
+    
+    [data-testid="stExpander"] summary {
+        text-align: left !important;
+        justify-content: flex-start !important;
+    }
+    
+    [data-testid="stExpander"] summary p {
+        text-align: left !important;
+        margin: 0 !important;
+        display: block !important;
+    }
+    
+    /* Universal aggressive override */
+    button [data-testid="stMarkdownContainer"] p {
+        text-align: left !important;
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    button span {
+        text-align: left !important;
+        display: block !important;
+    }
+    
+    /* Extra aggressive - force all text nodes */
+    p {
+        text-align: left !important;
+    }
+    
+    span {
+        text-align: left !important;
+    }
+    
+    div {
+        text-align: left !important;
     }
     
     /* ==========================================
