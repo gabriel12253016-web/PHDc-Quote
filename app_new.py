@@ -143,7 +143,48 @@ st.markdown("""
 
     
     /* ============================================
-   CENTERED TEXT - Horizontal Align with Icon
+   EXPANDER - Centered + Horizontal Align
+   ============================================ */
+
+/* Expander headers - "安全與權限管理" */
+[data-testid="stExpander"] details summary {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 8px !important;
+    padding-left: 20px !important;
+}
+
+[data-testid="stExpander"] details summary * {
+    text-align: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    align-items: center !important;
+}
+
+[data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] {
+    display: flex !important;
+    text-align: center !important;
+    justify-content: center !important;
+    flex: 1 !important;
+    align-items: center !important;
+}
+
+[data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] p {
+    text-align: center !important;
+    margin: 0 !important;
+    width: auto !important;
+}
+
+/* Icons on left */
+[data-testid="stExpander"] details summary svg {
+    order: -1 !important;
+    flex-shrink: 0 !important;
+}
+
+/* ============================================
+   NOTIFICATION - Centered + Horizontal Align
    ============================================ */
 
 /* Notification box - "中心內部模式" */
@@ -163,33 +204,11 @@ st.markdown("""
     margin: 0 !important;
 }
 
-/* Expander headers - "安全與權限管理" */
-[data-testid="stExpander"] details summary {
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-}
-
-[data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] {
-    display: flex !important;
-    align-items: center !important;
-}
-
-[data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] p {
-    text-align: center !important;
-    margin: 0 !important;
-}
-
-/* Icons on left */
-[data-testid="stExpander"] details summary svg {
-    order: -1 !important;
-    flex-shrink: 0 !important;
-}
-
 [data-testid="stNotificationContent"] svg {
     order: -1 !important;
     flex-shrink: 0 !important;
 }
+
         
     /* ==========================================
        2. 手機版強制修正：允許寬度超出並左右捲動
