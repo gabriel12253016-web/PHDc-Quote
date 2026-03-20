@@ -143,70 +143,46 @@ st.markdown("""
 
     
     /* ============================================
-   CENTERED TEXT IN BOX (Ignoring Icons)
+   CENTERED TEXT IN BOX (Using cm-line class)
    ============================================ */
 
-/* Expander headers - CENTER TEXT RELATIVE TO BOX */
-[data-testid="stExpander"] details summary {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    text-align: center !important;
-    position: relative !important;
-}
-
-[data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    flex: 1 !important;
-    text-align: center !important;
-}
-
-[data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] p {
-    text-align: center !important;
-    margin: 0 !important;
-    width: 100% !important;
-}
-
-[data-testid="stExpander"] summary {
-    text-align: center !important;
-}
-
-[data-testid="stExpander"] summary p {
-    text-align: center !important;
-    margin: 0 !important;
-}
-
 /* Notification box - CENTER TEXT "中心內部模式" */
-[data-testid="stNotificationContent"] {
+.cm-line {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    width: 100% !important;
-}
-
-[data-testid="stNotificationContent"] p {
     text-align: center !important;
     width: 100% !important;
-    margin: 0 !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
 }
 
-/* Success notification specific */
-.stSuccess {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-.stSuccess p {
+.cm-line span {
     text-align: center !important;
-    margin: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
+/* Additional targeting for notification content */
+[data-testid="stNotificationContent"] .cm-line {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+[data-testid="stNotificationContent"] .cm-line span {
+    text-align: center !important;
+}
+
+/* Expander headers with cm-line */
+[data-testid="stExpander"] details summary .cm-line {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+[data-testid="stExpander"] details summary .cm-line span {
+    text-align: center !important;
+}
     
     /* ==========================================
        2. 手機版強制修正：允許寬度超出並左右捲動
