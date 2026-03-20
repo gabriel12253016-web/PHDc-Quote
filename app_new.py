@@ -142,46 +142,43 @@ st.markdown("""
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
     
-    
     /* ============================================
-   CENTERED TEXT - Using cm-line class
+   ALIGN TEXT CENTER VERTICALLY WITH CONTENT BELOW
    ============================================ */
 
-/* Target cm-line divs */
+/* Remove centering - use LEFT alignment instead */
 .cm-line {
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
     width: 100% !important;
+    padding-left: 0 !important;
 }
 
 .cm-line span {
-    text-align: center !important;
+    text-align: left !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
 }
 
 /* Notification - "中心內部模式" */
 [data-testid="stNotificationContent"] .cm-line {
-    justify-content: center !important;
+    justify-content: flex-start !important;
 }
 
 [data-testid="stNotificationContent"] .cm-line span {
-    text-align: center !important;
-    margin: 0 auto !important;
+    text-align: left !important;
 }
 
 /* Expander - "安全與權限管理" */
 [data-testid="stExpander"] summary .cm-line {
-    justify-content: center !important;
+    justify-content: flex-start !important;
 }
 
 [data-testid="stExpander"] summary .cm-line span {
-    text-align: center !important;
-    margin: 0 auto !important;
+    text-align: left !important;
 }
-
         
     /* ==========================================
        2. 手機版強制修正：允許寬度超出並左右捲動
