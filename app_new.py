@@ -143,44 +143,62 @@ st.markdown("""
 
     
     /* ============================================
-   CENTERED TEXT IN BOX (Using cm-line class)
+   ULTRA-AGGRESSIVE CENTER (Override Everything)
    ============================================ */
 
-/* Notification box - CENTER TEXT "中心內部模式" */
 .cm-line {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
     text-align: center !important;
     width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.cm-line * {
+    text-align: center !important;
+    justify-content: center !important;
+    display: inline-flex !important;
 }
 
 .cm-line span {
     text-align: center !important;
-    display: flex !important;
+    display: inline-flex !important;
     justify-content: center !important;
     align-items: center !important;
+    width: auto !important;
+    margin: 0 auto !important;
 }
 
-/* Additional targeting for notification content */
-[data-testid="stNotificationContent"] .cm-line {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-[data-testid="stNotificationContent"] .cm-line span {
+/* Force center on all elements inside cm-line */
+.cm-line > * {
+    margin-left: auto !important;
+    margin-right: auto !important;
     text-align: center !important;
 }
 
-/* Expander headers with cm-line */
-[data-testid="stExpander"] details summary .cm-line {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
+/* Notification specific */
+[data-testid="stNotificationContent"] {
+    text-align: center !important;
 }
 
-[data-testid="stExpander"] details summary .cm-line span {
+[data-testid="stNotificationContent"] .cm-line {
+    justify-content: center !important;
+}
+
+[data-testid="stNotificationContent"] .cm-line span {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Expander specific */
+[data-testid="stExpander"] summary .cm-line {
+    justify-content: center !important;
+}
+
+[data-testid="stExpander"] summary .cm-line span {
+    margin: 0 auto !important;
     text-align: center !important;
 }
     
