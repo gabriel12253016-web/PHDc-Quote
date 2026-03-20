@@ -384,7 +384,7 @@ with st.sidebar:
             st.session_state.admin_mode = True
             st.rerun()
     else:
-        st.success("✅ 中心內部模式")
+        st.success("中心內部模式")
         st.markdown("---")
         
         # 修正：使用妳定義的 get_stored_password()
