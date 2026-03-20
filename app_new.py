@@ -150,23 +150,26 @@ st.markdown("""
 [data-testid="stNotificationContent"] {
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
     width: 100% !important;
     gap: 10px !important;
+    padding-left: 0 !important;
 }
 
 [data-testid="stNotificationContent"] p {
-    text-align: center !important;
+    text-align: left !important;
     margin: 0 !important;
     display: flex !important;
     align-items: center !important;
+    flex: 1 !important;
+    justify-content: center !important;
 }
 
 /* Expander headers - "安全與權限管理" RIGHT OF ICON */
 [data-testid="stExpander"] details summary {
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
     gap: 10px !important;
 }
 
@@ -175,27 +178,26 @@ st.markdown("""
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
+    flex: 1 !important;
 }
 
 [data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] p {
     text-align: center !important;
     margin: 0 !important;
-    display: flex !important;
-    align-items: center !important;
 }
 
 /* Ensure icons stay on the left */
 [data-testid="stExpander"] details summary svg {
     order: -1 !important;
     flex-shrink: 0 !important;
+    margin-right: 10px !important;
 }
 
 [data-testid="stNotificationContent"] svg {
     order: -1 !important;
     flex-shrink: 0 !important;
+    margin-right: 10px !important;
 }
-
-
     
     /* ==========================================
        2. 手機版強制修正：允許寬度超出並左右捲動
