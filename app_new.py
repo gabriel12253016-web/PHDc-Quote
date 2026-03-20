@@ -141,86 +141,31 @@ st.markdown("""
 
     .stMarkdown:has(.top-title-bar) { line-height: 0; }
 
-        /* ============================================
-   CENTER-ALIGNED SOLUTION (FIXED SPECIFICITY)
+    
+    /* ============================================
+   CENTERED TEXT IN BOX (Ignoring Icons)
    ============================================ */
 
-/* Sidebar buttons - CENTER-ALIGNED */
-[data-testid="stSidebar"] .stButton button {
-    width: 100% !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-[data-testid="stSidebar"] .stButton button div {
-    display: flex !important;
-    justify-content: center !important;
-    width: 100% !important;
-}
-
-[data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] {
-    display: flex !important;
-    justify-content: center !important;
-    width: 100% !important;
-}
-
-[data-testid="stSidebar"] .stButton button div[data-testid="stMarkdownContainer"] p {
-    text-align: center !important;
-    width: 100% !important;
-    margin: 0 !important;
-    display: flex !important;
-    justify-content: center !important;
-}
-
-/* Force center for nested spans and divs in sidebar buttons */
-[data-testid="stSidebar"] .stButton button span {
-    display: flex !important;
-    justify-content: center !important;
-    width: 100% !important;
-    text-align: center !important;
-}
-
-/* Top navigation buttons - CENTER-ALIGNED */
-.stButton > button {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-.stButton > button > * {
-    display: flex !important;
-    justify-content: center !important;
-    width: 100% !important;
-}
-
-.stButton > button p {
-    text-align: center !important;
-    width: 100% !important;
-    margin: 0 !important;
-    display: flex !important;
-    justify-content: center !important;
-}
-
-/* Expander headers - CENTER-ALIGNED */
+/* Expander headers - CENTER TEXT RELATIVE TO BOX */
 [data-testid="stExpander"] details summary {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
     text-align: center !important;
+    position: relative !important;
 }
 
 [data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] {
     display: flex !important;
     justify-content: center !important;
-    width: 100% !important;
+    align-items: center !important;
+    flex: 1 !important;
+    text-align: center !important;
 }
 
 [data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] p {
     text-align: center !important;
     margin: 0 !important;
-    display: flex !important;
-    justify-content: center !important;
     width: 100% !important;
 }
 
@@ -233,17 +178,35 @@ st.markdown("""
     margin: 0 !important;
 }
 
-/* Universal button text centering */
-button [data-testid="stMarkdownContainer"] p {
-    text-align: center !important;
+/* Notification box - CENTER TEXT "中心內部模式" */
+[data-testid="stNotificationContent"] {
     display: flex !important;
     justify-content: center !important;
+    align-items: center !important;
     width: 100% !important;
 }
 
-button span {
+[data-testid="stNotificationContent"] p {
     text-align: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
+
+/* Success notification specific */
+.stSuccess {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.stSuccess p {
+    text-align: center !important;
+    margin: 0 !important;
+}
+
     
     /* ==========================================
        2. 手機版強制修正：允許寬度超出並左右捲動
