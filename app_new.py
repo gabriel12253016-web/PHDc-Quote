@@ -152,7 +152,7 @@ st.markdown("""
     }
     
     .cm-line span {
-        text-align: left !important;
+        text-align: center !important;
     }
         
     /* ==========================================
