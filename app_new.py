@@ -146,39 +146,33 @@ st.markdown("""
    CENTERED TEXT - Horizontal Align with Icon
    ============================================ */
 
-/* Notification box - "中心內部模式" RIGHT OF ICON */
+/* Notification box - "中心內部模式" */
 [data-testid="stNotificationContent"] {
     display: flex !important;
     align-items: center !important;
-    justify-content: flex-start !important;
-    width: 100% !important;
     gap: 10px !important;
-    padding-left: 0 !important;
+}
+
+[data-testid="stNotificationContent"] * {
+    display: flex !important;
+    align-items: center !important;
 }
 
 [data-testid="stNotificationContent"] p {
-    text-align: left !important;
+    text-align: center !important;
     margin: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    flex: 1 !important;
-    justify-content: center !important;
 }
 
-/* Expander headers - "安全與權限管理" RIGHT OF ICON */
+/* Expander headers - "安全與權限管理" */
 [data-testid="stExpander"] details summary {
     display: flex !important;
     align-items: center !important;
-    justify-content: flex-start !important;
-    gap: 10px !important;
+    gap: 8px !important;
 }
 
 [data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] {
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    flex: 1 !important;
 }
 
 [data-testid="stExpander"] details summary [data-testid="stMarkdownContainer"] p {
@@ -186,19 +180,17 @@ st.markdown("""
     margin: 0 !important;
 }
 
-/* Ensure icons stay on the left */
+/* Icons on left */
 [data-testid="stExpander"] details summary svg {
     order: -1 !important;
     flex-shrink: 0 !important;
-    margin-right: 10px !important;
 }
 
 [data-testid="stNotificationContent"] svg {
     order: -1 !important;
     flex-shrink: 0 !important;
-    margin-right: 10px !important;
 }
-    
+        
     /* ==========================================
        2. 手機版強制修正：允許寬度超出並左右捲動
        ========================================== */
